@@ -12,7 +12,15 @@ plugins {
 	id 'com.gradle.build-scan' version '3.2'
 	id "com.jfrog.artifactory" version '4.12.0' apply false
 }
-
+repositories {
+	mavenLocal()
+	maven {
+		url "https://maven.aliyun.com/nexus/content/groups/public"
+	}
+	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
+	jcenter()
+}
 apply from: "$rootDir/gradle/build-scan-user-data.gradle"
 ext {
 	moduleProjects = subprojects.findAll { it.name.startsWith("spring-") }
