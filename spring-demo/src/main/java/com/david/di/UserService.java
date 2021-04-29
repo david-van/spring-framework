@@ -1,4 +1,4 @@
-package com.david;
+package com.david.di;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -6,13 +6,13 @@ import org.springframework.stereotype.Component;
 /**
  * @author fanzunying
  * @version v1.0.0
- * @date 2021/4/28 22:02
+ * @date 2021/4/28 22:01
  */
 @Component
-public class OrderService {
+public class UserService {
 	@Autowired
-	private UserService userService;
-	public OrderService() {
-		System.out.println("orderService");
+	private OrderService orderService;
+	public UserService() {
+		System.out.println("userService");
 	}
 }

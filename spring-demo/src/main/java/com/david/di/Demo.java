@@ -1,9 +1,8 @@
-package com.david;
+package com.david.di;
 
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.GenericApplicationContext;
 
 /**
  * @author fanzunying
@@ -11,13 +10,20 @@ import org.springframework.context.support.GenericApplicationContext;
  * @date 2021/4/24 20:33
  */
 public class Demo {
+
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext(AppConfig.class);
 		BeanDefinition appConfig = ac.getBeanDefinition("appConfig");
 		System.out.println(appConfig);
+		BeanDefinition beanDefinition = ac.getBeanDefinition("infoService");
+		ConstructorArgumentValues values = beanDefinition.getConstructorArgumentValues();
+		InfoService bean = ac.getBean(InfoService.class);
+		System.out.println(bean);
 		System.out.println(ac.getBean(OrderService.class));
 		System.out.println(ac.getBean(UserService.class));
 //		context.refresh();
 //		context.getBeanDefinition()
+
 	}
+
 }

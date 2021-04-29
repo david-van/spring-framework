@@ -22,12 +22,16 @@ import org.springframework.lang.Nullable;
  * Interface defining a generic contract for attaching and accessing metadata
  * to/from arbitrary objects.
  *
+ * 接口定义了一个约定，来附加和访问元数据从（到）任意一个对象  （不懂？？？）
+ *
  * @author Rob Harrop
  * @since 2.0
  */
 public interface AttributeAccessor {
 
 	/**
+	 * 设置属性，通常情况下，用户应该注意使用完全限定的名称，以类或包的名称作为前缀，以防止与其他元数据属性重叠。
+	 *
 	 * Set the attribute defined by {@code name} to the supplied {@code value}.
 	 * If {@code value} is {@code null}, the attribute is {@link #removeAttribute removed}.
 	 * <p>In general, users should take care to prevent overlaps with other
