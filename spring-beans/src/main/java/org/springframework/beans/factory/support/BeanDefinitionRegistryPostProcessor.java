@@ -33,6 +33,7 @@ import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 public interface BeanDefinitionRegistryPostProcessor extends BeanFactoryPostProcessor {
 
 	/**
+	 * 可以通过registry注册一个beanDefinition，
 	 * Modify the application context's internal bean definition registry after its
 	 * standard initialization. All regular bean definitions will have been loaded,
 	 * but no beans will have been instantiated yet. This allows for adding further

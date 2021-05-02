@@ -61,9 +61,11 @@ final class PostProcessorRegistrationDelegate {
 
 		if (beanFactory instanceof BeanDefinitionRegistry) {
 			BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
+			//普通的BeanFactory后置处理器
 			List<BeanFactoryPostProcessor> regularPostProcessors = new ArrayList<>();
+			//实现BeanDefinitionRegistryPostProcessor的
 			List<BeanDefinitionRegistryPostProcessor> registryProcessors = new ArrayList<>();
-
+			//beanFactoryPostProcessors 这里的list可以通过ac.addBeanFactoryPostProcessor()这个方法来添加
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor) {
 					BeanDefinitionRegistryPostProcessor registryProcessor =
@@ -82,6 +84,7 @@ final class PostProcessorRegistrationDelegate {
 			// PriorityOrdered, Ordered, and the rest.
 			List<BeanDefinitionRegistryPostProcessor> currentRegistryProcessors = new ArrayList<>();
 
+			//首先获取BeanDefinitionRegistryPostProcessor的子类实现，然后按照PriorityOrdered排序执行
 			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered.
 			String[] postProcessorNames =
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
@@ -96,6 +99,8 @@ final class PostProcessorRegistrationDelegate {
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);
 			currentRegistryProcessors.clear();
 
+			//继续获取BeanDefinitionRegistryPostProcessor的子类实现，然后按照Ordered排序执行
+			//这里需要注意的是：这里需要实现Ordered，然后完成排序，这里的@Order注解不生效，也就是需要实现接口而不是添加注解
 			// Next, invoke the BeanDefinitionRegistryPostProcessors that implement Ordered.
 			postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			for (String ppName : postProcessorNames) {
@@ -109,6 +114,7 @@ final class PostProcessorRegistrationDelegate {
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);
 			currentRegistryProcessors.clear();
 
+			//最后，调用所有其他BeanDefinitionRegistryPostProcessor，直到没有为止。
 			// Finally, invoke all other BeanDefinitionRegistryPostProcessors until no further ones appear.
 			boolean reiterate = true;
 			while (reiterate) {
@@ -121,12 +127,18 @@ final class PostProcessorRegistrationDelegate {
 						reiterate = true;
 					}
 				}
+				//这里完成排序，如果存在注解@Order(3)，则按照从小到大的完成
+				//@Order(1)
+				//@Priority(value = 11)
+				//当存在两个注解的时候，order注解生效
 				sortPostProcessors(currentRegistryProcessors, beanFactory);
 				registryProcessors.addAll(currentRegistryProcessors);
+				//这里调用子类重写的 BeanDefinitionRegistryPostProcessor的postProcessBeanDefinitionRegistry方法
 				invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);
 				currentRegistryProcessors.clear();
 			}
 
+			//现在，调用到目前为止已处理的所有处理器的postProcessBeanFactory回调，也就是会调用子类重写的postProcessBeanFactory方法
 			// Now, invoke the postProcessBeanFactory callback of all processors handled so far.
 			invokeBeanFactoryPostProcessors(registryProcessors, beanFactory);
 			invokeBeanFactoryPostProcessors(regularPostProcessors, beanFactory);
@@ -137,15 +149,22 @@ final class PostProcessorRegistrationDelegate {
 			invokeBeanFactoryPostProcessors(beanFactoryPostProcessors, beanFactory);
 		}
 
+		//从这里开始处理实现BeanFactoryPostProcessor的扩展后置处理器
 		// Do not initialize FactoryBeans here: We need to leave all regular beans
 		// uninitialized to let the bean factory post-processors apply to them!
 		String[] postProcessorNames =
 				beanFactory.getBeanNamesForType(BeanFactoryPostProcessor.class, true, false);
 
+		//同BeanDefinitionRegistryPostProcessor类似，这里仍旧是处理排序，而后处理普通的
+		//下面定义了三个集合，用来保存
 		// Separate between BeanFactoryPostProcessors that implement PriorityOrdered,
 		// Ordered, and the rest.
+		//实现PriorityOrdered 接口的，优先级最高
 		List<BeanFactoryPostProcessor> priorityOrderedPostProcessors = new ArrayList<>();
+		//实现Ordered 接口的，优先级其次
 		List<String> orderedPostProcessorNames = new ArrayList<>();
+		//没有排序的，但是后续可以通过添加的注解如@Order,完成排序
+		//另外还有java标准的注解：@Priority(value = 1)也可以通过排序方法完成排序
 		List<String> nonOrderedPostProcessorNames = new ArrayList<>();
 		for (String ppName : postProcessorNames) {
 			if (processedBeans.contains(ppName)) {

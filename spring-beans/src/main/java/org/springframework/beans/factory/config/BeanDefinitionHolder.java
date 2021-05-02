@@ -25,6 +25,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * 持有BeanDefinition的名称和别名
+ * 看作用应该是对BeanDefinition的一个包装
  * Holder for a BeanDefinition with name and aliases.
  * Can be registered as a placeholder for an inner bean.
  *

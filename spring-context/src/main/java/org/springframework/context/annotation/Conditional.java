@@ -23,6 +23,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 注册一个component的前提是需要满足条件，
+ * 该注解在spring boot的自动配置中大放异彩，可以见此包：org.springframework.boot.autoconfigure.condition;
+ * 可以看其中的派生注解，比如：ConditionalOnBean ConditionalOnMissingBean 等
  * Indicates that a component is only eligible for registration when all
  * {@linkplain #value specified conditions} match.
  *

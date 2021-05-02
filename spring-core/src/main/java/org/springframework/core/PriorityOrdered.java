@@ -17,6 +17,7 @@
 package org.springframework.core;
 
 /**
+ * 对ordered注解的扩展，PriorityOrdered 的优先级永远高于ordered
  * Extension of the {@link Ordered} interface, expressing a <em>priority</em>
  * ordering: {@code PriorityOrdered} objects are always applied before
  * <em>plain</em> {@link Ordered} objects regardless of their order values.

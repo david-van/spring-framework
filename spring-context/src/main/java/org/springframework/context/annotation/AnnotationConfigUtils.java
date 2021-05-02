@@ -234,6 +234,7 @@ public abstract class AnnotationConfigUtils {
 		processCommonDefinitionAnnotations(abd, abd.getMetadata());
 	}
 
+	//处理通用的定义注解：lazy，Primary DependsOn Role Description 这些
 	static void processCommonDefinitionAnnotations(AnnotatedBeanDefinition abd, AnnotatedTypeMetadata metadata) {
 		AnnotationAttributes lazy = attributesFor(metadata, Lazy.class);
 		if (lazy != null) {
@@ -245,7 +246,7 @@ public abstract class AnnotationConfigUtils {
 				abd.setLazyInit(lazy.getBoolean("value"));
 			}
 		}
-
+		//这里通过判断是否存在Primary注解，来设置beanDefinition的属性
 		if (metadata.isAnnotated(Primary.class.getName())) {
 			abd.setPrimary(true);
 		}
