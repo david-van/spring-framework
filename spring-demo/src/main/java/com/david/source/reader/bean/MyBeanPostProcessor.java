@@ -1,12 +1,16 @@
 package com.david.source.reader.bean;
 
+import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.stereotype.Component;
 
 /**
  * @author fanzunying
  * @date 2021/4/30 19:06
  */
+@Component
+@Aspect
 public class MyBeanPostProcessor implements BeanPostProcessor {
 
 	@Override

@@ -2,6 +2,7 @@ package com.david.source.reader.beanFactory;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.weaving.AspectJWeavingEnabler;
 import org.springframework.stereotype.Component;
 
 /**
@@ -26,6 +27,7 @@ public class Demo {
 //		ac.addBeanFactoryPostProcessor(processor);
 //		MyBeanFactoryPostProcessor myBeanFactoryPostProcessor = new MyBeanFactoryPostProcessor();
 //		ac.addBeanFactoryPostProcessor(myBeanFactoryPostProcessor);
+//		ac.register(AspectJWeavingEnabler.class);
 		ac.refresh();
 		Demo bean = ac.getBean(Demo.class);
 		System.out.println(bean);

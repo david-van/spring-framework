@@ -72,6 +72,8 @@ public abstract class BeanFactoryUtils {
 	}
 
 	/**
+	 * 返回实际的bean名称，删除工厂取消引用前缀（如果有的话，还删除重复的工厂前缀（如果找到））
+	 * 就是：&&beanName --> beanName
 	 * Return the actual bean name, stripping out the factory dereference
 	 * prefix (if any, also stripping repeated factory prefixes if found).
 	 * @param name the name of the bean
