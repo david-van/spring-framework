@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
  * @author fanzunying
  * @date 2021/4/30 19:06
  */
-//@Component
-@Aspect
+@Component
+//@Aspect
 public class MyBeanPostProcessor implements BeanPostProcessor {
 
 	@Override

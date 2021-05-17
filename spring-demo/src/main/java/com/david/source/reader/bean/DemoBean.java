@@ -23,6 +23,7 @@ public class DemoBean {
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext();
 		ac.register(DemoBean.class);
+//		ac.setAllowCircularReferences(false);
 //		ac.register(MyBeanPostProcessor.class);
 		ac.refresh();
 //		DemoBean bean = ac.getBean(DemoBean.class);

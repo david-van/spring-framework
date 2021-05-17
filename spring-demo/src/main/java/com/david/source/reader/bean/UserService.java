@@ -4,6 +4,8 @@ import com.david.source.reader.bean.a.MyAlias;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+
 /**
  * @author fanzunying
  * @version v1.0.0
@@ -12,13 +14,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserService {
 
+	@Autowired
+	private OrderService orderService;
 
 	public UserService() {
-		System.out.println("default");
+		System.out.println("UserService");
 	}
 
-	public UserService(String string) {
-		System.out.println("by string");
+	@PostConstruct
+	public void getOrder() {
+		System.out.println(orderService);
 	}
 //
 //	public UserService(DemoBean demoBean) {
