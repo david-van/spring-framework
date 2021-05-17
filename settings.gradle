@@ -38,4 +38,7 @@ rootProject.children.each {project ->
 }
 
 include 'spring-demo'
+include 'spring-my'
+include 'spring-my:spring-my-web1'
+findProject(':spring-my:spring-my-web1')?.name = 'spring-my-web1'
 
