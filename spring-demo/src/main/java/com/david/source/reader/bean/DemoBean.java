@@ -25,8 +25,8 @@ public class DemoBean {
 		ac.register(DemoBean.class);
 //		ac.register(MyBeanPostProcessor.class);
 		ac.refresh();
-		DemoBean bean = ac.getBean(DemoBean.class);
-		MyBeanPostProcessor processor = ac.getBean(MyBeanPostProcessor.class);
-		System.out.println(bean);
+//		DemoBean bean = ac.getBean(DemoBean.class);
+//		MyBeanPostProcessor processor = ac.getBean(MyBeanPostProcessor.class);
+//		System.out.println(bean);
 	}
 }

@@ -129,8 +129,11 @@ class ConstructorResolver {
 		BeanWrapperImpl bw = new BeanWrapperImpl();
 		this.beanFactory.initBeanWrapper(bw);
 
+		//确定使用的构造方法
 		Constructor<?> constructorToUse = null;
+		//使用的构造参数持有对象
 		ArgumentsHolder argsHolderToUse = null;
+		//最终确定的参数
 		Object[] argsToUse = null;
 
 		if (explicitArgs != null) {
