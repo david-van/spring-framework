@@ -209,7 +209,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					if (singletonObject == null) {
 						singletonObject = this.earlySingletonObjects.get(beanName);
 						if (singletonObject == null) {
-							//从三级缓存中那BeanFactory
+							//从三级缓存中拿BeanFactory，如果拿到了，获取bean，然后放到二级缓存，并从三级缓存中移除
 							ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
 							if (singletonFactory != null) {
 								singletonObject = singletonFactory.getObject();

@@ -597,7 +597,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		//初始化bean实例。
 		Object exposedObject = bean;
 		try {
+			//完成了bean实例的创建和属性注入
 			populateBean(beanName, mbd, instanceWrapper);
+			//执行一些初始化的方法
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
@@ -1087,6 +1089,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
+	 * 将MergedBeanDefinitionPostProcessors应用于指定的bean定义，
 	 * Apply MergedBeanDefinitionPostProcessors to the specified bean definition,
 	 * invoking their {@code postProcessMergedBeanDefinition} methods.
 	 * @param mbd the merged bean definition for the bean
@@ -1647,6 +1650,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
+	 * 应用给定的属性值，从而解决对该bean工厂中其他bean的任何运行时引用。
+	 * 必须使用深度复制，因此我们不会永久修改此属性
 	 * Apply the given property values, resolving any runtime references
 	 * to other beans in this bean factory. Must use deep copy, so we
 	 * don't permanently modify this property.
@@ -1984,6 +1989,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 
 	/**
+	 * Spring的自动装配="byType"模式的特殊DependencyDescriptor变体。
+	 * 总是可选;在选择主要候选对象时，不要考虑参数名称
 	 * Special DependencyDescriptor variant for Spring's good old autowire="byType" mode.
 	 * Always optional; never considering the parameter name for choosing a primary candidate.
 	 */

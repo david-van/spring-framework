@@ -243,6 +243,7 @@ public class ResolvableType implements Serializable {
 	}
 
 	/**
+	 * 确定给定的对象是否是这个 ResolvableType 的实例。
 	 * Determine whether the given object is an instance of this {@code ResolvableType}.
 	 * @param obj the object to check
 	 * @since 4.2

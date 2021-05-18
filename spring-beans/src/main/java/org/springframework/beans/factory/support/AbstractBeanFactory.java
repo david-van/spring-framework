@@ -388,6 +388,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 		}
 
+		//检查所需的类型是否与实际bean实例的类型匹配。
 		// Check if required type matches the type of the actual bean instance.
 		if (requiredType != null && !requiredType.isInstance(bean)) {
 			try {
@@ -1809,6 +1810,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			return beanInstance;
 		}
 
+		//现在我们有了bean实例，它可能是一个普通bean或一个FactoryBean。
+		// 如果它是一个FactoryBean，我们就使用它来创建一个bean实例，
+		// 除非调用者实际上想要一个对工厂的引用
 		// Now we have the bean instance, which may be a normal bean or a FactoryBean.
 		// If it's a FactoryBean, we use it to create a bean instance, unless the
 		// caller actually wants a reference to the factory.

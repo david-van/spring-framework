@@ -152,6 +152,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 
 	/**
+	 * 自动注入类型包括 autowired 以及 value 以及java 定义的inject注解 如resource
 	 * Create a new {@code AutowiredAnnotationBeanPostProcessor} for Spring's
 	 * standard {@link Autowired @Autowired} and {@link Value @Value} annotations.
 	 * <p>Also supports JSR-330's {@link javax.inject.Inject @Inject} annotation,
@@ -530,6 +531,9 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 	}
 
 	/**
+	 * 确定 annotated的字段或方法是否需要其依赖项
+	 * 如果没有找到bean：一个required 依赖表示autowiring注入时将会失败。否则，autowiring的filed/method
+	 * 简单的绕过去
 	 * Determine if the annotated field or method requires its dependency.
 	 * <p>A 'required' dependency means that autowiring should fail when no beans
 	 * are found. Otherwise, the autowiring process will simply bypass the field
@@ -607,6 +611,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 
 	/**
+	 * 大致就是携带关于这个注解字段的反射信息
 	 * Class representing injection information about an annotated field.
 	 */
 	private class AutowiredFieldElement extends InjectionMetadata.InjectedElement {
@@ -643,6 +648,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 					throw new UnsatisfiedDependencyException(null, beanName, new InjectionPoint(field), ex);
 				}
 				synchronized (this) {
+					//将属性放到缓存里面，下一次直接从缓存中获取，
 					if (!this.cached) {
 						Object cachedFieldValue = null;
 						if (value != null || this.required) {
@@ -664,6 +670,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 			}
 			if (value != null) {
 				ReflectionUtils.makeAccessible(field);
+				//利用反射设置值
 				field.set(bean, value);
 			}
 		}

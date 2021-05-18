@@ -379,6 +379,7 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	}
 
 	/**
+	 * 确定包装的参数字段的声明的（非通用）类型。
 	 * Determine the declared (non-generic) type of the wrapped parameter/field.
 	 * @return the declared type (never {@code null})
 	 */

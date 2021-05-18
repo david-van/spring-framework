@@ -15,15 +15,15 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
 
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-		System.out.println("调用  postProcessBeforeInitialization ");
-		System.out.println("bean = " + bean);
+//		System.out.println("调用  postProcessBeforeInitialization ");
+//		System.out.println("bean = " + bean);
 		return bean;
 	}
 
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-		System.out.println("调用  postProcessAfterInitialization ");
-		System.out.println("bean = " + bean);
+//		System.out.println("调用  postProcessAfterInitialization ");
+//		System.out.println("bean = " + bean);
 		return bean;
 	}
 }
