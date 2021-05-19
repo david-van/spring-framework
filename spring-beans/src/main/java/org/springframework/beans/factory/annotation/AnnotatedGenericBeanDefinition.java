@@ -24,6 +24,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * 通过AnnotatedBeanDefinition接口，添加对暴露出元数据的支持
+ * 与ScannedGenericBeanDefinition相比，多了MethodMetadata。
+ * ScannedGenericBeanDefinition.getFactoryMethodMetadata()直接返回null
  * Extension of the {@link org.springframework.beans.factory.support.GenericBeanDefinition}
  * class, adding support for annotation metadata exposed through the
  * {@link AnnotatedBeanDefinition} interface.

@@ -201,7 +201,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 			//从二级缓存中去拿
 			singletonObject = this.earlySingletonObjects.get(beanName);
 			if (singletonObject == null && allowEarlyReference) {
-				//二级缓存中不存在，并且允许早起创建指引
+				//二级缓存中不存在，并且允许早期创建指引
 				synchronized (this.singletonObjects) {
 					// Consistent creation of early reference within full singleton lock
 					//又去一级缓存和二级缓存中分别去拿一次

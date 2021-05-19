@@ -1090,6 +1090,26 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 	/**
 	 * 将MergedBeanDefinitionPostProcessors应用于指定的bean定义，
+	 * 默认情况下有如下几个默认的
+	 * 0 = {ApplicationContextAwareProcessor@1784}
+	 * 1 = {ConfigurationClassPostProcessor$ImportAwareBeanPostProcessor@1785}
+	 * 2 = {PostProcessorRegistrationDelegate$BeanPostProcessorChecker@1786}
+	 * 3 = {CommonAnnotationBeanPostProcessor@1421}
+	 * 4 = {AutowiredAnnotationBeanPostProcessor@1409}
+	 * 5 = {ApplicationListenerDetector@1787}
+	 * MergedBeanDefinitionPostProcessor 接口的实现默认有
+	 * 对比源码发现：
+	 *  经过一个个的源码查看, 发现ScheduledAnnotationBeanPostProcessor和RequiredAnnotationBeanPostProcessor
+	 *   两个后置处理器都仅仅是对postProcessMergedBeanDefinition方法进行了空实现, 而ApplicationListenerDetector
+	 *   虽然进行了实现, 但是其里面代码就一行:
+	 *     this.singletonNames.put(beanName, beanDefinition.isSingleton());
+	 *   即将一个bean是否是单例设置到了singletonNames这个map中, 而这个map是在ApplicationListenerDetector
+	 *   中的, 所以对于前三个后置处理器来说, 我们可以跳过了....
+	 *
+	 *   在真正分析后三个后置处理器之前, 我们首先从整体上说一下, 后三个后置处理器的工作都差不多, 都是为了
+	 *   查找出满足条件的属性、方法, 将他们封装起来, 以便后面在填充属性的时候可以直接使用, 在分析源码之前,
+	 *   我们先来聊聊几个源码中会出现的类的作用
+	 *
 	 * Apply MergedBeanDefinitionPostProcessors to the specified bean definition,
 	 * invoking their {@code postProcessMergedBeanDefinition} methods.
 	 * @param mbd the merged bean definition for the bean

@@ -1,5 +1,6 @@
 package com.david.source.reader.bean;
 
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.*;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.stereotype.Component;
@@ -17,7 +18,7 @@ import java.util.logging.Level;
 @Primary()
 @ComponentScan(basePackages = "com.david.source.reader.bean")
 //@EnableLoadTimeWeaving()
-@EnableAspectJAutoProxy
+//@EnableAspectJAutoProxy
 public class DemoBean {
 
 	public static void main(String[] args) {
@@ -26,6 +27,13 @@ public class DemoBean {
 //		ac.setAllowCircularReferences(false);
 //		ac.register(MyBeanPostProcessor.class);
 		ac.refresh();
+		BeanDefinition definition = ac.getBeanDefinition("getMyMyAlias");
+		System.out.println(definition);
+		BeanDefinition demoBean = ac.getBeanDefinition("MyConfig");
+		System.out.println(demoBean);
+//		for (String name : ac.getBeanDefinitionNames()) {
+//			System.out.println(name);
+//		}
 //		DemoBean bean = ac.getBean(DemoBean.class);
 //		MyBeanPostProcessor processor = ac.getBean(MyBeanPostProcessor.class);
 //		System.out.println(bean);

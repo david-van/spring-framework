@@ -530,6 +530,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				postProcessBeanFactory(beanFactory);
 
 				// Invoke factory processors registered as beans in the context.
+				//调用BeanFactory的后置处理器，执行对应的方法
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				//这里仅仅是注册bean的后置处理器
@@ -547,6 +548,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				onRefresh();
 
 				// Check for listener beans and register them.
+				//注册监听器
 				registerListeners();
 
 				//实例化所有的非懒加载的单例bean
@@ -600,6 +602,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			}
 		}
 
+		//初始化上下文环境中的任何占位符属性源。
 		// Initialize any placeholder property sources in the context environment.
 		initPropertySources();
 

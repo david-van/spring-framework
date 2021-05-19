@@ -21,6 +21,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ObjectUtils;
 
 /**
+ * GenericBeanDefinition是用于标准bean定义的一站式服务。
+ * 与任何bean定义一样，它允许指定一个类以及可选的构造函数参数值和属性值。
+ * 此外，可以通过“parentName”属性灵活地配置从父bean定义派生的bean(此处可以代替ChildBeanDefinition)。
  * GenericBeanDefinition is a one-stop shop for standard bean definition purposes.
  * Like any bean definition, it allows for specifying a class plus optionally
  * constructor argument values and property values. Additionally, deriving from a

@@ -1,8 +1,9 @@
 package com.david.source.reader.bean;
 
-import com.david.source.reader.bean.a.MyAlias;
+import com.david.source.reader.bean.b.MyConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -28,6 +29,11 @@ public class UserService {
 
 	public UserService() {
 		System.out.println("UserService");
+	}
+
+	@Bean(value = "getMyUserService")
+	public MyConfig getMy() {
+		return new MyConfig();
 	}
 
 	@PostConstruct
