@@ -47,6 +47,13 @@ import org.springframework.lang.Nullable;
 public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 
 	/**
+	 * 在目标bean实例化<i>之前应用这个BeanPostProcessor <i>。
+	 * 返回的bean对象可能是要使用的代理，而不是目标bean，这有效地抑制了目标bean的默认实例化。
+	 * <p>如果这个方法返回一个非空对象，bean的创建过程将会短路。
+	 * 应用的唯一进一步处理是来自已配置的{@link BeanPostProcessor BeanPostProcessors}的回调函数{@link postProcessAfterInitialization}。
+	 * 这个回调将应用于bean定义及其bean类，以及工厂方法定义，在这种情况下，返回的bean类型将在这里传递。
+	 * <p>后处理程序可能实现扩展的{@link SmartInstantiationAwareBeanPostProcessor}接口，以便预测它们将返回的bean对象的类型。
+	 * <p>默认实现返回{@code null}。
 	 * Apply this BeanPostProcessor <i>before the target bean gets instantiated</i>.
 	 * The returned bean object may be a proxy to use instead of the target bean,
 	 * effectively suppressing default instantiation of the target bean.
@@ -76,6 +83,8 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 	}
 
 	/**
+	 * 在bean实例化之后，通过构造函数或工厂方法，但在Spring属性填充(从显式属性或自动装配)发生之前执行操作。
+	 * <p>这是对给定bean实例执行自定义字段注入的理想回调，正好在Spring的自动装配开始之前
 	 * Perform operations after the bean has been instantiated, via a constructor or factory method,
 	 * but before Spring property population (from explicit properties or autowiring) occurs.
 	 * <p>This is the ideal callback for performing custom field injection on the given bean

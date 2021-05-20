@@ -17,6 +17,7 @@ import java.util.logging.Level;
 //@AliasFor()
 @Primary()
 @ComponentScan(basePackages = "com.david.source.reader.bean")
+//@PropertySource(value = "file:C:\\Users\\fanzunying\\IdeaProjects\\spring\\spring-framework\\spring-demo\\src\\main\\resources\\application.properties")
 //@EnableLoadTimeWeaving()
 //@EnableAspectJAutoProxy
 public class DemoBean {
