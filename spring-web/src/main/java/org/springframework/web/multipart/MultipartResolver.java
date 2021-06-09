@@ -19,6 +19,7 @@ package org.springframework.web.multipart;
 import javax.servlet.http.HttpServletRequest;
 
 /**
+ * 一个分段文件上传解析策略接口。实现通常可在应用程序上下文中和独立使用。
  * A strategy interface for multipart file upload resolution in accordance
  * with <a href="https://www.ietf.org/rfc/rfc1867.txt">RFC 1867</a>.
  * Implementations are typically usable both within an application context
@@ -85,6 +86,7 @@ import javax.servlet.http.HttpServletRequest;
 public interface MultipartResolver {
 
 	/**
+	 * 确定给定的请求是否包含多部分内容。 <p>通常会检查内容类型“multipartform-data”，但实际接受的请求可能取决于解析器实现的功能。
 	 * Determine if the given request contains multipart content.
 	 * <p>Will typically check for content type "multipart/form-data", but the actually
 	 * accepted requests might depend on the capabilities of the resolver implementation.

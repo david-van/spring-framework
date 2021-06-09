@@ -40,6 +40,7 @@ public abstract class WebAsyncUtils {
 
 
 	/**
+	 * 获取当前请求的 {@link WebAsyncManager}，如果没有找到，则创建它并将其与请求关联
 	 * Obtain the {@link WebAsyncManager} for the current request, or if not
 	 * found, create and associate it with the request.
 	 */

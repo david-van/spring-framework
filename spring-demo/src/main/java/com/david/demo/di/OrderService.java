@@ -1,4 +1,4 @@
-package com.david.di;
+package com.david.demo.di;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;

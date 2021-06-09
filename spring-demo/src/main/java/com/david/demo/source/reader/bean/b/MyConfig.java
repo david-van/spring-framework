@@ -1,4 +1,4 @@
-package com.david.source.reader.bean.b;
+package com.david.demo.source.reader.bean.b;
 
 import org.springframework.context.annotation.Configuration;
 

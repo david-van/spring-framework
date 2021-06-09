@@ -1,4 +1,4 @@
-package com.david.di;
+package com.david.demo.di;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;

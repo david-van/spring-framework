@@ -8,8 +8,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 // Controller使用@Controller标记而不是@Component:
 @Controller
-@RequestMapping("user")
-public class UserController {
+@RequestMapping("role")
+public class RoleController {
 	// 正常使用@Autowired注入:
 
 

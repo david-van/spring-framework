@@ -1,4 +1,4 @@
-package com.david.source.reader.bean;
+package com.david.demo.source.reader.bean;
 
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.BeansException;

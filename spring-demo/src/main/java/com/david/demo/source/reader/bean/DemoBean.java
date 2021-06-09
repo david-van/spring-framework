@@ -1,11 +1,8 @@
-package com.david.source.reader.bean;
+package com.david.demo.source.reader.bean;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.*;
-import org.springframework.core.annotation.AliasFor;
 import org.springframework.stereotype.Component;
-
-import java.util.logging.Level;
 
 /**
  * 这里测试bean的后置处理器扩展
@@ -16,7 +13,7 @@ import java.util.logging.Level;
 @Component(value = "DemoBean")
 //@AliasFor()
 @Primary()
-@ComponentScan(basePackages = "com.david.source.reader.bean")
+@ComponentScan(basePackages = "com.david.demo.source.reader.bean")
 //@PropertySource(value = "file:C:\\Users\\fanzunying\\IdeaProjects\\spring\\spring-framework\\spring-demo\\src\\main\\resources\\application.properties")
 //@EnableLoadTimeWeaving()
 //@EnableAspectJAutoProxy

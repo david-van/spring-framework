@@ -1,4 +1,4 @@
-package com.david.source.reader.bean;
+package com.david.demo.source.reader.bean;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;

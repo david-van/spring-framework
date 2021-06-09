@@ -1,4 +1,4 @@
-package com.david.source.reader.beanFactory;
+package com.david.demo.source.reader.beanFactory;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;

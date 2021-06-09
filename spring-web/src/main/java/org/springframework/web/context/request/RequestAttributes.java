@@ -33,11 +33,13 @@ import org.springframework.lang.Nullable;
 public interface RequestAttributes {
 
 	/**
+	 * 表示请求范围
 	 * Constant that indicates request scope.
 	 */
 	int SCOPE_REQUEST = 0;
 
 	/**
+	 * 表示会话范围。
 	 * Constant that indicates session scope.
 	 * <p>This preferably refers to a locally isolated session, if such
 	 * a distinction is available.

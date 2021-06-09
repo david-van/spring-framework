@@ -1,8 +1,7 @@
-package com.david.source.reader.bean;
+package com.david.demo.source.reader.bean;
 
-import com.david.source.reader.bean.b.MyConfig;
+import com.david.demo.source.reader.bean.b.MyConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 

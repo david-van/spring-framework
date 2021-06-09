@@ -1,4 +1,4 @@
-package com.david.source.reader.bean;
+package com.david.demo.source.reader.bean;
 
 import org.springframework.stereotype.Service;
 

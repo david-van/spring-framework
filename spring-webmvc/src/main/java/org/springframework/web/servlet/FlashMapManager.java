@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.lang.Nullable;
 
 /**
+ * 用于检索和保存 FlashMap 实例的策略接口
  * A strategy interface for retrieving and saving FlashMap instances.
  * See {@link FlashMap} for a general overview of flash attributes.
  *

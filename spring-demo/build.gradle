@@ -12,6 +12,7 @@ repositories {
 dependencies {
     compile(project(":spring-beans"))
     compile(project(":spring-core"))
+//    compile(project(":spring-my:spring-my-web1"))
     optional(project(":spring-aop"))
     compile("org.aspectj:aspectjweaver")
     compile("javax.annotation:javax.annotation-api")

@@ -1,4 +1,4 @@
-package com.david.source.order;
+package com.david.demo.source.order;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 

@@ -23,6 +23,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.lang.Nullable;
 
 /**
+ * 提供用于处理 servlet 请求中的多部分内容的其他方法，允许访问上传的文件。实现也需要覆盖标准
  * Provides additional methods for dealing with multipart content within a
  * servlet request, allowing to access uploaded files.
  * Implementations also need to override the standard
