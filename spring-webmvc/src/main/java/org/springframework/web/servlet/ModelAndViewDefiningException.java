@@ -21,9 +21,12 @@ import javax.servlet.ServletException;
 import org.springframework.util.Assert;
 
 /**
+ * 在应该转发到具有特定模型的特定视图的错误条件下抛出的异常
  * Exception to be thrown on error conditions that should forward
  * to a specific view with a specific model.
  *
+ * 可以在处理程序处理期间随时抛出。这包括预建控制器的任何模板方法。
+ * 例如，如果某些参数不允许继续正常工作流，表单控制器可能会中止到特定的错误页面。
  * <p>Can be thrown at any time during handler processing.
  * This includes any template methods of pre-built controllers.
  * For example, a form controller might abort to a specific error page

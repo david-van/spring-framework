@@ -5,6 +5,8 @@ import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.tomcat.util.descriptor.web.FilterDef;
+import org.apache.tomcat.util.descriptor.web.FilterMap;
 
 /**
  * @author fanzunying
@@ -19,7 +21,9 @@ public class MyServlet {
 		// 用这两行代码，就可以不用导额外的包，也不会报错
 		Context context = tomcat.addContext("/", System.getProperty("java.io.tmpdir"));
 		context.addLifecycleListener((LifecycleListener) Class.forName(tomcat.getHost().getConfigClass()).newInstance());
-
+//		FilterDef def = new FilterDef();
+//		def.setFilter(new MyFilter());
+//		context.addFilterDef(def);
 		Connector conn = tomcat.getConnector(); // Tomcat 9.0 必须调用 Tomcat#getConnector() 方法之后才会监听端口
 		System.out.println("连接器设置完成: " + conn);
 		//添加dispathServlet

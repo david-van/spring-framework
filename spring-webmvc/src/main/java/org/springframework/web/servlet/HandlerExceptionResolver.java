@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.lang.Nullable;
 
 /**
+ * 由对象实现的接口，这些对象可以解决在处理程序映射或执行期间抛出的异常，在典型情况下是错误视图。实现者通常在应用程序上下文中注册为 bean
  * Interface to be implemented by objects that can resolve exceptions thrown during
  * handler mapping or execution, in the typical case to error views. Implementors are
  * typically registered as beans in the application context.

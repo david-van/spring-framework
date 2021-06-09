@@ -174,6 +174,8 @@ public class HandlerExecutionChain {
 	}
 
 	/**
+	 * 在映射的 HandlerInterceptors 上触发 afterCompletion 回调。
+	 * 将只为 preHandle 调用已成功完成并返回 true 的所有拦截器调用 afterCompletion
 	 * Trigger afterCompletion callbacks on the mapped HandlerInterceptors.
 	 * Will just invoke afterCompletion for all interceptors whose preHandle invocation
 	 * has successfully completed and returned true.

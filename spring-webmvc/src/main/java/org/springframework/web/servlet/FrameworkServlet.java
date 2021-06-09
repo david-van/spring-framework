@@ -808,6 +808,8 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 
 
 	/**
+	 * 在设置任何 bean 属性并加载 WebApplicationContext 后，将调用此方法。
+	 * 默认实现为空；子类可以覆盖这个方法来执行它们需要的任何初始化。
 	 * This method will be invoked after any bean properties have been set and
 	 * the WebApplicationContext has been loaded. The default implementation is empty;
 	 * subclasses may override this method to perform any initialization they require.

@@ -552,6 +552,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
+	 * 初始化此 servlet 使用的策略对象。 <p>可以在子类中覆盖以初始化更多的策略对象
 	 * Initialize the strategy objects that this servlet uses.
 	 * <p>May be overridden in subclasses in order to initialize further strategy objects.
 	 */
@@ -1079,10 +1080,12 @@ public class DispatcherServlet extends FrameworkServlet {
 					}
 				}
 
+				//HandlerInterceptor,处理前置处理
 				if (!mappedHandler.applyPreHandle(processedRequest, response)) {
 					return;
 				}
 
+				//实际调用处理程序
 				// Actually invoke the handler.
 				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
 
@@ -1091,6 +1094,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				}
 
 				applyDefaultViewName(processedRequest, mv);
+				//处理后置处理器
 				mappedHandler.applyPostHandle(processedRequest, response, mv);
 			} catch (Exception ex) {
 				dispatchException = ex;
@@ -1133,6 +1137,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
+	 * 处理处理程序选择和处理程序调用的结果，它是一个 ModelAndView 或一个要解析为 ModelAndView 的异常
 	 * Handle the result of handler selection and handler invocation, which is
 	 * either a ModelAndView or an Exception to be resolved to a ModelAndView.
 	 */
@@ -1143,11 +1148,13 @@ public class DispatcherServlet extends FrameworkServlet {
 		boolean errorView = false;
 
 		if (exception != null) {
+			//发生的异常属于
 			if (exception instanceof ModelAndViewDefiningException) {
 				logger.debug("ModelAndViewDefiningException encountered", exception);
 				mv = ((ModelAndViewDefiningException) exception).getModelAndView();
 			} else {
 				Object handler = (mappedHandler != null ? mappedHandler.getHandler() : null);
+				//调用异常处理器处理异常
 				mv = processHandlerException(request, response, handler, exception);
 				errorView = (mv != null);
 			}
@@ -1171,6 +1178,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 
 		if (mappedHandler != null) {
+			//异常（如果有的话）已经被处理了..
 			// Exception (if any) is already handled..
 			mappedHandler.triggerAfterCompletion(request, response, null);
 		}
@@ -1268,6 +1276,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	@Nullable
 	protected HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
+		//循环handlerMapping，找到对应的handler,并包装成HandlerExecutionChain，如果都找不到，执行noHandlerFound方法
 		if (this.handlerMappings != null) {
 			for (HandlerMapping mapping : this.handlerMappings) {
 				HandlerExecutionChain handler = mapping.getHandler(request);
@@ -1317,6 +1326,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
+	 * 通过注册的 HandlerExceptionResolvers 确定错误 ModelAndView。
 	 * Determine an error ModelAndView via the registered HandlerExceptionResolvers.
 	 *
 	 * @param request  current HTTP request
@@ -1331,12 +1341,14 @@ public class DispatcherServlet extends FrameworkServlet {
 	protected ModelAndView processHandlerException(HttpServletRequest request, HttpServletResponse response,
 												   @Nullable Object handler, Exception ex) throws Exception {
 
+		//成功和错误响应可能使用不同的内容类型
 		// Success and error responses may use different content types
 		request.removeAttribute(HandlerMapping.PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE);
 
 		// Check registered HandlerExceptionResolvers...
 		ModelAndView exMv = null;
 		if (this.handlerExceptionResolvers != null) {
+			//获取到所有的异常处理程序循环处理
 			for (HandlerExceptionResolver resolver : this.handlerExceptionResolvers) {
 				exMv = resolver.resolveException(request, response, handler, ex);
 				if (exMv != null) {

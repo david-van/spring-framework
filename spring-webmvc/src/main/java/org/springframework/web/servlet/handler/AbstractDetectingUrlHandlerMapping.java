@@ -72,11 +72,12 @@ public abstract class AbstractDetectingUrlHandlerMapping extends AbstractUrlHand
 		String[] beanNames = (this.detectHandlersInAncestorContexts ?
 				BeanFactoryUtils.beanNamesForTypeIncludingAncestors(applicationContext, Object.class) :
 				applicationContext.getBeanNamesForType(Object.class));
-
+		//取任何可以确定 URL 的 bean 名称。
 		// Take any bean name that we can determine URLs for.
 		for (String beanName : beanNames) {
 			String[] urls = determineUrlsForHandler(beanName);
 			if (!ObjectUtils.isEmpty(urls)) {
+				//找到的 URL 路径：让我们将其视为处理程序
 				// URL paths found: Let's consider it a handler.
 				registerHandler(urls, beanName);
 			}

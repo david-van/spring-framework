@@ -21,6 +21,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.lang.Nullable;
 
 /**
+ * 定义请求和处理程序对象之间映射的对象实现的接口。
+ * 负责映射用户的URL和对应的处理类Handler，HandlerMapping并没有规定这个URL与应用的处理类如何映射。
+ * 所以在HandlerMapping接口中仅仅定义了根据一个URL必须返回一个由HandlerExecutionChain代表的处理链，
+ * 我们可以在这个处理链中添加任意的HandlerAdapter实例来处理这个URL对应的请求（这样保证了最大的灵活性映射关系）
  * Interface to be implemented by objects that define a mapping between
  * requests and handler objects.
  *
@@ -130,6 +134,12 @@ public interface HandlerMapping {
 	String PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE = HandlerMapping.class.getName() + ".producibleMediaTypes";
 
 	/**
+	 * 返回此请求的处理程序和任何拦截器。可以根据请求 URL、会话状态或实现类选择的任何因素进行选择。
+	 * <p>返回的HandlerExecutionChain包含一个处理程序对象，而不是标签接口，
+	 * 因此处理程序不受任何方式的约束。例如，可以编写 HandlerAdapter 以允许使用另一个框架的处理程序对象。
+	 * <p>如果未找到匹配项，则返回 {@code null}。这不是错误。
+	 * DispatcherServlet 将查询所有已注册的 HandlerMapping beans 以找到匹配项，
+	 * 只有在没有找到处理程序时才确定有错误。
 	 * Return a handler and any interceptors for this request. The choice may be made
 	 * on request URL, session state, or any factor the implementing class chooses.
 	 * <p>The returned HandlerExecutionChain contains a handler Object, rather than

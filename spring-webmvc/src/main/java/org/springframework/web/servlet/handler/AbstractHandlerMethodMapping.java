@@ -260,6 +260,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	}
 
 	/**
+	 * 在指定的处理程序 bean 中查找处理程序方法。
 	 * Look for handler methods in the specified handler bean.
 	 * @param handler either a bean name or an actual handler instance
 	 * @see #getMappingForMethod
@@ -306,6 +307,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	}
 
 	/**
+	 * 注册处理程序方法及其唯一映射。在启动时为每个检测到的处理程序方法调用
 	 * Register a handler method and its unique mapping. Invoked at startup for
 	 * each detected handler method.
 	 * @param handler the bean name of the handler or the handler instance
@@ -601,10 +603,12 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			try {
 				HandlerMethod handlerMethod = createHandlerMethod(handler, method);
 				validateMethodMapping(handlerMethod, mapping);
+				//将mapping 和 bean的处理方法添加对应的映射
 				this.mappingLookup.put(mapping, handlerMethod);
 
 				List<String> directUrls = getDirectUrls(mapping);
 				for (String url : directUrls) {
+					//url地址和mapping进行映射
 					this.urlLookup.add(url, mapping);
 				}
 
