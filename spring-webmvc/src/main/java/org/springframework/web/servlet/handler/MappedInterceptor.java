@@ -55,6 +55,8 @@ public final class MappedInterceptor implements HandlerInterceptor {
 
 	private final HandlerInterceptor interceptor;
 
+	//注意：该类允许你自己指定路径的匹配规则。但是Spring里，不管哪个上层服务，默认使用的都是Ant风格的匹配
+	//并不是正则的匹配
 	@Nullable
 	private PathMatcher pathMatcher;
 
@@ -145,6 +147,10 @@ public final class MappedInterceptor implements HandlerInterceptor {
 
 
 	/**
+	 * 原则：excludePatterns先执行，includePatterns后执行
+	 * 如果excludePatterns执行完都木有匹配的，并且includePatterns是空的，那就返回true（这是个处理方式技巧~
+	 * 对这种互斥的情况  这一步判断很关键~~~）
+	 * 通过给定查找路径的匹配项判断是否匹配
 	 * Determine a match for the given lookup path.
 	 *
 	 * @param lookupPath  the current request path

@@ -24,6 +24,8 @@ import org.springframework.web.servlet.handler.HandlerMethodMappingNamingStrateg
  * HandlerMethodMappingNamingStrategy} for {@code RequestMappingInfo}-based handler
  * method mappings.
  *
+ * 如果设置了 {@code RequestMappingInfo} 名称属性，则使用其值。否则名称基于类名的大写字母，后跟"#"作为分隔符，以及方法名。
+ * 例如，名为 TestController 的类的"TC#getFoo"方法为 getFoo
  * If the {@code RequestMappingInfo} name attribute is set, its value is used.
  * Otherwise the name is based on the capital letters of the class name,
  * followed by "#" as a separator, and the method name. For example "TC#getFoo"
@@ -47,6 +49,7 @@ public class RequestMappingInfoHandlerMethodMappingNamingStrategy
 		StringBuilder sb = new StringBuilder();
 		String simpleTypeName = handlerMethod.getBeanType().getSimpleName();
 		for (int i = 0; i < simpleTypeName.length(); i++) {
+			//获取类名
 			if (Character.isUpperCase(simpleTypeName.charAt(i))) {
 				sb.append(simpleTypeName.charAt(i));
 			}

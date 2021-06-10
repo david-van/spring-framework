@@ -23,6 +23,8 @@ import org.springframework.context.ApplicationContextException;
 import org.springframework.util.ObjectUtils;
 
 /**
+ *
+ * 通过自我检查应用程序上下文中所有定义的 bean 来检测处理程序 bean 的 URL 映射。
  * Abstract implementation of the {@link org.springframework.web.servlet.HandlerMapping}
  * interface, detecting URL mappings for handler beans through introspection of all
  * defined beans in the application context.

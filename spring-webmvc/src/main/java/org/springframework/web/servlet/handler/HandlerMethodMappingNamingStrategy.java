@@ -19,6 +19,8 @@ package org.springframework.web.servlet.handler;
 import org.springframework.web.method.HandlerMethod;
 
 /**
+ * 为处理程序方法的映射分配名称的策略
+ * 具体只有一个实现类RequestMappingInfoHandlerMethodMappingNamingStrategy，见子类的实现策略
  * A strategy for assigning a name to a handler method's mapping.
  *
  * <p>The strategy can be configured on

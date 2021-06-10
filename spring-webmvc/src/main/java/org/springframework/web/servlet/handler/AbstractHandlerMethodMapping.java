@@ -54,6 +54,9 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerMapping;
 
 /**
+ * 实现HandlerMapping的抽象基类，定义了请求和 {@link HandlerMethod} 之间的映射，
+ * 其实现了InitializingBean，用于初始化
+ * T：包含HandlerMethod与传入请求匹配所需条件的handlerMethod的映射~
  * Abstract base class for {@link HandlerMapping} implementations that define
  * a mapping between a request and a {@link HandlerMethod}.
  *
@@ -95,6 +98,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	}
 
 
+	//检测祖先上下文中的处理程序方法
 	private boolean detectHandlerMethodsInAncestorContexts = false;
 
 	@Nullable
@@ -104,6 +108,10 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 
 
 	/**
+	 * 是否检测祖先 ApplicationContexts 中 bean 中的处理程序方法。
+	 * <p>默认为“false”：仅考虑当前 ApplicationContext 中的 bean，
+	 * 即仅在定义此 HandlerMapping 本身的上下文中（通常是当前 DispatcherServlet 的上下文）。
+	 * <p>打开此标志以检测祖先上下文（通常是 Spring 根 WebApplicationContext）中的处理程序 bean
 	 * Whether to detect handler methods in beans in ancestor ApplicationContexts.
 	 * <p>Default is "false": Only beans in the current ApplicationContext are
 	 * considered, i.e. only in the context that this HandlerMapping itself
@@ -178,6 +186,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		if (logger.isTraceEnabled()) {
 			logger.trace("Register \"" + mapping + "\" to " + method.toGenericString());
 		}
+		//通过内部类MappingRegistry来实现注册
 		this.mappingRegistry.register(mapping, handler, method);
 	}
 
@@ -206,6 +215,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	}
 
 	/**
+	 * 扫描 ApplicationContext 中的 bean，检测和注册 handler methods
 	 * Scan beans in the ApplicationContext, detect and register handler methods.
 	 * @see #getCandidateBeanNames()
 	 * @see #processCandidateBean
@@ -214,6 +224,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	protected void initHandlerMethods() {
 		for (String beanName : getCandidateBeanNames()) {
 			if (!beanName.startsWith(SCOPED_TARGET_NAME_PREFIX)) {
+				//beanName 不是scopedTarget. 开头，那么处理bean，
 				processCandidateBean(beanName);
 			}
 		}
@@ -221,6 +232,8 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	}
 
 	/**
+	 * 在 application context中确定候选 bean 的名称。
+	 * 通过detectHandlerMethodsInAncestorContexts 判断是否在父容器中获取，默认为false
 	 * Determine the names of candidate beans in the application context.
 	 * @since 5.1
 	 * @see #setDetectHandlerMethodsInAncestorContexts
@@ -233,6 +246,8 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	}
 
 	/**
+	 * 确定指定候选 bean 的类型，如果标识为处理程序类型，则调用 detectHandlerMethods 方法
+	 * <p>此实现通过检查BeanFactorygetType 并使用 bean 名称调用detectHandlerMethods 方法 来避免创建 bean
 	 * Determine the type of the specified candidate bean and call
 	 * {@link #detectHandlerMethods} if identified as a handler type.
 	 * <p>This implementation avoids bean creation through checking
@@ -254,7 +269,9 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 				logger.trace("Could not resolve type for bean '" + beanName + "'", ex);
 			}
 		}
+		//判断该类的类型为一个handler
 		if (beanType != null && isHandler(beanType)) {
+			//推断handler方法
 			detectHandlerMethods(beanName);
 		}
 	}
@@ -343,6 +360,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	}
 
 	/**
+	 * 在推断所有处理程序方法后的回调，此处仅仅是打印日志
 	 * Invoked after all handler methods have been detected.
 	 * @param handlerMethods a read-only map with handler methods and mappings.
 	 */
@@ -526,6 +544,8 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 
 
 	/**
+	 * 内部类：负责注册
+	 * 一个注册表，它维护到处理程序方法的所有映射，暴露执行查找的方法并提供并发访问
 	 * A registry that maintains all mappings to handler methods, exposing methods
 	 * to perform lookups and providing concurrent access.
 	 * <p>Package-private for testing purposes.
