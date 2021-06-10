@@ -33,6 +33,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
 /**
+ * 封装有关 @ControllerAdvice 注解为 Spring 管理的 bean 的信息，而不必然要求它被实例化
  * Encapsulates information about an {@link ControllerAdvice @ControllerAdvice}
  * Spring-managed bean without necessarily requiring it to be instantiated.
  *
@@ -250,6 +251,7 @@ public class ControllerAdviceBean implements Ordered {
 
 
 	/**
+	 * 找到ControllerAdvice注解的类，将其包装为ControllerAdviceBean
 	 * Find beans annotated with {@link ControllerAdvice @ControllerAdvice} in the
 	 * given {@link ApplicationContext} and wrap them as {@code ControllerAdviceBean}
 	 * instances.
@@ -261,6 +263,7 @@ public class ControllerAdviceBean implements Ordered {
 	 */
 	public static List<ControllerAdviceBean> findAnnotatedBeans(ApplicationContext context) {
 		List<ControllerAdviceBean> adviceBeans = new ArrayList<>();
+		//获取给定类型的所有 bean 名称，包括在祖先工厂中定义的名称。然后逐个判断类上面是否存在ControllerAdvice注解
 		for (String name : BeanFactoryUtils.beanNamesForTypeIncludingAncestors(context, Object.class)) {
 			if (!ScopedProxyUtils.isScopedTarget(name)) {
 				ControllerAdvice controllerAdvice = context.findAnnotationOnBean(name, ControllerAdvice.class);

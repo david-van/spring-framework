@@ -22,6 +22,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.lang.Nullable;
 
 /**
+ * Spring MVC的Handler（Controller接口，HttpRequestHandler，Servlet、@RequestMapping）有四种表现形式
+ * 可以看到通过几个handlerMapping来判断一二，
+ * SimpleUrlHandlerMapping,AbstractHandlerMethodMapping,BeanNameUrlHandlerMapping
+ * 在Handler不确定是什么方式的时候（可能是方法、也可能是类），适配器这种设计模式就能模糊掉具体的实现，从而就能提供统一访问接口
+ * 该接口的子实现：AbstractHandlerMethodAdapter,SimpleServletHandlerAdapter,SimpleServletHandlerAdapter
+ * ,HandlerFunctionAdapter, SimpleControllerHandlerAdapter,和HandlerMapping一一对应
  * MVC framework SPI, allowing parameterization of the core MVC workflow.
  *
  * <p>Interface that must be implemented for each handler type to handle a request.
@@ -67,6 +73,8 @@ public interface HandlerAdapter {
 
 	/**
 	 * 使用给定的处理程序来处理此请求。
+	 * 使用统一的入口，返回同一个结果，适应不同的handler，在dispatchServlet中调用此方法既可以
+	 * 具体的handler调用，由子实现类具体调用
 	 * Use the given handler to handle this request.
 	 * The workflow that is required may vary widely.
 	 * @param request current HTTP request

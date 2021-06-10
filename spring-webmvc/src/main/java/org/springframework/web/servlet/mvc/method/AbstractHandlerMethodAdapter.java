@@ -27,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.WebContentGenerator;
 
 /**
+ * 最常用的适配器
  * Abstract base class for {@link HandlerAdapter} implementations that support
  * handlers of type {@link HandlerMethod}.
  *
@@ -39,6 +40,7 @@ public abstract class AbstractHandlerMethodAdapter extends WebContentGenerator i
 
 
 	public AbstractHandlerMethodAdapter() {
+		//默认不限制 HTTP 方法，如果限制，则只有get和post方法
 		// no restriction of HTTP methods by default
 		super(false);
 	}
@@ -47,6 +49,7 @@ public abstract class AbstractHandlerMethodAdapter extends WebContentGenerator i
 	/**
 	 * Specify the order value for this HandlerAdapter bean.
 	 * <p>The default value is {@code Ordered.LOWEST_PRECEDENCE}, meaning non-ordered.
+	 *
 	 * @see org.springframework.core.Ordered#getOrder()
 	 */
 	public void setOrder(int order) {
@@ -60,8 +63,9 @@ public abstract class AbstractHandlerMethodAdapter extends WebContentGenerator i
 
 
 	/**
-	 * 此实现期望处理程序是 {@link HandlerMethod}。
+	 * 此实现期望处理程序是 {@link HandlerMethod}。和RequestMappingHandlerMapping处理到方法级别进行一一对应
 	 * This implementation expects the handler to be an {@link HandlerMethod}.
+	 *
 	 * @param handler the handler instance to check
 	 * @return whether or not this adapter can adapt the given handler
 	 */
@@ -71,7 +75,9 @@ public abstract class AbstractHandlerMethodAdapter extends WebContentGenerator i
 	}
 
 	/**
+	 * 模板方法，具体的逻辑由子类决定
 	 * Given a handler method, return whether or not this adapter can support it.
+	 *
 	 * @param handlerMethod the handler method to check
 	 * @return whether or not this adapter can adapt the given method
 	 */
@@ -90,17 +96,18 @@ public abstract class AbstractHandlerMethodAdapter extends WebContentGenerator i
 
 	/**
 	 * Use the given handler method to handle the request.
-	 * @param request current HTTP request
-	 * @param response current HTTP response
+	 *
+	 * @param request       current HTTP request
+	 * @param response      current HTTP response
 	 * @param handlerMethod handler method to use. This object must have previously been passed to the
-	 * {@link #supportsInternal(HandlerMethod)} this interface, which must have returned {@code true}.
+	 *                      {@link #supportsInternal(HandlerMethod)} this interface, which must have returned {@code true}.
 	 * @return a ModelAndView object with the name of the view and the required model data,
 	 * or {@code null} if the request has been handled directly
 	 * @throws Exception in case of errors
 	 */
 	@Nullable
 	protected abstract ModelAndView handleInternal(HttpServletRequest request,
-			HttpServletResponse response, HandlerMethod handlerMethod) throws Exception;
+												   HttpServletResponse response, HandlerMethod handlerMethod) throws Exception;
 
 	/**
 	 * This implementation expects the handler to be an {@link HandlerMethod}.
@@ -112,7 +119,8 @@ public abstract class AbstractHandlerMethodAdapter extends WebContentGenerator i
 
 	/**
 	 * Same contract as for {@link javax.servlet.http.HttpServlet#getLastModified(HttpServletRequest)}.
-	 * @param request current HTTP request
+	 *
+	 * @param request       current HTTP request
 	 * @param handlerMethod handler method to use
 	 * @return the lastModified value for the given handler
 	 */

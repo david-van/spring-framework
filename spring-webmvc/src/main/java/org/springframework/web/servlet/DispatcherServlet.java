@@ -309,6 +309,10 @@ public class DispatcherServlet extends FrameworkServlet {
 		// by application developers.
 		try {
 			ClassPathResource resource = new ClassPathResource(DEFAULT_STRATEGIES_PATH, DispatcherServlet.class);
+			//获取默认属性，springMvc 自己配置了对应的默认属性：resources\org\springframework\web\servlet\DispatcherServlet.properties
+			//DispatcherServlet 的策略接口的默认实现类。
+			// 当在 DispatcherServlet 上下文中找不到匹配的 bean 时用作回退。不打算由应用程序开发人员定制
+			//参见初始化策略方法：initStrategies
 			defaultStrategies = PropertiesLoaderUtils.loadProperties(resource);
 		} catch (IOException ex) {
 			throw new IllegalStateException("Could not load '" + DEFAULT_STRATEGIES_PATH + "': " + ex.getMessage());
@@ -645,6 +649,10 @@ public class DispatcherServlet extends FrameworkServlet {
 		this.handlerMappings = null;
 
 		if (this.detectAllHandlerMappings) {
+			//在 ApplicationContext 中查找所有 HandlerMappings，包括父类上下文。
+			//这里注意：若你没有标注注解`@EnableWebMvc`，那么这里找的结果是空的
+			// 若你标注了此注解，这个注解就会默认向容器内注入两个HandlerMapping：RequestMappingHandlerMapping和BeanNameUrlHandlerMapping
+			//@EnableWebMvc ---> @Import(DelegatingWebMvcConfiguration.class) -->WebMvcConfigurationSupport
 			// Find all HandlerMappings in the ApplicationContext, including ancestor contexts.
 			Map<String, HandlerMapping> matchingBeans =
 					BeanFactoryUtils.beansOfTypeIncludingAncestors(context, HandlerMapping.class, true, false);
@@ -662,9 +670,11 @@ public class DispatcherServlet extends FrameworkServlet {
 			}
 		}
 
+		//如果没有找到其他映射，则通过注册一个默认的 HandlerMapping 来确保我们至少有一个 HandlerMapping。
 		// Ensure we have at least one HandlerMapping, by registering
 		// a default HandlerMapping if no other mappings are found.
 		if (this.handlerMappings == null) {
+			//获取默认的策略
 			this.handlerMappings = getDefaultStrategies(context, HandlerMapping.class);
 			if (logger.isTraceEnabled()) {
 				logger.trace("No HandlerMappings declared for servlet '" + getServletName() +
@@ -903,6 +913,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	@SuppressWarnings("unchecked")
 	protected <T> List<T> getDefaultStrategies(ApplicationContext context, Class<T> strategyInterface) {
 		String key = strategyInterface.getName();
+		//从resources\org\springframework\web\servlet\DispatcherServlet.properties 中获取默认的value
 		String value = defaultStrategies.getProperty(key);
 		if (value != null) {
 			String[] classNames = StringUtils.commaDelimitedListToStringArray(value);
@@ -910,6 +921,7 @@ public class DispatcherServlet extends FrameworkServlet {
 			for (String className : classNames) {
 				try {
 					Class<?> clazz = ClassUtils.forName(className, DispatcherServlet.class.getClassLoader());
+					//通过将默认的策略实例化并作为bean放到容器中，createBean(clazz)
 					Object strategy = createDefaultStrategy(context, clazz);
 					strategies.add((T) strategy);
 				} catch (ClassNotFoundException ex) {

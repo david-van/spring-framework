@@ -68,6 +68,7 @@ import org.springframework.web.servlet.HandlerMapping;
  * @author Juergen Hoeller
  * @author Sam Brannen
  * @since 3.1
+ * HandlerMethod 的映射，包含将处理程序方法与传入请求匹配所需的条件。
  * @param <T> the mapping for a {@link HandlerMethod} containing the conditions
  * needed to match the handler method to an incoming request.
  */
@@ -291,6 +292,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			Map<Method, T> methods = MethodIntrospector.selectMethods(userType,
 					(MethodIntrospector.MetadataLookup<T>) method -> {
 						try {
+							//获取class中符合映射条件的方法，根据RequestMappingHandlerMapping返回RequestMappingInfo
 							return getMappingForMethod(method, userType);
 						}
 						catch (Throwable ex) {
@@ -303,6 +305,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			}
 			methods.forEach((method, mapping) -> {
 				Method invocableMethod = AopUtils.selectInvocableMethod(method, userType);
+				//进行方法注册
 				registerHandlerMethod(handler, invocableMethod, mapping);
 			});
 		}
@@ -376,14 +379,17 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	// Handler method lookup
 
 	/**
+	 * 根据请求获取处理方法
 	 * Look up a handler method for the given request.
 	 */
 	@Override
 	protected HandlerMethod getHandlerInternal(HttpServletRequest request) throws Exception {
+		//获取请求路径
 		String lookupPath = getUrlPathHelper().getLookupPathForRequest(request);
 		request.setAttribute(LOOKUP_PATH, lookupPath);
 		this.mappingRegistry.acquireReadLock();
 		try {
+			//查找HandlerMethod
 			HandlerMethod handlerMethod = lookupHandlerMethod(lookupPath, request);
 			return (handlerMethod != null ? handlerMethod.createWithResolvedBean() : null);
 		}
@@ -404,10 +410,19 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	@Nullable
 	protected HandlerMethod lookupHandlerMethod(String lookupPath, HttpServletRequest request) throws Exception {
 		List<Match> matches = new ArrayList<>();
+		// 根据lookupPath去注册中心里查找mappingInfos，因为一个具体的url可能匹配上多个MappingInfo的
+		// 至于为何是多值？有这么一种情况  URL都是/api/v1/hello  但是有的是get post delete等方法
+		// 当然还有可能是headers/consumes等等不一样，都算多个的  所以有可能是会匹配到多个MappingInfo的
+		// 所有这个里可以匹配出多个出来。比如/hello 匹配出GET、POST、PUT都成，所以size可以为3
 		List<T> directPathMatches = this.mappingRegistry.getMappingsByUrl(lookupPath);
 		if (directPathMatches != null) {
+			// 依赖于子类实现的抽象方法：getMatchingMapping()  看看到底匹不匹配，而不仅仅是URL匹配就行
+			// 比如还有method、headers、consumes等等这些不同都代表着不同的MappingInfo的
+			// 最终匹配上的，会new Match()放进matches里面去
 			addMatchingMappings(directPathMatches, matches, request);
 		}
+		// 当还没有匹配上的时候，别无选择，只能浏览所有映射
+		// 这里为何要浏览所有的mappings呢？而不是报错404呢？这里我有点迷糊，愿有知道的指明这个设计意图
 		if (matches.isEmpty()) {
 			// No choice but to go through all mappings...
 			addMatchingMappings(this.mappingRegistry.getMappings().keySet(), matches, request);
@@ -416,6 +431,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		if (!matches.isEmpty()) {
 			Match bestMatch = matches.get(0);
 			if (matches.size() > 1) {
+				//找到多个处理，这个时候进行比较，如果比较不出来，就抛出异常
 				Comparator<Match> comparator = new MatchComparator(getMappingComparator(request));
 				matches.sort(comparator);
 				bestMatch = matches.get(0);
@@ -434,6 +450,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 							"Ambiguous handler methods mapped for '" + uri + "': {" + m1 + ", " + m2 + "}");
 				}
 			}
+			//把最佳匹配的方法  放进request的属性里面
 			request.setAttribute(BEST_MATCHING_HANDLER_ATTRIBUTE, bestMatch.handlerMethod);
 			handleMatch(bestMatch.mapping, lookupPath, request);
 			return bestMatch.handlerMethod;
@@ -509,6 +526,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	protected abstract boolean isHandler(Class<?> beanType);
 
 	/**
+	 * 为处理程序方法提供映射。不能为其提供映射的方法不是处理程序方法。
 	 * Provide the mapping for a handler method. A method for which no
 	 * mapping can be provided is not a handler method.
 	 * @param method the method to provide a mapping for
@@ -552,16 +570,24 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 */
 	class MappingRegistry {
 
+		//mapping和 MappingRegistration
+		//根据其实现类RequestMappingHandlerMapping的getMappingForMethod方法返回RequestMappingInfo
 		private final Map<T, MappingRegistration<T>> registry = new HashMap<>();
-
+		//保存着mapping和和HandlerMethod的对应关系
 		private final Map<T, HandlerMethod> mappingLookup = new LinkedHashMap<>();
 
+		//存着URL与匹配条件（mapping）的对应关系  当然这里的URL是pattern式的，可以使用通配符
+		//这里的Map不是普通的Map，而是MultiValueMap，它是个多值Map。其实它的value是一个list类型的值
+		//MultiValueMap<K, V> extends Map<K, List<V>>
+		//至于为何是多值？有这么一种情况  URL都是/api/v1/hello  但是有的是get post delete等方法
 		private final MultiValueMap<String, T> urlLookup = new LinkedMultiValueMap<>();
-
+		// 这个Map是Spring MVC4.1新增的，保存着name和HandlerMethod的对应关系（一个name可以有多个HandlerMethod）
+		//可见：HandlerMethodMappingNamingStrategy这个策略
 		private final Map<String, List<HandlerMethod>> nameLookup = new ConcurrentHashMap<>();
 
 		private final Map<HandlerMethod, CorsConfiguration> corsLookup = new ConcurrentHashMap<>();
 
+		//读写锁
 		private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
 		/**
@@ -621,6 +647,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			}
 			this.readWriteLock.writeLock().lock();
 			try {
+				//创建HandlerMethod
 				HandlerMethod handlerMethod = createHandlerMethod(handler, method);
 				validateMethodMapping(handlerMethod, mapping);
 				//将mapping 和 bean的处理方法添加对应的映射
@@ -635,6 +662,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 				String name = null;
 				if (getNamingStrategy() != null) {
 					name = getNamingStrategy().getName(handlerMethod, mapping);
+					//添加名字和策略方法的映射关系，name-->类名的大写字母#方法名
 					addMappingName(name, handlerMethod);
 				}
 

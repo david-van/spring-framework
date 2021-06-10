@@ -173,6 +173,7 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 	private void initAllowHeader() {
 		Collection<String> allowedMethods;
 		if (this.supportedMethods == null) {
+			//支持HttpMethod.values 方法
 			allowedMethods = new ArrayList<>(HttpMethod.values().length - 1);
 			for (HttpMethod method : HttpMethod.values()) {
 				if (method != HttpMethod.TRACE) {

@@ -23,6 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 解析导入类的时候，会处理父类
  * Indicates one or more <em>component classes</em> to import &mdash; typically
  * {@link Configuration @Configuration} classes.
  *
@@ -44,11 +45,11 @@ import java.lang.annotation.Target;
  *
  * @author Chris Beams
  * @author Juergen Hoeller
- * @since 3.0
  * @see Configuration
  * @see ImportSelector
  * @see ImportBeanDefinitionRegistrar
  * @see ImportResource
+ * @since 3.0
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

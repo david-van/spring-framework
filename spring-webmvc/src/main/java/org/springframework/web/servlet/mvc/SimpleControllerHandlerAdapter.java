@@ -49,6 +49,8 @@ public class SimpleControllerHandlerAdapter implements HandlerAdapter {
 	public ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 
+		//通过继承AbstractController，保留了返回ModelAndView的能力
+		//画外音：Spring5.0后的WebFlux基于Reactive模式是不支持这种Handler的~
 		return ((Controller) handler).handleRequest(request, response);
 	}
 

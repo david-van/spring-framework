@@ -126,6 +126,8 @@ public class HandlerMethod {
 	}
 
 	/**
+	 * 稍后可以使用方法 createWithResolvedBean 用初始化的 bean 重新创建 HandlerMethod
+	 * 也就是说：this.bean = beanName;不是真正的bean，只是一个beanName
 	 * Create an instance from a bean name, a method, and a {@code BeanFactory}.
 	 * The method {@link #createWithResolvedBean()} may be used later to
 	 * re-create the {@code HandlerMethod} with an initialized bean.
@@ -325,10 +327,14 @@ public class HandlerMethod {
 	}
 
 	/**
+	 * 如果提供的实例包含 bean 名称而不是对象实例，则在创建和返回 {@link HandlerMethod} 之前解析 bean 名称。
 	 * If the provided instance contains a bean name rather than an object instance,
 	 * the bean name is resolved before a {@link HandlerMethod} is created and returned.
 	 */
 	public HandlerMethod createWithResolvedBean() {
+		//在创建HandlerMethod的时候，通过构造方法：
+		// public HandlerMethod(String beanName, BeanFactory beanFactory, Method method)
+		//此时，这个时候的bean为beanName，这个时候，工厂通过beanName获取真实的bean，赋值给handler,而后重新创建handlerMethod
 		Object handler = this.bean;
 		if (this.bean instanceof String) {
 			Assert.state(this.beanFactory != null, "Cannot resolve bean name without BeanFactory");

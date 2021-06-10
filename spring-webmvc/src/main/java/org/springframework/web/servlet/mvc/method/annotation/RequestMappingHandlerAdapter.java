@@ -192,6 +192,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 
 	public RequestMappingHandlerAdapter() {
+		//初始化信息转换器
 		this.messageConverters = new ArrayList<>(4);
 		this.messageConverters.add(new ByteArrayHttpMessageConverter());
 		this.messageConverters.add(new StringHttpMessageConverter());
@@ -558,14 +559,17 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		initControllerAdviceCache();
 
 		if (this.argumentResolvers == null) {
+			//请求参数的处理器
 			List<HandlerMethodArgumentResolver> resolvers = getDefaultArgumentResolvers();
 			this.argumentResolvers = new HandlerMethodArgumentResolverComposite().addResolvers(resolvers);
 		}
 		if (this.initBinderArgumentResolvers == null) {
+			//参数绑定
 			List<HandlerMethodArgumentResolver> resolvers = getDefaultInitBinderArgumentResolvers();
 			this.initBinderArgumentResolvers = new HandlerMethodArgumentResolverComposite().addResolvers(resolvers);
 		}
 		if (this.returnValueHandlers == null) {
+			//handler方法返回值处理器
 			List<HandlerMethodReturnValueHandler> handlers = getDefaultReturnValueHandlers();
 			this.returnValueHandlers = new HandlerMethodReturnValueHandlerComposite().addHandlers(handlers);
 		}
@@ -576,6 +580,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			return;
 		}
 
+		//获取所有的ControllerAdviceBean
 		List<ControllerAdviceBean> adviceBeans = ControllerAdviceBean.findAnnotatedBeans(getApplicationContext());
 
 		List<Object> requestResponseBodyAdviceBeans = new ArrayList<>();
