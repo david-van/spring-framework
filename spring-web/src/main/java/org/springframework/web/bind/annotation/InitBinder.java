@@ -23,6 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 和参数绑定结合使用，
  * Annotation that identifies methods which initialize the
  * {@link org.springframework.web.bind.WebDataBinder} which
  * will be used for populating command and form object arguments

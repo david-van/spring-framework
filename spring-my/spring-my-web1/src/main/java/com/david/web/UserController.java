@@ -2,10 +2,7 @@ package com.david.web;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.MatrixVariable;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
@@ -20,8 +17,8 @@ public class UserController {
 
 
 	// 处理一个URL映射:
-	@GetMapping("/test")
-	public ModelAndView index() {
+	@PostMapping("/test")
+	public ModelAndView index(@RequestBody String input) {
 		StreamingResponseBody responseBody = new StreamingResponseBody() {
 			@Override
 			public void writeTo(OutputStream outputStream) throws IOException {

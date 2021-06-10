@@ -121,6 +121,7 @@ public class ControllerAdviceBean implements Ordered {
 		this.beanOrName = beanName;
 		this.isSingleton = beanFactory.isSingleton(beanName);
 		this.beanType = getBeanType(beanName, beanFactory);
+		//创建beanType判断类,用于判断是否进行拦截，具体见注解controllerAdvice的几个方法
 		this.beanTypePredicate = (controllerAdvice != null ? createBeanTypePredicate(controllerAdvice) :
 				createBeanTypePredicate(this.beanType));
 		this.beanFactory = beanFactory;

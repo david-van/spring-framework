@@ -25,6 +25,8 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.lang.Nullable;
 
 /**
+ * 允许在读取其正文并将其转换为对象之前自定义请求，
+ * 还允许在将结果对象作为 {@code @RequestBody} 或 {@code HttpEntity} 方法参数传递到控制器方法之前对其进行处理
  * Allows customizing the request before its body is read and converted into an
  * Object and also allows for processing of the resulting Object before it is
  * passed into a controller method as an {@code @RequestBody} or an
