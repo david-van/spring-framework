@@ -90,7 +90,7 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements Handle
 				(beanFactory != null ? new BeanExpressionContext(beanFactory, new RequestScope()) : null);
 	}
 
-
+	//抽象父类的模板方法，具体的解析能力由子类来实现resolveName
 	@Override
 	@Nullable
 	public final Object resolveArgument(MethodParameter parameter, @Nullable ModelAndViewContainer mavContainer,
@@ -104,7 +104,7 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements Handle
 			throw new IllegalArgumentException(
 					"Specified name must not resolve to null: [" + namedValueInfo.name + "]");
 		}
-
+		//通过参数解析器获取value
 		Object arg = resolveName(resolvedName.toString(), nestedParameter, webRequest);
 		if (arg == null) {
 			if (namedValueInfo.defaultValue != null) {
@@ -118,8 +118,9 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements Handle
 		else if ("".equals(arg) && namedValueInfo.defaultValue != null) {
 			arg = resolveEmbeddedValuesAndExpressions(namedValueInfo.defaultValue);
 		}
-
+		//通过factory进行参数和value的绑定
 		if (binderFactory != null) {
+			//此处不仅完成了创建webDataBinder，而且还执行了@InitBinder注解方法所对应的具体逻辑
 			WebDataBinder binder = binderFactory.createBinder(webRequest, null, namedValueInfo.name);
 			try {
 				arg = binder.convertIfNecessary(arg, parameter.getParameterType(), parameter);

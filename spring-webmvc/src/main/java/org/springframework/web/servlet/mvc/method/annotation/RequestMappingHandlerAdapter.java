@@ -208,7 +208,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 
 	public RequestMappingHandlerAdapter() {
-		//初始化信息转换器
+		//初始化信息转换器,构造方法默认有四个，在webMvcConfigurationSupport中，根据加载jar包的不同，加载多个不同的转换器
 		this.messageConverters = new ArrayList<>(4);
 		this.messageConverters.add(new ByteArrayHttpMessageConverter());
 		this.messageConverters.add(new StringHttpMessageConverter());
@@ -881,10 +881,13 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 		ServletWebRequest webRequest = new ServletWebRequest(request, response);
 		try {
+			//数据绑定工厂，将处理方法和 数据绑定方法组合在一起，
 			WebDataBinderFactory binderFactory = getDataBinderFactory(handlerMethod);
 			ModelFactory modelFactory = getModelFactory(handlerMethod, binderFactory);
 
+			//ServletInvocableHandlerMethod 是HandlerMethod 的子类，可以扩展对应的能力
 			ServletInvocableHandlerMethod invocableMethod = createInvocableHandlerMethod(handlerMethod);
+			//invocableMethod 设置参数处理器，返回值处理器，参数绑定工厂等
 			if (this.argumentResolvers != null) {
 				invocableMethod.setHandlerMethodArgumentResolvers(this.argumentResolvers);
 			}
@@ -894,11 +897,13 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			invocableMethod.setDataBinderFactory(binderFactory);
 			invocableMethod.setParameterNameDiscoverer(this.parameterNameDiscoverer);
 
+			//模型和视图容器 设置model 以及
 			ModelAndViewContainer mavContainer = new ModelAndViewContainer();
 			mavContainer.addAllAttributes(RequestContextUtils.getInputFlashMap(request));
 			modelFactory.initModel(webRequest, mavContainer, invocableMethod);
 			mavContainer.setIgnoreDefaultModelOnRedirect(this.ignoreDefaultModelOnRedirect);
 
+			//异步web请求，如果是同步请求的话，也用异步请求进行了包装，在
 			AsyncWebRequest asyncWebRequest = WebAsyncUtils.createAsyncWebRequest(request, response);
 			asyncWebRequest.setTimeout(this.asyncRequestTimeout);
 
@@ -919,11 +924,13 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 				invocableMethod = invocableMethod.wrapConcurrentResult(result);
 			}
 
+			//调用处理方法并经结果返回到mavContainer容器中
 			invocableMethod.invokeAndHandle(webRequest, mavContainer);
 			if (asyncManager.isConcurrentHandlingStarted()) {
 				return null;
 			}
 
+			//返回mv
 			return getModelAndView(mavContainer, modelFactory, webRequest);
 		} finally {
 			webRequest.requestCompleted();
@@ -944,6 +951,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 	private ModelFactory getModelFactory(HandlerMethod handlerMethod, WebDataBinderFactory binderFactory) {
 		SessionAttributesHandler sessionAttrHandler = getSessionAttributesHandler(handlerMethod);
 		Class<?> handlerType = handlerMethod.getBeanType();
+		//同样也是先从缓存中拿，和参数绑定类似，也是先全局后局部，并返回对应的Factory
 		Set<Method> methods = this.modelAttributeCache.get(handlerType);
 		if (methods == null) {
 			methods = MethodIntrospector.selectMethods(handlerType, MODEL_ATTRIBUTE_METHODS);
@@ -978,12 +986,15 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 	private WebDataBinderFactory getDataBinderFactory(HandlerMethod handlerMethod) throws Exception {
 		Class<?> handlerType = handlerMethod.getBeanType();
+		//先从缓存中拿，如果没有，从handler中拿，也就是拿有@InitBinder注解的方法，用户该handler的参数绑定
 		Set<Method> methods = this.initBinderCache.get(handlerType);
 		if (methods == null) {
 			methods = MethodIntrospector.selectMethods(handlerType, INIT_BINDER_METHODS);
 			this.initBinderCache.put(handlerType, methods);
 		}
 		List<InvocableHandlerMethod> initBinderMethods = new ArrayList<>();
+		//然后从全局中拿，如果全局中存在，先用全局的处理一遍，再用局部的处理一遍，
+		//这里将所有的参数初始化方法放到一个list集合中，然后返回一个参数绑定工厂，用工厂来处理具体的参数，用于解耦
 		// Global methods first
 		this.initBinderAdviceCache.forEach((controllerAdviceBean, methodSet) -> {
 			if (controllerAdviceBean.isApplicableToBeanType(handlerType)) {
@@ -1000,6 +1011,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		return createDataBinderFactory(initBinderMethods);
 	}
 
+	//将参数绑定方法和handler的处理方法进行组合，
 	private InvocableHandlerMethod createInitBinderMethod(Object bean, Method method) {
 		InvocableHandlerMethod binderMethod = new InvocableHandlerMethod(bean, method);
 		if (this.initBinderArgumentResolvers != null) {
@@ -1030,10 +1042,18 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 										 ModelFactory modelFactory, NativeWebRequest webRequest) throws Exception {
 
 		modelFactory.updateModel(webRequest, mavContainer);
+		//判断mv容器中的请求处理是否已经完成，
+		// 比如在 RequestResponseBodyMethodProcessor#handleReturnValue()中mavContainer.setRequestHandled(true);
+		//这样就不用进行后续的处理，因为表明请求已经完成，不需要再进行视图渲染返回视图
+		//model 模型就是数据，应用程序的核心
+		//view 回显数据的界面,例如JSP就是用来展示模型中的数据   SpringMvc框架提供很多的View视图类型的支持，包括：jsp、freemarker、pdf等
+		//Controller 控制器的作用就是根据入参，把不同的响应数据(Model)，显示在不同的视图(View)上
+		//因为现在是前后端，所以很少用到view
 		if (mavContainer.isRequestHandled()) {
 			return null;
 		}
 		ModelMap model = mavContainer.getModel();
+		//通过View、Model、Status构造出一个ModelAndView，最终就可以完成渲染了
 		ModelAndView mav = new ModelAndView(mavContainer.getViewName(), model, mavContainer.getStatus());
 		if (!mavContainer.isViewReference()) {
 			mav.setView((View) mavContainer.getView());

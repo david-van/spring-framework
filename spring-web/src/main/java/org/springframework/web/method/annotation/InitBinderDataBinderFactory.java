@@ -65,6 +65,9 @@ public class InitBinderDataBinderFactory extends DefaultDataBinderFactory {
 	public void initBinder(WebDataBinder dataBinder, NativeWebRequest request) throws Exception {
 		for (InvocableHandlerMethod binderMethod : this.binderMethods) {
 			if (isBinderMethodApplicable(binderMethod, dataBinder)) {
+				//binderMethod调用请求，获取返回值，此处可以理解为，@InitBinder注解的方法当作一个普通的handler来处理，走一遍参数的解析过程
+				//这里传入的参数为dataBinder参数，所以在@InitBinder注解的方法上面的形参可以接收WebDataBinder，根据注解上的描述
+				//方法一般返回void，也就是没有返回值
 				Object returnValue = binderMethod.invokeForRequest(request, null, dataBinder);
 				if (returnValue != null) {
 					throw new IllegalStateException(

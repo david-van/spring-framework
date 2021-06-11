@@ -238,6 +238,7 @@ public class HandlerMethod {
 	}
 
 	/**
+	 * 如果该bean的方法是合成方法，那么就返回合成方法。否则，返回方法本身
 	 * If the bean method is a bridge method, this method returns the bridged
 	 * (user-defined) method. Otherwise it returns the same method as {@link #getMethod()}.
 	 */

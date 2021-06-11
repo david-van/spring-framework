@@ -224,6 +224,7 @@ public abstract class AbstractHttpMessageConverter<T> implements HttpMessageConv
 			}));
 		}
 		else {
+			//调用具体的子类完成，该abstract类仅仅是定义了一个模板
 			writeInternal(t, outputMessage);
 			outputMessage.getBody().flush();
 		}

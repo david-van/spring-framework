@@ -31,7 +31,7 @@ public class UserController {
 
 	@GetMapping(value = "/test2", params = {"myParam=myValue"})
 	@ModelAttribute
-	public String test2(@MatrixVariable String info) {
+	public String test2(String info) {
 		System.out.println("test2");
 		return "ok";
 	}

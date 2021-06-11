@@ -55,6 +55,7 @@ public class DefaultDataBinderFactory implements WebDataBinderFactory {
 
 		WebDataBinder dataBinder = createBinderInstance(target, objectName, webRequest);
 		if (this.initializer != null) {
+			//WebBindingInitializer接口的参数初始化绑定，该方法现在已经废弃
 			this.initializer.initBinder(dataBinder, webRequest);
 		}
 		initBinder(dataBinder, webRequest);

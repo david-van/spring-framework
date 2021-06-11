@@ -85,6 +85,10 @@ public final class ModelFactory {
 
 
 	/**
+	 * 按照顺序填充model，
+	 * 1、获取@SessionAttributes注解的属性
+	 * 2、调用 有 @ModelAttribute注解 的方法
+	 * 3、
 	 * Populate the model in the following order:
 	 * <ol>
 	 * <li>Retrieve "known" session attributes listed as {@code @SessionAttributes}.

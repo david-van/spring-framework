@@ -118,6 +118,7 @@ public class RequestResponseBodyMethodProcessor extends AbstractMessageConverter
 	}
 
 	/**
+	 * 绑定参数的同时，对参数进行校验
 	 * Throws MethodArgumentNotValidException if validation fails.
 	 * @throws HttpMessageNotReadableException if {@link RequestBody#required()}
 	 * is {@code true} and there is no body content or if there is no suitable
@@ -134,6 +135,7 @@ public class RequestResponseBodyMethodProcessor extends AbstractMessageConverter
 		if (binderFactory != null) {
 			WebDataBinder binder = binderFactory.createBinder(webRequest, arg, name);
 			if (arg != null) {
+				//对参数进行校验,调用抽象父类的能力
 				validateIfApplicable(binder, parameter);
 				if (binder.getBindingResult().hasErrors() && isBindExceptionRequired(binder, parameter)) {
 					throw new MethodArgumentNotValidException(parameter, binder.getBindingResult());

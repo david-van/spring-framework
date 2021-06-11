@@ -1,11 +1,20 @@
 package com.david.web;
 
+import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.handler.MappedInterceptor;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * @author fanzunying
@@ -14,7 +23,7 @@ import org.springframework.web.servlet.handler.MappedInterceptor;
 @Configuration
 @ComponentScan
 @EnableWebMvc // 启用Spring MVC
-public class AppConfig {
+public class AppConfig implements WebMvcConfigurer, HandlerInterceptor {
 //
 //	@Bean
 //	public MappedInterceptor getInfo() {
@@ -51,5 +60,33 @@ public class AppConfig {
 		String[] includePatterns = {"/api/v1/hello"};
 		MappedInterceptor handlerInterceptor = new MappedInterceptor(includePatterns, interceptor1);
 		return handlerInterceptor;
+	}
+
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(new AppConfig());
+	}
+
+	@Override
+	public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+		converters.add(new FastJsonHttpMessageConverter());
+	}
+
+	@Override
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+		System.out.println("handler = " + handler);
+		return true;
+	}
+
+	@Override
+	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+		response.setStatus(500);
+		System.out.println("modelAndView = " + modelAndView);
+	}
+
+	@Override
+	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+		Thread.sleep(3000L);
+		System.out.println("handler = " + handler);
 	}
 }

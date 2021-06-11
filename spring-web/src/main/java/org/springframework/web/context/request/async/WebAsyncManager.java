@@ -144,6 +144,7 @@ public final class WebAsyncManager {
 	}
 
 	/**
+	 * 作为并发处理的结果，结果值是否存在。
 	 * Whether a result value exists as a result of concurrent handling.
 	 */
 	public boolean hasConcurrentResult() {

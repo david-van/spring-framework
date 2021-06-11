@@ -101,6 +101,8 @@ public interface HandlerInterceptor {
 	}
 
 	/**
+	 * 需要注意的是：如果请求不需要返回view，比如@ResponseBody注解的方法，那么这个时候postHandle方法
+	 * 的一些操作对相应没有作用，因为这个时候，服务器已经将数据返回前端。因为该方法是在返回view之前调用
 	 * Intercept the execution of a handler. Called after HandlerAdapter actually
 	 * invoked the handler, but before the DispatcherServlet renders the view.
 	 * Can expose additional model objects to the view via the given ModelAndView.
@@ -125,6 +127,9 @@ public interface HandlerInterceptor {
 	}
 
 	/**
+	 * 请求处理完成后的回调，即呈现视图之后。将在处理程序执行的任何结果中调用，从而允许适当的资源清理
+	 * 只有当拦截器的{@code preHandle}方法成功完成并返回{@code true}时才会被调用!
+	 * 与{@code postHandle}方法一样，该方法将在链中的每个拦截器上以相反的顺序被调用，因此第一个拦截器将是最后一个被调用的
 	 * Callback after completion of request processing, that is, after rendering
 	 * the view. Will be called on any outcome of handler execution, thus allows
 	 * for proper resource cleanup.

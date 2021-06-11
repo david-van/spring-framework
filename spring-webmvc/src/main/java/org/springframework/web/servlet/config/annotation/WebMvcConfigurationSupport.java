@@ -688,6 +688,7 @@ public class WebMvcConfigurationSupport implements ApplicationContextAware, Serv
 	}
 
 	/**
+	 * 注册bean，转换器，用于string<->object<->array<->collection等转换，
 	 * Return a {@link FormattingConversionService} for use with annotated controllers.
 	 * <p>See {@link #addFormatters} as an alternative to overriding this method.
 	 */
@@ -838,6 +839,8 @@ public class WebMvcConfigurationSupport implements ApplicationContextAware, Serv
 	}
 
 	/**
+	 * 将一组默认的HttpMessageConverter实例添加到给定列表中，子类可以调用配置方法configureMessageConverters自己配置
+	 * 另外就是根据maven添加的依赖不同，加载不同的httpMessage转换器
 	 * Adds a set of default HttpMessageConverter instances to the given list.
 	 * Subclasses can call this method from {@link #configureMessageConverters}.
 	 * @param messageConverters the list to add the default message converters to

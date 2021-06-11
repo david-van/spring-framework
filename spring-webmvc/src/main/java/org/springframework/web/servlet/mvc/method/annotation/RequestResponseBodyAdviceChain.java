@@ -137,7 +137,9 @@ class RequestResponseBodyAdviceChain implements RequestBodyAdvice, ResponseBodyA
 			ServerHttpRequest request, ServerHttpResponse response) {
 
 		for (ResponseBodyAdvice<?> advice : getMatchingAdvice(returnType, ResponseBodyAdvice.class)) {
+			//判断是否支持
 			if (advice.supports(returnType, converterType)) {
+				//如果支持，调用实现接口类，逐个处理
 				body = ((ResponseBodyAdvice<T>) advice).beforeBodyWrite((T) body, returnType,
 						contentType, converterType, request, response);
 			}
