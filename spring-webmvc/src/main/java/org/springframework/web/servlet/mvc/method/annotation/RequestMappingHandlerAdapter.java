@@ -150,17 +150,25 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 	@Nullable
 	private List<ModelAndViewResolver> modelAndViewResolvers;
 
+	// 内容协商管理器  默认就是它喽（使用的协商策略是HeaderContentNegotiationStrategy，见构造函数）
 	private ContentNegotiationManager contentNegotiationManager = new ContentNegotiationManager();
 
+	//消息转换器
 	private List<HttpMessageConverter<?>> messageConverters;
 
 	private final List<Object> requestResponseBodyAdvice = new ArrayList<>();
 
+	//参数初始化绑定，可以实现接口WebBindingInitializer，也可以使用注解@InitBinder
 	@Nullable
 	private WebBindingInitializer webBindingInitializer;
 
+	// 默认使用的SimpleAsyncTaskExecutor：每次执行客户提交给它的任务时，它会启动新的线程
+	// 并允许开发者控制并发线程的上限（concurrencyLimit），从而起到一定的资源节流作用（默认值是-1，表示不限流）
+	// @EnableWebMvc时可通过复写接口的WebMvcConfigurer.getTaskExecutor()自定义提供一个线程池
 	private AsyncTaskExecutor taskExecutor = new SimpleAsyncTaskExecutor("MvcAsync");
 
+	//异步超时时间
+	//可以在WebMvcConfigurationSupport初始化bean RequestMappingHandlerAdapter 的时候自己配置
 	@Nullable
 	private Long asyncRequestTimeout;
 
@@ -170,10 +178,14 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 	private ReactiveAdapterRegistry reactiveAdapterRegistry = ReactiveAdapterRegistry.getSharedInstance();
 
+	//重定向的时候是否忽略默认的model
 	private boolean ignoreDefaultModelOnRedirect = false;
 
 	private int cacheSecondsForSessionAttributeHandlers = 0;
 
+	// 执行目标方法HandlerMethod时是否要在同一个Session内同步执行？？？
+	// 也就是同一个会话时，控制器方法全部同步执行（加互斥锁）
+	// 使用场景：对同一用户同一Session的所有访问，必须串行化
 	private boolean synchronizeOnSession = false;
 
 	private SessionAttributeStore sessionAttributeStore = new DefaultSessionAttributeStore();
@@ -183,6 +195,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 	@Nullable
 	private ConfigurableBeanFactory beanFactory;
 
+	//各种缓存
 	private final Map<Class<?>, SessionAttributesHandler> sessionAttributesHandlerCache = new ConcurrentHashMap<>(64);
 
 	private final Map<Class<?>, Set<Method>> initBinderCache = new ConcurrentHashMap<>(64);
@@ -740,6 +753,10 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		handlers.add(new ModelAndViewMethodReturnValueHandler());
 		handlers.add(new ModelMethodProcessor());
 		handlers.add(new ViewMethodReturnValueHandler());
+		// 此处重要的是getMessageConverters()消息转换器，一般情况下Spring MVC默认会有8个，包括`MappingJackson2HttpMessageConverter`
+		// 参见：WebMvcConfigurationSupport定的@Bean --> RequestMappingHandlerAdapter部分
+		// 若不@EnableWebMvc默认是只有4个消息转换器~（不支持json）见构造函数
+		// 此处的requestResponseBodyAdvice会介入到请求和响应的body里（消息转换期间）
 		handlers.add(new ResponseBodyEmitterReturnValueHandler(getMessageConverters(),
 				this.reactiveAdapterRegistry, this.taskExecutor, this.contentNegotiationManager));
 		handlers.add(new StreamingResponseBodyReturnValueHandler());
@@ -764,6 +781,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			handlers.addAll(getCustomReturnValueHandlers());
 		}
 
+		//同样的兜底方案
 		// Catch-all
 		if (!CollectionUtils.isEmpty(getModelAndViewResolvers())) {
 			handlers.add(new ModelAndViewResolverMethodReturnValueHandler(getModelAndViewResolvers()));
@@ -776,6 +794,9 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 
 	/**
+	 * 始终返回 {@code true}，因为任何方法参数和返回值类型都将以某种方式处理。
+	 * 任何 HandlerMethodArgumentResolver 无法识别的方法参数如果是简单类型，则被解释为请求参数，否则解释为模型属性。
+	 * 任何 HandlerMethodReturnValueHandler 无法识别的返回值将被解释为模型属性
 	 * Always return {@code true} since any method argument and return value
 	 * type will be processed in some way. A method argument not recognized
 	 * by any HandlerMethodArgumentResolver is interpreted as a request parameter
@@ -788,6 +809,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		return true;
 	}
 
+	//具体的处理方法，处理请求的入口 最终返回一个ModelAndView
 	@Override
 	protected ModelAndView handleInternal(HttpServletRequest request,
 										  HttpServletResponse response, HandlerMethod handlerMethod) throws Exception {
@@ -795,6 +817,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		ModelAndView mav;
 		checkRequest(request);
 
+		//如果要求，那么设置请求用户在同一个session中串行化执行
 		// Execute invokeHandlerMethod in synchronized block if required.
 		if (this.synchronizeOnSession) {
 			HttpSession session = request.getSession(false);
@@ -812,6 +835,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			mav = invokeHandlerMethod(request, response, handlerMethod);
 		}
 
+		//进行缓存
 		if (!response.containsHeader(HEADER_CACHE_CONTROL)) {
 			if (getSessionAttributesHandler(handlerMethod).hasSessionAttributes()) {
 				applyCacheSeconds(response, this.cacheSecondsForSessionAttributeHandlers);

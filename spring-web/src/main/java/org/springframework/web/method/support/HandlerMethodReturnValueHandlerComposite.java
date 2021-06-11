@@ -28,6 +28,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.context.request.NativeWebRequest;
 
 /**
+ * 就是将多个处理器组合到一起，
+ * 通过委托给已注册的 HandlerMethodReturnValueHandlers 列表来处理方法返回值。
+ * 先前解析的返回类型被缓存以加快查找速度
  * Handles method return values by delegating to a list of registered {@link HandlerMethodReturnValueHandler HandlerMethodReturnValueHandlers}.
  * Previously resolved return types are cached for faster lookups.
  *
