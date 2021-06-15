@@ -904,6 +904,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 
 		//bean的生命周期回调方法，在bean初始化完成之后
+		//也就是实现SmartInitializingSingleton接口
 		// Trigger post-initialization callback for all applicable beans...
 		for (String beanName : beanNames) {
 			Object singletonInstance = getSingleton(beanName);
@@ -1464,6 +1465,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
+	 * 查找与所需类型匹配的 bean 实例。在指定 bean 的自动装配期间调用。
 	 * Find bean instances that match the required type.
 	 * Called during autowiring for the specified bean.
 	 * @param beanName the name of the bean that is about to be wired

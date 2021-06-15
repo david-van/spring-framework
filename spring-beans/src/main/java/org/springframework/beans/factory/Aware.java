@@ -17,6 +17,9 @@
 package org.springframework.beans.factory;
 
 /**
+ * 一个标记超级接口，指示 bean 有资格通过回调样式的方法被特定框架对象的 Spring 容器通知。
+ * 实际的方法签名由各个子接口确定，但通常应仅由一个接受单个参数的返回空值的方法组成。
+ * spring的回调方法给予此顶级接口
  * A marker superinterface indicating that a bean is eligible to be notified by the
  * Spring container of a particular framework object through a callback-style method.
  * The actual method signature is determined by individual subinterfaces but should
@@ -25,6 +28,7 @@ package org.springframework.beans.factory;
  * <p>Note that merely implementing {@link Aware} provides no default functionality.
  * Rather, processing must be done explicitly, for example in a
  * {@link org.springframework.beans.factory.config.BeanPostProcessor}.
+ * ApplicationContextAwareProcessor#invokeAwareInterfaces方法中处理了一些特定的回调接口
  * Refer to {@link org.springframework.context.support.ApplicationContextAwareProcessor}
  * for an example of processing specific {@code *Aware} interface callbacks.
  *

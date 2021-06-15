@@ -142,6 +142,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
+	 * 将给定的单例对象添加到该工厂的单例缓存中
 	 * Add the given singleton object to the singleton cache of this factory.
 	 * <p>To be called for eager registration of singletons.
 	 * @param beanName the name of the bean
@@ -149,6 +150,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 */
 	protected void addSingleton(String beanName, Object singletonObject) {
 		synchronized (this.singletonObjects) {
+			//一级添加，二三级删除
 			this.singletonObjects.put(beanName, singletonObject);
 			this.singletonFactories.remove(beanName);
 			this.earlySingletonObjects.remove(beanName);

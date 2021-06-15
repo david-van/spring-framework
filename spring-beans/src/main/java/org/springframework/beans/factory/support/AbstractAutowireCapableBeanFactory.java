@@ -534,6 +534,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
+	 * 实际创建指定的bean。预创建处理此时已经发生，例如检查 {@code postProcessBeforeInstantiation} 回调。
+	 * 区分默认 bean 实例化、工厂方法的使用和自动装配构造函数。
 	 * Actually create the specified bean. Pre-creation processing has already happened
 	 * at this point, e.g. checking {@code postProcessBeforeInstantiation} callbacks.
 	 * <p>Differentiates between default bean instantiation, use of a
@@ -600,7 +602,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		try {
 			//完成了bean实例的创建和属性注入
 			populateBean(beanName, mbd, instanceWrapper);
-			//执行一些初始化的方法
+			//执行一些初始化的方法，也就是一些
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
@@ -612,7 +614,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 						mbd.getResourceDescription(), beanName, "Initialization of bean failed", ex);
 			}
 		}
-
+		//单例早期暴露出来
 		if (earlySingletonExposure) {
 			Object earlySingletonReference = getSingleton(beanName, false);
 			if (earlySingletonReference != null) {
@@ -1796,6 +1798,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 
 	/**
+	 * 初始化给定的 bean 实例，应用工厂回调以及 init 方法和 bean 后处理器。
+	 * <p>对于传统定义的 bean 从 {@link createBean} 调用，AbstractAutowireCapableBeanFactory 中的createBean -->doCreateBean
+	 * 对于现有 bean 实例从 {@link initializeBean} 调用。
 	 * Initialize the given bean instance, applying factory callbacks
 	 * as well as init methods and bean post processors.
 	 * <p>Called from {@link #createBean} for traditionally defined beans,
@@ -1820,15 +1825,18 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}, getAccessControlContext());
 		}
 		else {
+			//判断bean是否实现了aware以及子接口,进而回调实现方法
 			invokeAwareMethods(beanName, bean);
 		}
 
 		Object wrappedBean = bean;
 		if (mbd == null || !mbd.isSynthetic()) {
+			//bean 的初始化前的回调
 			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 		}
 
 		try {
+			//调用初始化方法，也就是InitializingBean接口的实现
 			invokeInitMethods(beanName, wrappedBean, mbd);
 		}
 		catch (Throwable ex) {
@@ -1837,6 +1845,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					beanName, "Invocation of init method failed", ex);
 		}
 		if (mbd == null || !mbd.isSynthetic()) {
+			//bean 的初始化后的回调
 			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
 		}
 

@@ -612,6 +612,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 	/**
 	 * 大致就是携带关于这个注解字段的反射信息
+	 * 该类主要处理字段注入的相关逻辑
 	 * Class representing injection information about an annotated field.
 	 */
 	private class AutowiredFieldElement extends InjectionMetadata.InjectedElement {
@@ -678,6 +679,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 
 	/**
+	 * 该类处理注入方法的相关逻辑
 	 * Class representing injection information about an annotated method.
 	 */
 	private class AutowiredMethodElement extends InjectionMetadata.InjectedElement {

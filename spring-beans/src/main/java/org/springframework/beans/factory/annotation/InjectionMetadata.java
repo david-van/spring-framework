@@ -33,6 +33,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ReflectionUtils;
 
 /**
+ * 用于管理注入元数据的内部类。不适用于直接在应用中使用。
  * Internal class for managing injection metadata.
  * Not intended for direct use in applications.
  *
@@ -223,6 +224,7 @@ public class InjectionMetadata {
 		protected void inject(Object target, @Nullable String requestingBeanName, @Nullable PropertyValues pvs)
 				throws Throwable {
 
+			//注入的元素为字段类型
 			if (this.isField) {
 				Field field = (Field) this.member;
 				ReflectionUtils.makeAccessible(field);

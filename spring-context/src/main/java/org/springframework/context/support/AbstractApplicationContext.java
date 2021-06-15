@@ -792,6 +792,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @see org.springframework.context.support.DefaultLifecycleProcessor
 	 */
 	protected void initLifecycleProcessor() {
+		//DefaultListableBeanFactory
 		ConfigurableListableBeanFactory beanFactory = getBeanFactory();
 		if (beanFactory.containsLocalBean(LIFECYCLE_PROCESSOR_BEAN_NAME)) {
 			this.lifecycleProcessor =

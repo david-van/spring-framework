@@ -1797,6 +1797,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			Object beanInstance, String name, String beanName, @Nullable RootBeanDefinition mbd) {
 
 		// Don't let calling code try to dereference the factory if the bean isn't a factory.
+		//判断是否是应该factoryBean
 		if (BeanFactoryUtils.isFactoryDereference(name)) {
 			if (beanInstance instanceof NullBean) {
 				return beanInstance;
@@ -1867,6 +1868,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	}
 
 	/**
+	 * 将给定的 bean 添加到此工厂的一次性 bean 列表中，
 	 * Add the given bean to the list of disposable beans in this factory,
 	 * registering its DisposableBean interface and/or the given destroy method
 	 * to be called on factory shutdown (if applicable). Only applies to singletons.
