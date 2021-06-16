@@ -29,11 +29,15 @@ public class DemoBean {
 		System.out.println(definition);
 		BeanDefinition demoBean = ac.getBeanDefinition("MyConfig");
 		System.out.println(demoBean);
+		OrderService bean = ac.getBean(OrderService.class);
+		System.out.println("bean = " + bean);
 //		for (String name : ac.getBeanDefinitionNames()) {
 //			System.out.println(name);
 //		}
 //		DemoBean bean = ac.getBean(DemoBean.class);
 //		MyBeanPostProcessor processor = ac.getBean(MyBeanPostProcessor.class);
 //		System.out.println(bean);
+//		ac.stop();
+		ac.close();
 	}
 }

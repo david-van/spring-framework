@@ -315,6 +315,7 @@ public class DefaultLifecycleProcessor implements LifecycleProcessor, BeanFactor
 
 
 	/**
+	 * 用于维护一组生命周期 bean 的助手类，这些 bean 应该根据它们的“阶段”值（或默认值 0）一起启动和停止
 	 * Helper class for maintaining a group of Lifecycle beans that should be started
 	 * and stopped together based on their 'phase' value (or the default value of 0).
 	 */

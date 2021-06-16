@@ -27,6 +27,7 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.core.annotation.AliasFor;
 
 /**
+ * 指示一个方法产生一个由 Spring 容器管理的 bean。
  * Indicates that a method produces a bean to be managed by the Spring container.
  *
  * <h3>Overview</h3>
@@ -45,6 +46,7 @@ import org.springframework.core.annotation.AliasFor;
  *
  * <h3>Bean Names</h3>
  *
+ * bean的name的默认策略为方法的名称
  * <p>While a {@link #name} attribute is available, the default strategy for
  * determining the name of a bean is to use the name of the {@code @Bean} method.
  * This is convenient and intuitive, but if explicit naming is desired, the

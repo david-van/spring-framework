@@ -1,0 +1,18 @@
+最开始的5个类
+0 = "org.springframework.context.annotation.internalConfigurationAnnotationProcessor"
+1 = "org.springframework.context.annotation.internalAutowiredAnnotationProcessor"
+2 = "org.springframework.context.annotation.internalCommonAnnotationProcessor"
+3 = "org.springframework.context.event.internalEventListenerProcessor"
+4 = "org.springframework.context.event.internalEventListenerFactory"
+
+
+执行初始化bean的生命周期的spring中内置的类
+org.springframework.context.annotation.internalConfigurationAnnotationProcessor
+org.springframework.context.event.internalEventListenerProcessor
+org.springframework.context.event.internalEventListenerFactory
+org.springframework.context.annotation.internalAutowiredAnnotationProcessor
+org.springframework.context.annotation.internalCommonAnnotationProcessor
+
+
+
+org.springframework.context.annotation.ConfigurationClassPostProcessor.configurationClass

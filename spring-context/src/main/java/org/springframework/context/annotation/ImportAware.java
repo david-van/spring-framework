@@ -20,6 +20,9 @@ import org.springframework.beans.factory.Aware;
 import org.springframework.core.type.AnnotationMetadata;
 
 /**
+ * 任何 @{@link Configuration} 类要实现的接口，
+ * 这些类希望注入导入它的 @{@code Configuration} 类的 {@link AnnotationMetadata}。
+ * 与使用 @{@link Import} 作为元注释的注释结合使用很有用。
  * Interface to be implemented by any @{@link Configuration} class that wishes
  * to be injected with the {@link AnnotationMetadata} of the @{@code Configuration}
  * class that imported it. Useful in conjunction with annotations that

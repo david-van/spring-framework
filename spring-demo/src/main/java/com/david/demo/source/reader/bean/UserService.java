@@ -1,7 +1,10 @@
 package com.david.demo.source.reader.bean;
 
 import com.david.demo.source.reader.bean.b.MyConfig;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +16,7 @@ import javax.annotation.PostConstruct;
  * @date 2021/5/9 17:12
  */
 @Component
-public class UserService {
+public class UserService implements InitializingBean, BeanPostProcessor {
 
 	@Autowired
 //	@Qualifier
@@ -26,14 +29,18 @@ public class UserService {
 //	@Autowired
 //	private String string;
 
-	public UserService() {
-		System.out.println("UserService");
+	public void initMethod() {
+		System.out.println("initMethod()方法执行了");
 	}
 
-	@Bean(value = "getMyUserService")
-	public MyConfig getMy() {
-		return new MyConfig();
+	public void init() {
+		System.out.println("init()方法执行了");
 	}
+
+	public UserService() {
+		System.out.println("UserService 构造方法");
+	}
+
 
 	@PostConstruct
 	public void getOrder() {
@@ -46,6 +53,23 @@ public class UserService {
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		}
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		System.out.println("调用afterPropertiesSet初始化方法");
+	}
+
+	@Override
+	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+		System.out.println("调用postProcessBeforeInitialization初始化方法");
+		return bean;
+	}
+
+	@Override
+	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+		System.out.println("调用postProcessAfterInitialization初始化方法");
+		return bean;
 	}
 //
 //	public UserService(DemoBean demoBean) {

@@ -122,6 +122,7 @@ class ConfigurationClassBeanDefinitionReader {
 	}
 
 	/**
+	 * 读取特定的 {@link ConfigurationClass}，为类本身及其所有 {@link Bean} 方法注册 bean 定义
 	 * Read a particular {@link ConfigurationClass}, registering bean definitions
 	 * for the class itself and all of its {@link Bean} methods.
 	 */

@@ -1,11 +1,13 @@
 package com.david.demo.source.reader.bean;
 
 import org.springframework.context.SmartLifecycle;
+import org.springframework.stereotype.Component;
 
 /**
  * @author fanzunying
  * @date 2021/6/15 19:30
  */
+@Component
 public class MySmartLifecycle implements SmartLifecycle {
 	private volatile boolean running;
 	@Override

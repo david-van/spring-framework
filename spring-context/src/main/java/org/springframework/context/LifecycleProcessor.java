@@ -17,6 +17,8 @@
 package org.springframework.context;
 
 /**
+ * 用于在 ApplicationContext 中处理 Lifecycle bean 的策略接口。
+ * 只有一个默认实现DefaultLifecycleProcessor
  * Strategy interface for processing Lifecycle beans within the ApplicationContext.
  *
  * @author Mark Fisher

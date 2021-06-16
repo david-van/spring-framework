@@ -41,6 +41,7 @@ import org.springframework.core.PriorityOrdered;
 import org.springframework.lang.Nullable;
 
 /**
+ * 容器的后置处理器的委托处理者
  * Delegate for AbstractApplicationContext's post-processor handling.
  *
  * @author Juergen Hoeller

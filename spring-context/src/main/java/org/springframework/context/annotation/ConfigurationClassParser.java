@@ -87,6 +87,15 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
 /**
+ * ConfigurationClassParser用于分析@Configuration注解的配置类，产生一组ConfigurationClass对象。
+ * 它的分析过程会接受一组种子配置类(调用者已知的配置类，通常很可能只有一个)，从这些种子配置类开始分析所有关联的配置类，
+ * 分析过程主要是递归分析配置类的注解@Import，配置类内部嵌套类，找出其中所有的配置类，然后返回这组配置类。
+ *
+ * 该工具主要由ConfigurationClassPostProcessor使用，
+ * 而ConfigurationClassPostProcessor是一个BeanDefinitionRegistryPostProcessor/BeanFactoryPostProcessor,
+ * 它会在容器启动过程中，应用上下文上执行各个BeanFactoryPostProcessor时被执
+ *
+ *
  * Parses a {@link Configuration} class definition, populating a collection of
  * {@link ConfigurationClass} objects (parsing a single Configuration class may result in
  * any number of ConfigurationClass objects because one Configuration class may import
@@ -111,7 +120,7 @@ import org.springframework.util.StringUtils;
 class ConfigurationClassParser {
 
 	private static final PropertySourceFactory DEFAULT_PROPERTY_SOURCE_FACTORY = new DefaultPropertySourceFactory();
-
+	//默认排除过滤器,
 	private static final Predicate<String> DEFAULT_EXCLUSION_FILTER = className ->
 			(className.startsWith("java.lang.annotation.") || className.startsWith("org.springframework.stereotype."));
 
@@ -135,6 +144,7 @@ class ConfigurationClassParser {
 
 	private final ConditionEvaluator conditionEvaluator;
 
+	//配置类
 	private final Map<ConfigurationClass, ConfigurationClass> configurationClasses = new LinkedHashMap<>();
 
 	private final Map<String, ConfigurationClass> knownSuperclasses = new HashMap<>();
@@ -171,6 +181,7 @@ class ConfigurationClassParser {
 		for (BeanDefinitionHolder holder : configCandidates) {
 			BeanDefinition bd = holder.getBeanDefinition();
 			try {
+				//判断bd是注解还是注解类型还是非注解bd，可以看bd接口的几个实现策略
 				if (bd instanceof AnnotatedBeanDefinition) {
 					parse(((AnnotatedBeanDefinition) bd).getMetadata(), holder.getBeanName());
 				}
@@ -231,8 +242,14 @@ class ConfigurationClassParser {
 		if (existingClass != null) {
 			if (configClass.isImported()) {
 				if (existingClass.isImported()) {
+					//当前配置类的map中已经存在对应的配置类，并且当前配置类和已经存在的配置类都是通过@Import来的，这个时候进行合并
+					//也就是将当前配置类的Set<ConfigurationClass> importedBy数组添加对应的配置类，
+					//Demo.class 没有显示指定作为bean。a -->Import(Demo.class),b -->Import(Demo.class),此时configClass为Demo.class,,importedBy[a,b]
+					//Demo.class 显示指定作为bean。a -->Import(Demo.class),b -->Import(Demo.class),此时configClass为Demo.class,,importedBy[]
+					//也就是走下面的分支，直接忽略掉
 					existingClass.mergeImportedBy(configClass);
 				}
+				//否则忽略新导入的配置类；现有的非导入类覆盖它。
 				// Otherwise ignore new imported config class; existing non-imported class overrides it.
 				return;
 			}
@@ -267,6 +284,7 @@ class ConfigurationClassParser {
 			ConfigurationClass configClass, SourceClass sourceClass, Predicate<String> filter)
 			throws IOException {
 
+		//
 		if (configClass.getMetadata().isAnnotated(Component.class.getName())) {
 			// Recursively process any member (nested) classes first
 			processMemberClasses(configClass, sourceClass, filter);

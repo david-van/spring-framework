@@ -66,6 +66,7 @@ abstract class ConfigurationClassUtils {
 	private static final Set<String> candidateIndicators = new HashSet<>(8);
 
 	static {
+		//配置类的候选注解为：以下四个注解
 		candidateIndicators.add(Component.class.getName());
 		candidateIndicators.add(ComponentScan.class.getName());
 		candidateIndicators.add(Import.class.getName());
@@ -74,6 +75,7 @@ abstract class ConfigurationClassUtils {
 
 
 	/**
+	 * 检查给定的 bean 定义是否是配置类（或在配置组件类中声明的嵌套组件类，也要自动注册）的候选者，并相应地标记它。
 	 * Check whether the given bean definition is a candidate for a configuration class
 	 * (or a nested component class declared within a configuration/component class,
 	 * to be auto-registered as well), and mark it accordingly.
@@ -121,6 +123,7 @@ abstract class ConfigurationClassUtils {
 			}
 		}
 
+		//该类上面存在configuration注解，并且
 		Map<String, Object> config = metadata.getAnnotationAttributes(Configuration.class.getName());
 		if (config != null && !Boolean.FALSE.equals(config.get("proxyBeanMethods"))) {
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL);
@@ -132,6 +135,7 @@ abstract class ConfigurationClassUtils {
 			return false;
 		}
 
+		//这是个full类型还是lite类型的配置类，如果存在尝试推断order
 		// It's a full or lite configuration candidate... Let's determine the order value, if any.
 		Integer order = getOrder(metadata);
 		if (order != null) {
@@ -142,6 +146,7 @@ abstract class ConfigurationClassUtils {
 	}
 
 	/**
+	 * 检查给定的注解元数据是否是注解类的候选，
 	 * Check the given metadata for a configuration class candidate
 	 * (or nested component class declared within a configuration/component class).
 	 * @param metadata the metadata of the annotated class
@@ -150,12 +155,14 @@ abstract class ConfigurationClassUtils {
 	 */
 	public static boolean isConfigurationCandidate(AnnotationMetadata metadata) {
 		// Do not consider an interface or an annotation...
+		//接口，直接false
 		if (metadata.isInterface()) {
 			return false;
 		}
 
 		// Any of the typical annotations found?
 		for (String indicator : candidateIndicators) {
+			//该注解是否是四个候选注解之一，并且是四个注解的子注解也算
 			if (metadata.isAnnotated(indicator)) {
 				return true;
 			}
@@ -163,6 +170,7 @@ abstract class ConfigurationClassUtils {
 
 		// Finally, let's look for @Bean methods...
 		try {
+			//判断是否有@Bean方法，如果有的话，也是配置类候选者
 			return metadata.hasAnnotatedMethods(Bean.class.getName());
 		}
 		catch (Throwable ex) {

@@ -17,6 +17,8 @@
 package org.springframework.beans.factory;
 
 /**
+ * 在单例预实例化阶段结束时调用，保证所有常规单例 bean 都已经创建。
+ * 但是这个时候，已经执行了BeanPostProcessor接口的回调方法，但是没有执行lifeCycle的相关方法
  * Callback interface triggered at the end of the singleton pre-instantiation phase
  * during {@link BeanFactory} bootstrap. This interface can be implemented by
  * singleton beans in order to perform some initialization after the regular

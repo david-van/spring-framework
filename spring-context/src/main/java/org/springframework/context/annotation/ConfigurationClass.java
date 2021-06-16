@@ -158,6 +158,7 @@ final class ConfigurationClass {
 	}
 
 	/**
+	 * 返回此配置类是通过@{@link Import} 注册的还是由于嵌套在另一个配置类中而自动注册的
 	 * Return whether this configuration class was registered via @{@link Import} or
 	 * automatically registered due to being nested within another configuration class.
 	 * @since 3.1.1
@@ -210,6 +211,7 @@ final class ConfigurationClass {
 	}
 
 	public void validate(ProblemReporter problemReporter) {
+		//配置类可能会被cglib代理，除非其设置了 proxyBeanMethods=false
 		// A configuration class may not be final (CGLIB limitation) unless it declares proxyBeanMethods=false
 		Map<String, Object> attributes = this.metadata.getAnnotationAttributes(Configuration.class.getName());
 		if (attributes != null && (Boolean) attributes.get("proxyBeanMethods")) {
