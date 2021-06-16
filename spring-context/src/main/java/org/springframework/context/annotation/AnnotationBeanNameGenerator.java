@@ -35,6 +35,10 @@ import org.springframework.util.StringUtils;
 
 /**
  * 用于注解，生成bean的name，比如自己指定component的value，用指定的，否则用默认的
+ * @ComponentScan 注解的默认策略，见ClassPathBeanDefinitionScanner中的属性
+ * BeanNameGenerator beanNameGenerator = AnnotationBeanNameGenerator.INSTANCE;
+ *
+ *
  * {@link BeanNameGenerator} implementation for bean classes annotated with the
  * {@link org.springframework.stereotype.Component @Component} annotation or
  * with another annotation that is itself annotated with {@code @Component} as a

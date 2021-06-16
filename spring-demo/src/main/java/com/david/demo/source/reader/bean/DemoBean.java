@@ -1,8 +1,12 @@
 package com.david.demo.source.reader.bean;
 
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.*;
 import org.springframework.stereotype.Component;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * 这里测试bean的后置处理器扩展
@@ -20,6 +24,8 @@ import org.springframework.stereotype.Component;
 public class DemoBean {
 
 	public static void main(String[] args) {
+//		Logger logger = Logger.getLogger("DemoBean");
+//		logger.setLevel(Level.ALL);
 		AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext();
 		ac.register(DemoBean.class);
 //		ac.setAllowCircularReferences(false);

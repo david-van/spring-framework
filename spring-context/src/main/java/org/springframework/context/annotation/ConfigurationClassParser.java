@@ -284,9 +284,10 @@ class ConfigurationClassParser {
 			ConfigurationClass configClass, SourceClass sourceClass, Predicate<String> filter)
 			throws IOException {
 
-		//
+		//判断当前配置候选者的注解是否是component注解||子注解
 		if (configClass.getMetadata().isAnnotated(Component.class.getName())) {
 			// Recursively process any member (nested) classes first
+			//首先递归处理所有成员（嵌套）类
 			processMemberClasses(configClass, sourceClass, filter);
 		}
 
@@ -303,6 +304,7 @@ class ConfigurationClassParser {
 			}
 		}
 
+		//@ComponentScan注解
 		// Process any @ComponentScan annotations
 		Set<AnnotationAttributes> componentScans = AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), ComponentScans.class, ComponentScan.class);
@@ -312,6 +314,7 @@ class ConfigurationClassParser {
 				// The config class is annotated with @ComponentScan -> perform the scan immediately
 				Set<BeanDefinitionHolder> scannedBeanDefinitions =
 						this.componentScanParser.parse(componentScan, sourceClass.getMetadata().getClassName());
+				//检查任何其他配置类的扫描定义集，并在需要时递归解析
 				// Check the set of scanned definitions for any further config classes and parse recursively if needed
 				for (BeanDefinitionHolder holder : scannedBeanDefinitions) {
 					BeanDefinition bdCand = holder.getBeanDefinition().getOriginatingBeanDefinition();
@@ -325,9 +328,11 @@ class ConfigurationClassParser {
 			}
 		}
 
+		//@Import注解处理
 		// Process any @Import annotations
 		processImports(configClass, sourceClass, getImports(sourceClass), filter, true);
 
+		//@ImportResource 注解处理
 		// Process any @ImportResource annotations
 		AnnotationAttributes importResource =
 				AnnotationConfigUtils.attributesFor(sourceClass.getMetadata(), ImportResource.class);
@@ -340,6 +345,7 @@ class ConfigurationClassParser {
 			}
 		}
 
+		//处理@Bean注解
 		// Process individual @Bean methods
 		Set<MethodMetadata> beanMethods = retrieveBeanMethodMetadata(sourceClass);
 		for (MethodMetadata methodMetadata : beanMethods) {
@@ -349,6 +355,7 @@ class ConfigurationClassParser {
 		// Process default methods on interfaces
 		processInterfaces(configClass, sourceClass);
 
+		//处理父类
 		// Process superclass, if any
 		if (sourceClass.getMetadata().hasSuperClass()) {
 			String superclass = sourceClass.getMetadata().getSuperClassName();
@@ -360,6 +367,7 @@ class ConfigurationClassParser {
 			}
 		}
 
+		//没有父类，处理完成
 		// No superclass -> processing is complete
 		return null;
 	}
@@ -398,6 +406,7 @@ class ConfigurationClassParser {
 	}
 
 	/**
+	 * 在配置类实现的接口上注册默认方法。
 	 * Register default methods on interfaces implemented by the configuration class.
 	 */
 	private void processInterfaces(ConfigurationClass configClass, SourceClass sourceClass) throws IOException {

@@ -303,6 +303,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 
 
 	/**
+	 * 扫描候选组件的类路径。
 	 * Scan the class path for candidate components.
 	 * @param basePackage the package to check for annotated classes
 	 * @return a corresponding Set of autodetected bean definitions
@@ -312,6 +313,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 			return addCandidateComponentsFromIndex(this.componentsIndex, basePackage);
 		}
 		else {
+			//扫描候选组件，也就是要将class作为bean交给spring管理
 			return scanCandidateComponents(basePackage);
 		}
 	}
@@ -480,6 +482,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	}
 
 	/**
+	 * 确定给定的类是否不匹配任何排除过滤器并且匹配至少一个包含过滤器。
 	 * Determine whether the given class does not match any exclude filter
 	 * and does match at least one include filter.
 	 * @param metadataReader the ASM ClassReader for the class

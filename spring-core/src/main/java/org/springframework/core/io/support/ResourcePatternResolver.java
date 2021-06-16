@@ -22,6 +22,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
 /**
+ * 用于将位置模式（例如，Ant 风格的路径模式）解析为 Resource 对象的策略接口
  * Strategy interface for resolving a location pattern (for example,
  * an Ant-style path pattern) into Resource objects.
  *
