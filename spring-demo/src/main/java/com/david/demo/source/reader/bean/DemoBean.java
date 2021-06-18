@@ -1,5 +1,6 @@
 package com.david.demo.source.reader.bean;
 
+import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.*;
@@ -18,19 +19,22 @@ import java.util.logging.Logger;
 //@AliasFor()
 @Primary()
 @ComponentScan(basePackages = "com.david.demo.source.reader.bean")
-//@PropertySource(value = "file:C:\\Users\\fanzunying\\IdeaProjects\\spring\\spring-framework\\spring-demo\\src\\main\\resources\\application.properties")
+//@PropertySource(value = "file:C:\\Users\\fanzunying\\IdeaProjects\\spring\\spring-framework\\spring-demo\\src\\main\\resources\\log4j.properties")
 //@EnableLoadTimeWeaving()
 //@EnableAspectJAutoProxy
+//@ImportResource()
+//@PropertySource(value = "classpath:log4j.properties")
 public class DemoBean {
 
 	public static void main(String[] args) {
-//		Logger logger = Logger.getLogger("DemoBean");
-//		logger.setLevel(Level.ALL);
 		AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext();
+//		ac.prepareRefresh();
 		ac.register(DemoBean.class);
+
 //		ac.setAllowCircularReferences(false);
 //		ac.register(MyBeanPostProcessor.class);
 		ac.refresh();
+		ac.start();
 		BeanDefinition definition = ac.getBeanDefinition("getMyMyAlias");
 		System.out.println(definition);
 		BeanDefinition demoBean = ac.getBeanDefinition("MyConfig");
