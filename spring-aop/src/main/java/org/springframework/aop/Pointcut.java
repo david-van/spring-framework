@@ -19,6 +19,7 @@ package org.springframework.aop;
 /**
  * Core Spring pointcut abstraction.
  *
+ * 切点由ClassFilter 和 MethodMatcher 组合而成，这两者组成了ComposablePointcut
  * <p>A pointcut is composed of a {@link ClassFilter} and a {@link MethodMatcher}.
  * Both these basic terms and a Pointcut itself can be combined to build up combinations
  * (e.g. through {@link org.springframework.aop.support.ComposablePointcut}).

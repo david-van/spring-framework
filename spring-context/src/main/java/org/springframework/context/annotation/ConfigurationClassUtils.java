@@ -42,6 +42,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 /**
+ * 识别 @Configuration注解的配置类的utils类
  * Utilities for identifying {@link Configuration} classes.
  *
  * @author Chris Beams
@@ -50,8 +51,10 @@ import org.springframework.stereotype.Component;
  */
 abstract class ConfigurationClassUtils {
 
+	//full 模式  该模式下@Bean注解的方法为代理类，可以通过注解Configuration#proxyBeanMethods进行配置
 	public static final String CONFIGURATION_CLASS_FULL = "full";
 
+	//lite 模式  该模式下@Bean注解的方法为自身生成的类
 	public static final String CONFIGURATION_CLASS_LITE = "lite";
 
 	public static final String CONFIGURATION_CLASS_ATTRIBUTE =

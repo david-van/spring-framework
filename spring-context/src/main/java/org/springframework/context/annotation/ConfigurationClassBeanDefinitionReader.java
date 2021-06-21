@@ -145,7 +145,9 @@ class ConfigurationClassBeanDefinitionReader {
 			loadBeanDefinitionsForBeanMethod(beanMethod);
 		}
 
+		//从导入resource中加载bd
 		loadBeanDefinitionsFromImportedResources(configClass.getImportedResources());
+		//从注册表中加载bd
 		loadBeanDefinitionsFromRegistrars(configClass.getImportBeanDefinitionRegistrars());
 	}
 

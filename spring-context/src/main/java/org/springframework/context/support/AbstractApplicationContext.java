@@ -576,37 +576,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			try {
 				// Allows post-processing of the bean factory in context subclasses.
 				postProcessBeanFactory(beanFactory);
-				/**
-				 * TODO
-				 * 完成对bean的扫描，将class变成beanDefinition，并将beanDefinition存到map中
-				 *
-				 * 该方法在spring的环境中执行已经被注册的factory processors；
-				 * 执行自定义的processBeanFactory
-				 *
-				 * 在这个方法中，注入bean，分为了三种
-				 * 一、普通bean：@Component注解的bean
-				 * spring 自己的类，不借助spring扫描，会直接放到beanDefinitionMap
-				 *
-				 * 1.获取到所有的beanFactoryPostProcessor
-				 * 2.执行 bean后置处理器的postProcessBeanFactory（configurationClassPostProcessor）,该方法会把beanFactory作为入参传到方法里面
-				 * 3.从beanFactory中获取到所有的beanName   打断点看一下 org.springframework.context.annotation .ConfigurationClassPostProcessor#processConfigBeanDefinitions
-				 *
-				 * 4.然后将所有的bean包装成beanDefinitionHolder,在后面又根据beanName和bean的metadata包装成了ConfigurationClass
-				 * 5.把所有包含@ComponentScan的类取出来，遍历每一个componentScan,调用 ClassPathBeanDefinitionScanner.doScan(basePackages)方法
-				 * 6.在doScan方法中，会遍历basePackages,因为一个ComponentScan中可以配置多个要扫描的包
-				 * 7.获取每个包下面的 *.class文件，registerBeanDefinition(definitionHolder, this.registry); 这个方法底层就是调用org.springframework.beans.factory.support.DefaultListableBeanFactory#registerBeanDefinition方法  把当前bean put到beanDefinitionMap中
-				 *
-				 * 二、是通过@Import注解注入的bean
-				 *     ImportBeanDefinitionRegistrar
-				 *     ImportSelector
-				 *
-				 * 三、@Bean注解
-				 *
-				 *
-				 *
-				 * spring在把bean注入到beanDefinitionMaps的同时，会将当前beanName添加到一个list中 beanDefinitionNames,这个list和beanDefinitionMap是同时进行添加的，这个list在后面实例化bean的时候有用到，spring是遍历这个list，拿到每个beanName之后，从beanDefinitionMap中取到对应的beanDefinition
-				 */
 
+				//完成对bean的扫描，将class变成beanDefinition，并将beanDefinition存到map中
 				// Invoke factory processors registered as beans in the context.
 				//调用BeanFactory的后置处理器，执行对应的方法
 				invokeBeanFactoryPostProcessors(beanFactory);
@@ -781,6 +752,35 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
+	 *
+	 * 完成对bean的扫描，将class变成beanDefinition，并将beanDefinition存到map中
+	 * <p>
+	 * 该方法在spring的环境中执行已经被注册的factory processors；
+	 * 执行自定义的processBeanFactory
+	 * <p>
+	 * 在这个方法中，注入bean，分为了三种
+	 * 一、普通bean：@Component注解的bean
+	 * spring 自己的类，不借助spring扫描，会直接放到beanDefinitionMap
+	 * <p>
+	 * 1.获取到所有的beanFactoryPostProcessor
+	 * 2.执行 bean后置处理器的postProcessBeanFactory（configurationClassPostProcessor）,该方法会把beanFactory作为入参传到方法里面
+	 * 3.从beanFactory中获取到所有的beanName   打断点看一下 org.springframework.context.annotation .ConfigurationClassPostProcessor#processConfigBeanDefinitions
+	 * <p>
+	 * 4.然后将所有的bean包装成beanDefinitionHolder,在后面又根据beanName和bean的metadata包装成了ConfigurationClass
+	 * 5.把所有包含@ComponentScan的类取出来，遍历每一个componentScan,调用 ClassPathBeanDefinitionScanner.doScan(basePackages)方法
+	 * 6.在doScan方法中，会遍历basePackages,因为一个ComponentScan中可以配置多个要扫描的包
+	 * 7.获取每个包下面的 *.class文件，registerBeanDefinition(definitionHolder, this.registry); 这个方法底层就是调用org.springframework.beans.factory.support.DefaultListableBeanFactory#registerBeanDefinition方法  把当前bean put到beanDefinitionMap中
+	 * <p>
+	 * 二、是通过@Import注解注入的bean
+	 * ImportBeanDefinitionRegistrar
+	 * ImportSelector
+	 * <p>
+	 * 三、@Bean注解
+	 * <p>
+	 * <p>
+	 * <p>
+	 * spring在把bean注入到beanDefinitionMaps的同时，会将当前beanName添加到一个list中 beanDefinitionNames,这个list和beanDefinitionMap是同时进行添加的，这个list在后面实例化bean的时候有用到，spring是遍历这个list，拿到每个beanName之后，从beanDefinitionMap中取到对应的beanDefinition
+	 * <p>
 	 * Instantiate and invoke all registered BeanFactoryPostProcessor beans,
 	 * respecting explicit order if given.
 	 * <p>Must be called before singleton instantiation.

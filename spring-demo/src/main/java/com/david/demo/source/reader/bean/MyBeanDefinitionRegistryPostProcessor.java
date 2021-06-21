@@ -21,7 +21,7 @@ public class MyBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegi
 
 	@Override
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-		AbstractBeanDefinition userService = (AbstractBeanDefinition) registry.getBeanDefinition("userService");
+//		AbstractBeanDefinition userService = (AbstractBeanDefinition) registry.getBeanDefinition("userService");
 //		userService.setAutowireMode(AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR);
 	}
 

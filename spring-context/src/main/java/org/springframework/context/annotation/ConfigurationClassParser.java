@@ -423,6 +423,7 @@ class ConfigurationClassParser {
 	}
 
 	/**
+	 * 获取所有存在@Bean注解的方法的元数据
 	 * Retrieve the metadata for all <code>@Bean</code> methods.
 	 */
 	private Set<MethodMetadata> retrieveBeanMethodMetadata(SourceClass sourceClass) {

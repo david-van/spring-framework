@@ -264,10 +264,25 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 
 	/**
 	 * 构建和校验配置类模型，基于注册表的configuration类
+	 *
 	 * Build and validate a configuration model based on the registry of
 	 * {@link Configuration} classes.
 	 */
 	public void processConfigBeanDefinitions(BeanDefinitionRegistry registry) {
+		/**
+		 * 这个list用来保存
+		 * 	添加@Configuration的类
+		 * 	添加了@Component
+		 * 	或者@ComponentScan
+		 * 	或者@Import
+		 * 	或者@ImportResource
+		 * 	注解的类
+		 *
+		 * 唯一的区别是：如果类上加了@Configuration，对应的ConfigurationClass是full；否则是lite
+		 *
+		 * 正常情况下，第一次进入到这里的时候，只有配置类一个bean，因为如果是第一次进入到这里的话，beanDefinitionMap中，只有配置类这一个是我们程序员提供的
+		 * 业务类，其他的都是spring自带的后置处理器
+		 */
 		List<BeanDefinitionHolder> configCandidates = new ArrayList<>();
 		String[] candidateNames = registry.getBeanDefinitionNames();
 
@@ -339,6 +354,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 						registry, this.sourceExtractor, this.resourceLoader, this.environment,
 						this.importBeanNameGenerator, parser.getImportRegistry());
 			}
+			//加载bd
 			this.reader.loadBeanDefinitions(configClasses);
 			//configClasses已经解析，加入到alreadyParsed队伍
 			alreadyParsed.addAll(configClasses);
@@ -380,6 +396,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	}
 
 	/**
+	 * 配置类用代理实现增强
 	 * Post-processes a BeanFactory in search of Configuration class BeanDefinitions;
 	 * any candidates are then enhanced by a {@link ConfigurationClassEnhancer}.
 	 * Candidate status is determined by BeanDefinition attribute metadata.
@@ -408,6 +425,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 					}
 				}
 			}
+			//判断为full模式
 			if (ConfigurationClassUtils.CONFIGURATION_CLASS_FULL.equals(configClassAttr)) {
 				if (!(beanDef instanceof AbstractBeanDefinition)) {
 					throw new BeanDefinitionStoreException("Cannot enhance @Configuration bean definition '" +
@@ -426,13 +444,16 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			return;
 		}
 
+		//配置类的代理子类
 		ConfigurationClassEnhancer enhancer = new ConfigurationClassEnhancer();
+		//所有的full模式下的bean，使用子类来增强
 		for (Map.Entry<String, AbstractBeanDefinition> entry : configBeanDefs.entrySet()) {
 			AbstractBeanDefinition beanDef = entry.getValue();
 			// If a @Configuration class gets proxied, always proxy the target class
 			beanDef.setAttribute(AutoProxyUtils.PRESERVE_TARGET_CLASS_ATTRIBUTE, Boolean.TRUE);
 			// Set enhanced subclass of the user-specified bean class
 			Class<?> configClass = beanDef.getBeanClass();
+			//进行实际的增强
 			Class<?> enhancedClass = enhancer.enhance(configClass, this.beanClassLoader);
 			if (configClass != enhancedClass) {
 				if (logger.isTraceEnabled()) {

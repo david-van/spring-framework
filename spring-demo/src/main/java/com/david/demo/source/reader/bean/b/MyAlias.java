@@ -25,7 +25,9 @@ public class MyAlias {
 
 	@Bean(value = "getMyMyAlias")
 	public MyConfig getMy() {
-		return new MyConfig();
+		MyConfig myConfig = new MyConfig();
+		myConfig.setName("new name");
+		return myConfig;
 	}
 
 	@PostConstruct

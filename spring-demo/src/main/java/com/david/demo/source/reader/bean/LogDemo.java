@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 public class LogDemo {
 	public static void main(String[] args) {
 		Logger logger = LogManager.getLogger();
+		logger.trace("trace");
 		logger.debug("aaa");
 		logger.info("info");
 		logger.error("error");
