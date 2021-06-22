@@ -32,6 +32,7 @@ import org.springframework.lang.Nullable;
 public interface AopProxy {
 
 	/**
+	 * 使用 AopProxy 的默认类加载器（如果需要创建代理）：通常是线程上下文类加载器
 	 * Create a new proxy object.
 	 * <p>Uses the AopProxy's default class loader (if necessary for proxy creation):
 	 * usually, the thread context class loader.
@@ -41,6 +42,8 @@ public interface AopProxy {
 	Object getProxy();
 
 	/**
+	 * 使用上面getProxy传入的类加载器，jdk为ClassUtils.getDefaultClassLoader()
+	 * cjlib 为null
 	 * Create a new proxy object.
 	 * <p>Uses the given class loader (if necessary for proxy creation).
 	 * {@code null} will simply be passed down and thus lead to the low-level

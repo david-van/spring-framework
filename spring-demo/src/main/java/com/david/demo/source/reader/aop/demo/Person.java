@@ -4,7 +4,7 @@ package com.david.demo.source.reader.aop.demo;
  * @author fanzunying
  * @date 2021/6/21 19:20
  */
-public class Person {
+public class Person implements PersonI {
 
 	public int run() {
 		System.out.println("我在run...");

@@ -23,6 +23,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * 用于在两种或多种类型之间进行转换的通用转换器接口。N：N
  * Generic converter interface for converting between two or more types.
  *
  * <p>This is the most flexible of the Converter SPI interfaces, but also the most complex.

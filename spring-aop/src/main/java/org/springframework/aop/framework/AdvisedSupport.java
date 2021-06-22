@@ -140,6 +140,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	}
 
 	/**
+	 * 设置要代理的目标类，表示代理应该可转换到给定的类。
 	 * Set a target class to be proxied, indicating that the proxy
 	 * should be castable to the given class.
 	 * <p>Internally, an {@link org.springframework.aop.target.EmptyTargetSource}
