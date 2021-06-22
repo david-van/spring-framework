@@ -6,4 +6,5 @@ package com.david.demo.source.reader.aop.demo;
  * @date 2021/6/22 8:34
  */
 public interface PersonI {
+	void run(int i);
 }

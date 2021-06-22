@@ -168,6 +168,11 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 		Object target = null;
 
 		try {
+			//“通常情况”Spring AOP不会对equals、hashCode方法进行拦截增强,所以此处做了处理
+			// equalsDefined为false（表示自己没有定义过equals方法）  那就交给代理去比较
+			// hashCode同理，只要你自己没有实现过此方法，那就交给代理吧
+			// 需要注意的是：这里统一指的是，如果接口上有此方法，但是你自己并没有实现equals和hashCode方法，那就走AOP这里的实现
+			// 如果接口上没有定义此方法，只是实现类里自己@Override了HashCode，那是无效的，就是普通执行吧
 			if (!this.equalsDefined && AopUtils.isEqualsMethod(method)) {
 				// The target does not implement the equals(Object) method itself.
 				return equals(args[0]);
@@ -176,6 +181,8 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 				// The target does not implement the hashCode() method itself.
 				return hashCode();
 			}
+			// 下面两段做了很有意思的处理：DecoratingProxy的方法和Advised接口的方法
+			// 都是是最终调用了config，也就是this.advised去执行的
 			else if (method.getDeclaringClass() == DecoratingProxy.class) {
 				// There is only getDecoratedClass() declared -> dispatch to proxy config.
 				return AopProxyUtils.ultimateTargetClass(this.advised);
@@ -199,6 +206,9 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 			target = targetSource.getTarget();
 			Class<?> targetClass = (target != null ? target.getClass() : null);
 
+			//获取此方法的拦截链
+			// 获取作用在这个方法上的所有拦截器链~~~  参见DefaultAdvisorChainFactory#getInterceptorsAndDynamicInterceptionAdvice方法
+			// 会根据切点表达式去匹配这个方法。因此其实每个方法都会进入这里，只是有很多方法得chain事Empty而已
 			// Get the interception chain for this method.
 			List<Object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass);
 
@@ -212,9 +222,11 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 				retVal = AopUtils.invokeJoinpointUsingReflection(target, method, argsToUse);
 			}
 			else {
+				//创建一个invocation ，此处为ReflectiveMethodInvocation  最终是通过它，去执行前置加强、后置加强等等逻辑
 				// We need to create a method invocation...
 				MethodInvocation invocation =
 						new ReflectiveMethodInvocation(proxy, target, method, args, targetClass, chain);
+				//通过连接器链执行切点
 				// Proceed to the joinpoint through the interceptor chain.
 				retVal = invocation.proceed();
 			}

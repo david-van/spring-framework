@@ -3,6 +3,7 @@ package com.david.demo.source.reader.aop.demo;
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.springframework.aop.Advisor;
+import org.springframework.aop.MethodBeforeAdvice;
 import org.springframework.aop.SpringProxy;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.framework.Advised;
@@ -10,7 +11,9 @@ import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.core.DecoratingProxy;
+import org.springframework.util.ClassUtils;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
 
@@ -20,6 +23,47 @@ import java.util.Arrays;
  */
 public class PersonTest {
 	public static void main(String[] args) {
+//		test01();
+		test02();
+	}
+
+	private static void test02() {
+		PersonI person = new Person();
+		ProxyFactory proxyFactory = new ProxyFactory();
+		proxyFactory.setTarget(person);
+		proxyFactory.addAdvice((MethodBeforeAdvice) (method, args1, target) -> {
+			System.out.println("方法之前执行了~~~");
+		});
+
+		PersonI person1 = (Person) proxyFactory.getProxy();
+		person1.run(22);
+		System.out.println(person1.getClass().getName()); //com.fsx.service.HelloServiceImpl$$EnhancerBySpringCGLIB$$9b28670f
+
+		//===============演示AopUtils==================
+
+		// AopUtils.isAopProxy:是否是代理对象
+		System.out.println(AopUtils.isAopProxy(person1)); // true
+		System.out.println(AopUtils.isJdkDynamicProxy(person1)); // false
+		System.out.println(AopUtils.isCglibProxy(person1)); // true
+
+		// 拿到目标对象
+		System.out.println(AopUtils.getTargetClass(person1)); //class com.fsx.service.HelloServiceImpl
+
+		// selectInvocableMethod:方法@since 4.3  底层依赖于方法MethodIntrospector.selectInvocableMethod
+		// 只是在他技术上做了一个判断： 必须是被代理的方法才行（targetType是SpringProxy的子类,且是private这种方法，且不是static的就不行）
+		// Spring MVC的detectHandlerMethods对此方法有大量调用~~~~~
+		Method method = ClassUtils.getMethod(Person.class, "run");
+		System.out.println(AopUtils.selectInvocableMethod(method, Person.class)); //public java.lang.Object com.fsx.service.HelloServiceImpl.hello()
+
+		// 是否是equals方法
+		// isToStringMethod、isHashCodeMethod、isFinalizeMethod  都是类似的
+		System.out.println(AopUtils.isEqualsMethod(method)); //false
+
+		// 它是对ClassUtils.getMostSpecificMethod,增加了对代理对象的特殊处理。。。
+		System.out.println(AopUtils.getMostSpecificMethod(method,PersonI.class));
+	}
+
+	private static void test01() {
 		//String pointcutExpression = "execution( int com.fsx.maintest.Person.run() )"; // 会拦截Person.run()方法
 		//String pointcutExpression = "args()"; // 所有没有入参的方法会被拦截。  比如：run()会拦截,但是run(int i)不会被拦截
 		// ... AspectJExpressionPointcut支持的表达式 一共有11种（也就是Spring全部支持的切点表达式类型）
@@ -63,7 +107,7 @@ public class PersonTest {
 
 		// 执行方法
 //		demo.run();
-//		demo.run(10);
+		demo.run(10);
 //		demo.say();
 //		demo.sayHi("Jack");
 //		demo.say("Tom", 666);
@@ -104,6 +148,5 @@ public class PersonTest {
 		// 你被拦截了：方法名为：hello 参数为--[]
 		// com.fsx.maintest.Demo@643b1d11
 		System.out.println(demo.toString());
-
 	}
 }

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @EnableAspectJAutoProxy
-public class HelloAspect {
+public class HelloAspect1 {
 
 	// 拦截aop目录下所有类的所有方法
 	@Pointcut("execution(* com.david.demo.source.reader.aop..*.*(..)) ")
@@ -21,28 +21,28 @@ public class HelloAspect {
 
 	@Before("point()")
 	public void before() {
-		System.out.println("this is from HelloAspect#before...");
+		System.out.println("HelloAspect1 this is from HelloAspect#before...");
 	}
 
 	@After("point()")
 	public void after() {
-		System.out.println("this is from HelloAspect#after...");
+		System.out.println(" HelloAspect1  this is from HelloAspect#after...");
 	}
 
 	@AfterReturning("point()")
 	public void afterReturning() {
-		System.out.println("this is from HelloAspect#afterReturning...");
+		System.out.println(" HelloAspect1 this is from HelloAspect#afterReturning...");
 	}
 
 	@AfterThrowing("point()")
 	public void afterThrowing() {
-		System.out.println("this is from HelloAspect#afterThrowing...");
+		System.out.println("HelloAspect1 this is from HelloAspect#afterThrowing...");
 	}
 
 	//此处需要注意：若写了@Around方法，那么最后只会执行@Around和@AfterReturning 其它的都不会执行
 //	@Around("point()")
 //	public void around() {
-//		System.out.println("this is from HelloAspect#around...");
+//		System.out.println("HelloAspect1 this is from HelloAspect#around...");
 //
 //	}
 
