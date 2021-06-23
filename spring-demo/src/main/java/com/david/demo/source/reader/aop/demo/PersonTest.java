@@ -2,14 +2,14 @@ package com.david.demo.source.reader.aop.demo;
 
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.MethodBeforeAdvice;
 import org.springframework.aop.SpringProxy;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.framework.Advised;
 import org.springframework.aop.framework.ProxyFactory;
-import org.springframework.aop.support.AopUtils;
-import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.aop.support.*;
 import org.springframework.core.DecoratingProxy;
 import org.springframework.util.ClassUtils;
 
@@ -24,7 +24,101 @@ import java.util.Arrays;
 public class PersonTest {
 	public static void main(String[] args) {
 //		test01();
-		test02();
+//		test02();
+//		test03();
+//		test04();
+		test05();
+	}
+
+	private static void test05() {
+
+		PersonI person = new Person();
+		MethodInterceptor interceptor = invocation -> {
+			Method method = invocation.getMethod();
+			System.out.println("方法之前执行了---------" + method.getName());
+			Object result = method.invoke(invocation.getThis(), invocation.getArguments());
+			System.out.println("方法之后执行了---------" + method.getName());
+			return result;
+		};
+		NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
+		pointcut.addMethodName("say");
+		DefaultPointcutAdvisor advisor = new DefaultPointcutAdvisor( );
+//		advisor.setPointcut(pointcut);
+		advisor.setAdvice(interceptor);
+		// 创建一个流程切入点
+		//也就是在那个类中的那个方法中执行被代理对象的方法的时候，能够进行配置，完成代理功能
+		ControlFlowPointcut controlFlowPointcut = new ControlFlowPointcut(PersonTest.class, "test04");
+		advisor.setPointcut(controlFlowPointcut);
+
+
+
+		ProxyFactory proxyFactory = new ProxyFactory();
+		proxyFactory.setTarget(person);
+		proxyFactory.addAdvisor(advisor);
+
+
+
+		PersonI person1 = (Person) proxyFactory.getProxy();
+		person1.run(22);
+		person1.run();
+		person1.say();
+
+
+
+	}
+
+	private static void test04() {
+		PersonI person = new Person();
+		MethodInterceptor interceptor = invocation -> {
+			Method method = invocation.getMethod();
+			System.out.println("方法之前执行了---------" + method.getName());
+			Object result = method.invoke(invocation.getThis(), invocation.getArguments());
+			System.out.println("方法之后执行了---------" + method.getName());
+			return result;
+		};
+		NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
+		pointcut.addMethodName("say");
+		Advisor advisor = new DefaultPointcutAdvisor(pointcut, interceptor);
+//		NameMatchMethodPointcutAdvisor advisor = new NameMatchMethodPointcutAdvisor();
+//		advisor.setMappedName("run");
+//		advisor.setAdvice(interceptor);
+
+
+		ProxyFactory proxyFactory = new ProxyFactory();
+		proxyFactory.setTarget(person);
+		proxyFactory.addAdvisor(advisor);
+//		proxyFactory.addAdvice(interceptor);
+
+		PersonI person1 = (Person) proxyFactory.getProxy();
+		person1.run(22);
+		person1.run();
+		person1.say();
+	}
+
+	private static void test03() {
+		PersonI person = new Person();
+		MethodInterceptor interceptor = invocation -> {
+			Method method = invocation.getMethod();
+			System.out.println("方法之前执行了---------" + method.getName());
+			Object result = method.invoke(invocation.getThis(), invocation.getArguments());
+			System.out.println("方法之后执行了---------" + method.getName());
+			return result;
+		};
+		//设置方法名advice
+		NameMatchMethodPointcutAdvisor advisor = new NameMatchMethodPointcutAdvisor();
+		advisor.setMappedName("run");
+		advisor.setAdvice(interceptor);
+
+
+		ProxyFactory proxyFactory = new ProxyFactory();
+		proxyFactory.setTarget(person);
+		proxyFactory.addAdvisor(advisor);
+
+
+		PersonI person1 = (Person) proxyFactory.getProxy();
+		person1.run(22);
+		person1.run();
+		person1.say();
 	}
 
 	private static void test02() {
@@ -60,7 +154,7 @@ public class PersonTest {
 		System.out.println(AopUtils.isEqualsMethod(method)); //false
 
 		// 它是对ClassUtils.getMostSpecificMethod,增加了对代理对象的特殊处理。。。
-		System.out.println(AopUtils.getMostSpecificMethod(method,PersonI.class));
+		System.out.println(AopUtils.getMostSpecificMethod(method, PersonI.class));
 	}
 
 	private static void test01() {

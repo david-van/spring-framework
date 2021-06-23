@@ -6,15 +6,18 @@ package com.david.demo.source.reader.aop.demo;
  */
 public class Person implements PersonI {
 
+	@Override
 	public int run() {
 		System.out.println("我在run...");
 		return 0;
 	}
 
+	@Override
 	public void run(int i) {
 		System.out.println("我在run...<" + i + ">");
 	}
 
+	@Override
 	public void say() {
 		System.out.println("我在say...");
 	}
