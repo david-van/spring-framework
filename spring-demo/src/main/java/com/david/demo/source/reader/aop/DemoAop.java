@@ -1,5 +1,7 @@
 package com.david.demo.source.reader.aop;
 
+import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
@@ -18,12 +20,20 @@ public class DemoAop {
 		ac.refresh();
 		ac.start();
 
-		HelloDemo bean = ac.getBean(HelloDemo.class);
-		System.out.println("bean = " + bean);
+		HelloDemoI helloDemo = (HelloDemoI) ac.getBean("helloDemo");
+		helloDemo.getInfo();
+		HelloDemoI bean = (HelloDemoI) ac.getBean("proxyFactoryBean");
+
 		bean.getInfo();
+		System.out.println("bean.getClass() = " + bean.getClass());
+//		HelloDemo bean = ac.getBean(HelloDemo.class);
+//		System.out.println("bean = " + bean);
+//		bean.getInfo();
 
 
 
 		ac.close();
 	}
+
+
 }

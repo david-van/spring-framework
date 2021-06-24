@@ -7,7 +7,8 @@ import org.springframework.stereotype.Component;
  * @date 2021/6/21 17:29
  */
 @Component
-public class HelloDemo {
+public class HelloDemo implements HelloDemoI {
+	@Override
 	public void getInfo() {
 		System.out.println("目标类方法：getInfo");
 	}

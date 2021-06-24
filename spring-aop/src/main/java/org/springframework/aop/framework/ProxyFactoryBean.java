@@ -125,7 +125,9 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 	/** Whether the advisor chain has already been initialized. */
 	private boolean advisorChainInitialized = false;
 
-	/** If this is a singleton, the cached singleton proxy instance. */
+	/**
+	 * 这个对象是代理对象，不是被代理的对象
+	 * If this is a singleton, the cached singleton proxy instance. */
 	@Nullable
 	private Object singletonInstance;
 
@@ -247,8 +249,11 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 	@Override
 	@Nullable
 	public Object getObject() throws BeansException {
+		//初始化advisor链
+
 		initializeAdvisorChain();
 		if (isSingleton()) {
+			//返回单例对象
 			return getSingletonInstance();
 		}
 		else {
@@ -256,6 +261,7 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 				logger.info("Using non-singleton proxies with singleton targets is often undesirable. " +
 						"Enable prototype proxies by setting the 'targetName' property.");
 			}
+			//返回多例的实例
 			return newPrototypeInstance();
 		}
 	}
@@ -325,6 +331,7 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 			}
 			// Initialize the shared singleton instance.
 			super.setFrozen(this.freezeProxy);
+			//获取代理bean
 			this.singletonInstance = getProxy(createAopProxy());
 		}
 		return this.singletonInstance;
@@ -358,6 +365,7 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 	}
 
 	/**
+	 * 返回暴露的代理对象
 	 * Return the proxy object to expose.
 	 * <p>The default implementation uses a {@code getProxy} call with
 	 * the factory's bean class loader. Can be overridden to specify a

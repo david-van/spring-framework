@@ -34,6 +34,7 @@ import org.springframework.aop.support.Pointcuts;
 import org.springframework.lang.Nullable;
 
 /**
+ * 切点通知 的内部实现类，每个目标方法都持有该对象
  * Internal implementation of AspectJPointcutAdvisor.
  * Note that there will be one instance of this advisor for each target method.
  *

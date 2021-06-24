@@ -89,12 +89,14 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 				if (aspectNames == null) {
 					List<Advisor> advisors = new ArrayList<>();
 					aspectNames = new ArrayList<>();
+					//从beanFactory中拿到所有的bean来逐一判断
 					String[] beanNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 							this.beanFactory, Object.class, true, false);
 					for (String beanName : beanNames) {
 						if (!isEligibleBean(beanName)) {
 							continue;
 						}
+						//我们必须小心不要急切地实例化 bean，因为在这种情况下它们会被 Spring 容器缓存但不会被编织
 						// We must be careful not to instantiate beans eagerly as in this case they
 						// would be cached by the Spring container but would not have been weaved.
 						Class<?> beanType = this.beanFactory.getType(beanName, false);
@@ -102,6 +104,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 							continue;
 						}
 						if (this.advisorFactory.isAspect(beanType)) {
+							//该bean是一个切面
 							aspectNames.add(beanName);
 							AspectMetadata amd = new AspectMetadata(beanType, beanName);
 							if (amd.getAjType().getPerClause().getKind() == PerClauseKind.SINGLETON) {
