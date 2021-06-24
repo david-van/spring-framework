@@ -3,9 +3,7 @@ package com.david.demo.source.reader.aop.demo;
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.springframework.aop.Advisor;
-import org.springframework.aop.MethodBeforeAdvice;
-import org.springframework.aop.SpringProxy;
+import org.springframework.aop.*;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.framework.Advised;
 import org.springframework.aop.framework.ProxyFactory;
@@ -33,23 +31,45 @@ public class PersonTest {
 	private static void test05() {
 
 		PersonI person = new Person();
-		MethodInterceptor interceptor = invocation -> {
-			Method method = invocation.getMethod();
-			System.out.println("方法之前执行了---------" + method.getName());
-			Object result = method.invoke(invocation.getThis(), invocation.getArguments());
-			System.out.println("方法之后执行了---------" + method.getName());
-			return result;
+		MethodInterceptor interceptor = new MethodInterceptor() {
+			@Override
+			public Object invoke(MethodInvocation invocation) throws Throwable {
+				Method method = invocation.getMethod();
+				System.out.println("方法之前执行了---------" + method.getName());
+				Object result = method.invoke(invocation.getThis(), invocation.getArguments());
+				System.out.println("方法之后执行了---------" + method.getName());
+				return result;
+			}
 		};
+		BeforeAdvice beforeAdvice = new MethodBeforeAdvice() {
+			@Override
+			public void before(Method method, Object[] args, Object target) throws Throwable {
+				System.out.println("before 方法之前执行了---------" + method.getName());
+				//此处属于重复调用了
+//				method.invoke(target, args);
+//				System.out.println("before 方法之后执行了---------" + method.getName());
+			}
+		};
+
 		NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
 		pointcut.addMethodName("say");
-		DefaultPointcutAdvisor advisor = new DefaultPointcutAdvisor( );
-//		advisor.setPointcut(pointcut);
+		DefaultPointcutAdvisor advisor = new DefaultPointcutAdvisor();
+		advisor.setPointcut(pointcut);
 		advisor.setAdvice(interceptor);
+		advisor.setAdvice(beforeAdvice);
 		// 创建一个流程切入点
 		//也就是在那个类中的那个方法中执行被代理对象的方法的时候，能够进行配置，完成代理功能
-		ControlFlowPointcut controlFlowPointcut = new ControlFlowPointcut(PersonTest.class, "test04");
+		ControlFlowPointcut controlFlowPointcut = new ControlFlowPointcut(PersonTest.class, "test05");
+		//会被后面的set覆盖
 		advisor.setPointcut(controlFlowPointcut);
 
+		// 创建一个复合切点 把上面两者并且进来
+		ComposablePointcut cut = new ComposablePointcut();
+		//交集
+		cut.intersection((Pointcut) controlFlowPointcut).intersection((Pointcut) pointcut);
+		//并集
+		cut.union((Pointcut) controlFlowPointcut).union((Pointcut) pointcut);
+		advisor.setPointcut(cut);
 
 
 		ProxyFactory proxyFactory = new ProxyFactory();
@@ -57,12 +77,10 @@ public class PersonTest {
 		proxyFactory.addAdvisor(advisor);
 
 
-
 		PersonI person1 = (Person) proxyFactory.getProxy();
 		person1.run(22);
 		person1.run();
 		person1.say();
-
 
 
 	}
@@ -126,7 +144,7 @@ public class PersonTest {
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.setTarget(person);
 		proxyFactory.addAdvice((MethodBeforeAdvice) (method, args1, target) -> {
-			System.out.println("方法之前执行了~~~");
+			System.out.println("方法之前执行了  ");
 		});
 
 		PersonI person1 = (Person) proxyFactory.getProxy();

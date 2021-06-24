@@ -26,6 +26,8 @@ import org.springframework.aop.MethodBeforeAdvice;
 import org.springframework.util.Assert;
 
 /**
+ * MethodBeforeAdvice的包装。类似于代理模式，内部持有实现接口BeforeAdvice的实现字段
+ * 并且通过适配器模式进行适配MethodBeforeAdviceAdapter
  * Interceptor to wrap a {@link MethodBeforeAdvice}.
  * <p>Used internally by the AOP framework; application developers should not
  * need to use this class directly.
@@ -52,7 +54,9 @@ public class MethodBeforeAdviceInterceptor implements MethodInterceptor, BeforeA
 
 	@Override
 	public Object invoke(MethodInvocation mi) throws Throwable {
+		//调用方法前置方法
 		this.advice.before(mi.getMethod(), mi.getArguments(), mi.getThis());
+		//继续执行下一个，完成链条的调用
 		return mi.proceed();
 	}
 

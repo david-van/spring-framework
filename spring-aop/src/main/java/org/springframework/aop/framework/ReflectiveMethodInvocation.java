@@ -61,15 +61,20 @@ import org.springframework.lang.Nullable;
  */
 public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Cloneable {
 
+	//代理对象
 	protected final Object proxy;
 
+	//目标对象、被代理对象
 	@Nullable
 	protected final Object target;
 
+	//目标方法 被拦截的方法
 	protected final Method method;
 
+	//目标方法参数
 	protected Object[] arguments;
 
+	//目标方法的Class (target != null ? target.getClass() : null)
 	@Nullable
 	private final Class<?> targetClass;
 
@@ -80,6 +85,7 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 	private Map<String, Object> userAttributes;
 
 	/**
+	 * 拦截链：包括拦截器和动态方法匹配器
 	 * List of MethodInterceptor and InterceptorAndDynamicMethodMatcher
 	 * that need dynamic checks.
 	 */
@@ -175,12 +181,14 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 				return dm.interceptor.invoke(this);
 			}
 			else {
+				//方法匹配失败，说明该方法不需要被代理，递归调用进行下一个拦截器
 				// Dynamic matching failed.
 				// Skip this interceptor and invoke the next in the chain.
 				return proceed();
 			}
 		}
 		else {
+			//此处说明，这里仅仅是一个拦截器，也就是说明，方法都匹配，不需要进行判断了
 			// It's an interceptor, so we just invoke it: The pointcut will have
 			// been evaluated statically before this object was constructed.
 			return ((MethodInterceptor) interceptorOrInterceptionAdvice).invoke(this);

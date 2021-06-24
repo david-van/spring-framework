@@ -21,6 +21,7 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.springframework.aop.MethodMatcher;
 
 /**
+ * 内部类，组合了方法的拦截器和匹配器，便于在拦截链的时候作为一个元素使用
  * Internal framework class, combining a MethodInterceptor instance
  * with a MethodMatcher for use as an element in the advisor chain.
  *

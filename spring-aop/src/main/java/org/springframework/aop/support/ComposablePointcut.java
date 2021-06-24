@@ -25,6 +25,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * 用于构建切入点的便捷类
  * Convenient class for building up pointcuts.
  *
  * <p>All methods return {@code ComposablePointcut}, so we can use concise idioms
@@ -46,12 +47,15 @@ public class ComposablePointcut implements Pointcut, Serializable {
 	/** use serialVersionUID from Spring 1.2 for interoperability. */
 	private static final long serialVersionUID = -2743223737633663832L;
 
+	//类过滤
 	private ClassFilter classFilter;
 
+	//方法匹配
 	private MethodMatcher methodMatcher;
 
 
 	/**
+	 * 类和方法都匹配
 	 * Create a default ComposablePointcut, with {@code ClassFilter.TRUE}
 	 * and {@code MethodMatcher.TRUE}.
 	 */
@@ -61,6 +65,7 @@ public class ComposablePointcut implements Pointcut, Serializable {
 	}
 
 	/**
+	 * 基于给定的切入点创建一个 ComposablePointcut。
 	 * Create a ComposablePointcut based on the given Pointcut.
 	 * @param pointcut the original Pointcut
 	 */
@@ -106,6 +111,7 @@ public class ComposablePointcut implements Pointcut, Serializable {
 
 
 	/**
+	 * 使用给定的 ClassFilter 的b。
 	 * Apply a union with the given ClassFilter.
 	 * @param other the ClassFilter to apply a union with
 	 * @return this composable pointcut (for call chaining)
@@ -116,6 +122,7 @@ public class ComposablePointcut implements Pointcut, Serializable {
 	}
 
 	/**
+	 * 应用与给定 ClassFilter 的交集。
 	 * Apply an intersection with the given ClassFilter.
 	 * @param other the ClassFilter to apply an intersection with
 	 * @return this composable pointcut (for call chaining)

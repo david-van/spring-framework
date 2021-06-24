@@ -26,6 +26,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * 解析注解的切点
  * Simple Pointcut that looks for a specific Java 5 annotation
  * being present on a {@link #forClassAnnotation class} or
  * {@link #forMethodAnnotation method}.
@@ -44,6 +45,7 @@ public class AnnotationMatchingPointcut implements Pointcut {
 
 
 	/**
+	 * 类上面存在注解，该类的方法都会匹配，该注解的子注解不匹配，因为checkInherited为false
 	 * Create a new AnnotationMatchingPointcut for the given annotation type.
 	 * @param classAnnotationType the annotation type to look for at the class level
 	 */
@@ -77,6 +79,7 @@ public class AnnotationMatchingPointcut implements Pointcut {
 	}
 
 	/**
+	 * 同时匹配类上面的和方法上面的，也就是类上和方法都加注解
 	 * Create a new AnnotationMatchingPointcut for the given annotation types.
 	 * @param classAnnotationType the annotation type to look for at the class level
 	 * (can be {@code null})
