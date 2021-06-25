@@ -45,9 +45,10 @@ public class ProxyAsyncConfiguration extends AbstractAsyncConfiguration {
 	@Bean(name = TaskManagementConfigUtils.ASYNC_ANNOTATION_PROCESSOR_BEAN_NAME)
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public AsyncAnnotationBeanPostProcessor asyncAdvisor() {
-		//该方法注册AsyncAnnotationBeanPostProcessor 作为bean
+		//该方法注册AsyncAnnotationBeanPostProcessor 作为bean，该bean是一个bean后置处理器，所以会拦截所有需要代理的bean，实现异步功能
 		//因为子类会先执行父类，所以先看父类中的一些配置
 		Assert.notNull(this.enableAsync, "@EnableAsync annotation metadata was not injected");
+		//spring 自身的异步注解bean后置处理器，然后根据对应的配置@EnableAsync进行对应的配置
 		AsyncAnnotationBeanPostProcessor bpp = new AsyncAnnotationBeanPostProcessor();
 		bpp.configure(this.executor, this.exceptionHandler);
 		Class<? extends Annotation> customAsyncAnnotation = this.enableAsync.getClass("annotation");

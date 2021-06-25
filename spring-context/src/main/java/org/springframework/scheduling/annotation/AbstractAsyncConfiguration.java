@@ -54,6 +54,9 @@ public abstract class AbstractAsyncConfiguration implements ImportAware {
 
 	@Override
 	public void setImportMetadata(AnnotationMetadata importMetadata) {
+		//会在初始化ProxyAsyncConfiguration或者AspectJAsyncConfiguration
+		//也就是子类的时候，会回调此方法，将添加的EnableAsync注解中的属性添加到AnnotationAttributes
+		//其实就是把值放到一个map中
 		this.enableAsync = AnnotationAttributes.fromMap(
 				importMetadata.getAnnotationAttributes(EnableAsync.class.getName(), false));
 		if (this.enableAsync == null) {
