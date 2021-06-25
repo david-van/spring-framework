@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
  */
 @Aspect
 @Component
-@EnableAspectJAutoProxy
 public class HelloAspect {
 
 	// 拦截aop目录下所有类的所有方法

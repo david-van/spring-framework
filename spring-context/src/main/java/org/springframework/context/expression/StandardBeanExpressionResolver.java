@@ -54,7 +54,10 @@ import org.springframework.util.StringUtils;
  */
 public class StandardBeanExpressionResolver implements BeanExpressionResolver {
 
-	/** Default expression prefix: "#{". */
+	/**
+	 * 表达式默认的前缀，注意和读取配置文件的${} 的不同
+	 * Default expression prefix: "#{".
+	 * */
 	public static final String DEFAULT_EXPRESSION_PREFIX = "#{";
 
 	/** Default expression suffix: "}". */
@@ -67,6 +70,7 @@ public class StandardBeanExpressionResolver implements BeanExpressionResolver {
 
 	private ExpressionParser expressionParser;
 
+	//每个表达式都对应一个Expression,这里进行缓存
 	private final Map<String, Expression> expressionCache = new ConcurrentHashMap<>(256);
 
 	private final Map<BeanExpressionContext, StandardEvaluationContext> evaluationCache = new ConcurrentHashMap<>(8);
@@ -142,6 +146,7 @@ public class StandardBeanExpressionResolver implements BeanExpressionResolver {
 			return value;
 		}
 		try {
+			//通过缓存获取expression，如果没有缓存就进行解析
 			Expression expr = this.expressionCache.get(value);
 			if (expr == null) {
 				expr = this.expressionParser.parseExpression(value, this.beanExpressionParserContext);
@@ -150,6 +155,13 @@ public class StandardBeanExpressionResolver implements BeanExpressionResolver {
 			StandardEvaluationContext sec = this.evaluationCache.get(evalContext);
 			if (sec == null) {
 				sec = new StandardEvaluationContext(evalContext);
+				// 此处新增了4个，加上一个默认的（反射）   所以一共就有5个属性访问器了
+				// 这样我们的SpEL就能访问BeanFactory、Map、Enviroment等组件了
+				// BeanExpressionContextAccessor表示调用bean的方法~~~~(比如我们此处就是使用的它)  最终执行者为;
+				// BeanExpressionContext   它持有BeanFactory的引用嘛~
+				// 如果是单纯的Bean注入，最终使用的也是BeanExpressionContextAccessor 目前没有找到BeanFactoryAccessor的用于之地~~~
+				// addPropertyAccessor只是：addBeforeDefault 所以只是把default的放在了最后，我们手动add的还是保持着顺序的~
+				// 注意：这些属性访问器是有先后顺序的，具体看下面
 				sec.addPropertyAccessor(new BeanExpressionContextAccessor());
 				sec.addPropertyAccessor(new BeanFactoryAccessor());
 				sec.addPropertyAccessor(new MapAccessor());

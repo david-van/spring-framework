@@ -1251,10 +1251,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			Class<?> type = descriptor.getDependencyType();
 			Object value = getAutowireCandidateResolver().getSuggestedValue(descriptor);
 			if (value != null) {
+				//value表达式是个string
 				if (value instanceof String) {
 					String strVal = resolveEmbeddedValue((String) value);
 					BeanDefinition bd = (beanName != null && containsBean(beanName) ?
 							getMergedBeanDefinition(beanName) : null);
+					//处理value表达式
 					value = evaluateBeanDefinitionString(strVal, bd);
 				}
 				TypeConverter converter = (typeConverter != null ? typeConverter : getTypeConverter());

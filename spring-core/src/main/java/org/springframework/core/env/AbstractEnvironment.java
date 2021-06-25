@@ -563,6 +563,7 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 
 	@Override
 	public String resolvePlaceholders(String text) {
+		//处理占位符问题，将#{abc}-->abc
 		return this.propertyResolver.resolvePlaceholders(text);
 	}
 

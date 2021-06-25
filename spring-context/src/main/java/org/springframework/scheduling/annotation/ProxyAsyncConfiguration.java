@@ -27,6 +27,7 @@ import org.springframework.scheduling.config.TaskManagementConfigUtils;
 import org.springframework.util.Assert;
 
 /**
+ * 注册启用基于代理的异步方法执行所需的 Spring 基础设施 bean。
  * {@code @Configuration} class that registers the Spring infrastructure beans necessary
  * to enable proxy-based asynchronous method execution.
  *
@@ -44,6 +45,8 @@ public class ProxyAsyncConfiguration extends AbstractAsyncConfiguration {
 	@Bean(name = TaskManagementConfigUtils.ASYNC_ANNOTATION_PROCESSOR_BEAN_NAME)
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public AsyncAnnotationBeanPostProcessor asyncAdvisor() {
+		//该方法注册AsyncAnnotationBeanPostProcessor 作为bean
+		//因为子类会先执行父类，所以先看父类中的一些配置
 		Assert.notNull(this.enableAsync, "@EnableAsync annotation metadata was not injected");
 		AsyncAnnotationBeanPostProcessor bpp = new AsyncAnnotationBeanPostProcessor();
 		bpp.configure(this.executor, this.exceptionHandler);

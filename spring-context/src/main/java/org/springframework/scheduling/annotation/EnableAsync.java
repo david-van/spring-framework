@@ -163,6 +163,10 @@ import org.springframework.core.Ordered;
 public @interface EnableAsync {
 
 	/**
+	 * 在类上或者方法上面，这里的实现也是使用代理的方式来完成，在执行目标类的时候，使用代理来执行
+	 * 在代理类上面开一个线程来执行代理方法
+	 * 所以，使用异步和使用普通的代理会有同样的问题，也就是需要使用代理类来调用，来类内部调用无法使用代理来完成
+	 * 这里使用Async 和Asynchronous 这两个注解都可以完成
 	 * Indicate the 'async' annotation type to be detected at either class
 	 * or method level.
 	 * <p>By default, both Spring's @{@link Async} annotation and the EJB 3.1
@@ -188,6 +192,8 @@ public @interface EnableAsync {
 	boolean proxyTargetClass() default false;
 
 	/**
+	 * 代理方式：默认是PROXY  采用Spring的动态代理（含JDK动态代理和CGLIB）
+	 * 也可以改成aspectJ的静态代理方式
 	 * Indicate how async advice should be applied.
 	 * <p><b>The default is {@link AdviceMode#PROXY}.</b>
 	 * Please note that proxy mode allows for interception of calls through the proxy

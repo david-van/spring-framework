@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 //@EnableLoadTimeWeaving()
 //@EnableAspectJAutoProxy
 //@ImportResource()
-//@PropertySource(value = "classpath:log4j.properties")
+@PropertySource(value = "classpath:log4j.properties")
 public class DemoBean {
 
 	public static void main(String[] args) {

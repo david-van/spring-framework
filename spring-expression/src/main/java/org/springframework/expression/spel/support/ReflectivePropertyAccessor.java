@@ -90,6 +90,7 @@ public class ReflectivePropertyAccessor implements PropertyAccessor {
 
 
 	/**
+	 * 创建一个可以读写的属性访问器,用反射
 	 * Create a new property accessor for reading as well writing.
 	 * @see #ReflectivePropertyAccessor(boolean)
 	 */

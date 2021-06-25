@@ -19,6 +19,9 @@ package org.springframework.core.env;
 import org.springframework.lang.Nullable;
 
 /**
+ *
+ * Spring很多接口都是读写分离的，最顶层接口一般都只会提供只读方法，这是Spring框架设计的一般规律之一
+ * 针对任何潜在的资源处理对应的属性接口
  * Interface for resolving properties against any underlying source.
  *
  * @author Chris Beams
@@ -30,6 +33,8 @@ import org.springframework.lang.Nullable;
 public interface PropertyResolver {
 
 	/**
+	 * 判断是否有key
+	 * 注意：若对应值是null的话 也是返回false
 	 * Return whether the given property key is available for resolution,
 	 * i.e. if the value for the given key is not {@code null}.
 	 */
@@ -77,6 +82,7 @@ public interface PropertyResolver {
 	<T> T getProperty(String key, Class<T> targetType, T defaultValue);
 
 	/**
+	 * 若不存在就不是返回null了  而是抛出异常   所以不用担心返回值是null
 	 * Return the property value associated with the given key (never {@code null}).
 	 * @throws IllegalStateException if the key cannot be resolved
 	 * @see #getRequiredProperty(String, Class)

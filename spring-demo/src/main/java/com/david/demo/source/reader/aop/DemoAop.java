@@ -4,6 +4,8 @@ import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,6 +14,8 @@ import org.springframework.stereotype.Component;
  */
 @Component()
 @ComponentScan(basePackages = "com.david.demo.source.reader.aop")
+//@EnableAspectJAutoProxy
+//@EnableAsync
 public class DemoAop {
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext();
@@ -20,16 +24,15 @@ public class DemoAop {
 		ac.refresh();
 		ac.start();
 
-		HelloDemoI helloDemo = (HelloDemoI) ac.getBean("helloDemo");
+		HelloDemoI helloDemo = (HelloDemoI) ac.getBean("HelloDemo");
 		helloDemo.getInfo();
 		HelloDemoI bean = (HelloDemoI) ac.getBean("proxyFactoryBean");
 
 		bean.getInfo();
 		System.out.println("bean.getClass() = " + bean.getClass());
-//		HelloDemo bean = ac.getBean(HelloDemo.class);
-//		System.out.println("bean = " + bean);
-//		bean.getInfo();
-
+		HelloDemoI helloDemoIAsync = (HelloDemoI) ac.getBean("HelloDemoIAsyncImpl" );
+		System.out.println("helloDemoIAsync = " + helloDemoIAsync);
+		helloDemoIAsync.getInfo();
 
 
 		ac.close();

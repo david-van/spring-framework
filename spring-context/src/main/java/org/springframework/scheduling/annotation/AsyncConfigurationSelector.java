@@ -47,6 +47,7 @@ public class AsyncConfigurationSelector extends AdviceModeImportSelector<EnableA
 	public String[] selectImports(AdviceMode adviceMode) {
 		switch (adviceMode) {
 			case PROXY:
+				//大多数情况下都走这里，ProxyAsyncConfiguration会被注入到Bean容器里面,除非在注解EnableAsync修改mode
 				return new String[] {ProxyAsyncConfiguration.class.getName()};
 			case ASPECTJ:
 				return new String[] {ASYNC_EXECUTION_ASPECT_CONFIGURATION_CLASS_NAME};

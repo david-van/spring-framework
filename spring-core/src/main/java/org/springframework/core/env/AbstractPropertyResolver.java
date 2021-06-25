@@ -33,6 +33,7 @@ import org.springframework.util.PropertyPlaceholderHelper;
 import org.springframework.util.SystemPropertyUtils;
 
 /**
+ * 抽象实现
  * Abstract base class for resolving properties against any underlying source.
  *
  * @author Chris Beams
@@ -267,6 +268,7 @@ public abstract class AbstractPropertyResolver implements ConfigurablePropertyRe
 
 
 	/**
+	 * 以原始字符串的形式检索指定的属性，也就是先获取字符串，转换交给转换器，转为String类型
 	 * Retrieve the specified property as a raw String,
 	 * i.e. without resolution of nested placeholders.
 	 * @param key the property name to resolve

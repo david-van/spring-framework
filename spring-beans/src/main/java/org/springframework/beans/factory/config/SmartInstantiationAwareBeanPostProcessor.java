@@ -52,6 +52,7 @@ public interface SmartInstantiationAwareBeanPostProcessor extends InstantiationA
 	}
 
 	/**
+	 * 对给的bean，推断候选构造函数
 	 * Determine the candidate constructors to use for the given bean.
 	 * <p>The default implementation returns {@code null}.
 	 * @param beanClass the raw class of the bean (never {@code null})

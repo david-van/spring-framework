@@ -922,6 +922,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		}
 		String result = value;
 		for (StringValueResolver resolver : this.embeddedValueResolvers) {
+			//真正的处理value值
 			result = resolver.resolveStringValue(result);
 			if (result == null) {
 				return null;
@@ -1579,6 +1580,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				scope = getRegisteredScope(scopeName);
 			}
 		}
+		//StandardBeanExpressionResolver 计算value的值，比如使用#{bean.field}
 		return this.beanExpressionResolver.evaluate(value, new BeanExpressionContext(this, scope));
 	}
 

@@ -280,6 +280,7 @@ public class StandardEvaluationContext implements EvaluationContext {
 	private List<PropertyAccessor> initPropertyAccessors() {
 		List<PropertyAccessor> accessors = this.propertyAccessors;
 		if (accessors == null) {
+			//默认是反射的属性访问器
 			accessors = new ArrayList<>(5);
 			accessors.add(new ReflectivePropertyAccessor());
 			this.propertyAccessors = accessors;

@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.lang.Nullable;
 
 /**
+ * 处理占位符的工具类
  * Utility class for working with Strings that have placeholder values in them. A placeholder takes the form
  * {@code ${name}}. Using {@code PropertyPlaceholderHelper} these placeholders can be substituted for
  * user-supplied values. <p> Values for substitution can be supplied using a {@link Properties} instance or
@@ -44,14 +45,15 @@ public class PropertyPlaceholderHelper {
 	private static final Map<String, String> wellKnownSimplePrefixes = new HashMap<>(4);
 
 	static {
+		// 通用的 开闭的符号
 		wellKnownSimplePrefixes.put("}", "{");
 		wellKnownSimplePrefixes.put("]", "[");
 		wellKnownSimplePrefixes.put(")", "(");
 	}
 
-
+	//前缀
 	private final String placeholderPrefix;
-
+	//后缀
 	private final String placeholderSuffix;
 
 	private final String simplePrefix;

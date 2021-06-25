@@ -17,7 +17,7 @@ import javax.annotation.Priority;
  */
 @Component
 public class MyBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegistryPostProcessor {
-	private String name = "MyBeanDefinitionRegistryPostProcessor";
+	public String name = "aaaa";
 
 	@Override
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {

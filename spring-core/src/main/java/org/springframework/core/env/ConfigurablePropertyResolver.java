@@ -20,6 +20,7 @@ import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.lang.Nullable;
 
 /**
+ * ConfigurableXXX成了Spring的一种命名规范，或者说是一种设计模式。它表示课配置的，所以都会提供大量的set方法
  * Configuration interface to be implemented by most if not all {@link PropertyResolver}
  * types. Provides facilities for accessing and customizing the
  * {@link org.springframework.core.convert.ConversionService ConversionService}

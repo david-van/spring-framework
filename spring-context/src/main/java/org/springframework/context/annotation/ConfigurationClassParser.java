@@ -264,6 +264,7 @@ class ConfigurationClassParser {
 		// Recursively process the configuration class and its superclass hierarchy.
 		SourceClass sourceClass = asSourceClass(configClass, filter);
 		do {
+			//解析配置类，将其包装成sourceClass,便于后续的统一处理
 			sourceClass = doProcessConfigurationClass(configClass, sourceClass, filter);
 		}
 		while (sourceClass != null);
@@ -272,6 +273,11 @@ class ConfigurationClassParser {
 	}
 
 	/**
+	 * 该方法用来处理配置的信息，将器包装为sourceClass，
+	 * 会处理该类的子类， @PropertySource 导入的资源，@ComponentScan 扫描的资源， @Import 导入的类
+	 * @ImportResource 导入的资源， @Bean 方法获取到的bean
+	 * 同时还会判断该类是否有父类，如果有父类，那么返回父类作为sourceClass，而后processConfigurationClass会继续调用
+	 * 此方法解析父类，所以，导入子类的时候，父类中的一些上述导入资源也会获取到
 	 * Apply processing and build a complete {@link ConfigurationClass} by reading the
 	 * annotations, members and methods from the source class. This method can be called
 	 * multiple times as relevant sources are discovered.
@@ -942,6 +948,8 @@ class ConfigurationClassParser {
 
 
 	/**
+	 * 简单的包装器，允许以统一的方式处理带注解的源类，而不管它们是如何加载的（扫描，register，import等）
+	 * 该类
 	 * Simple wrapper that allows annotated source classes to be dealt with
 	 * in a uniform manner, regardless of how they are loaded.
 	 */

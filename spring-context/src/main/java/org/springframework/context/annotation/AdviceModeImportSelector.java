@@ -25,6 +25,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * 实现了选择导入器，支持通用的@EnableXXX模式
  * Convenient base class for {@link ImportSelector} implementations that select imports
  * based on an {@link AdviceMode} value from an annotation (such as the {@code @Enable*}
  * annotations).
@@ -75,6 +76,7 @@ public abstract class AdviceModeImportSelector<A extends Annotation> implements 
 		}
 
 		AdviceMode adviceMode = attributes.getEnum(getAdviceModeAttributeName());
+		// 拿到AdviceMode，最终交给子类，让它自己去实现  决定导入哪个Bean吧
 		String[] imports = selectImports(adviceMode);
 		if (imports == null) {
 			throw new IllegalArgumentException("Unknown AdviceMode: " + adviceMode);
@@ -83,6 +85,7 @@ public abstract class AdviceModeImportSelector<A extends Annotation> implements 
 	}
 
 	/**
+	 * 根据给定的 {@code AdviceMode} 确定应导入哪些类。PROXY 或者 ASPECTJ 二选一
 	 * Determine which classes should be imported based on the given {@code AdviceMode}.
 	 * <p>Returning {@code null} from this method indicates that the {@code AdviceMode}
 	 * could not be handled or was unknown and that an {@code IllegalArgumentException}

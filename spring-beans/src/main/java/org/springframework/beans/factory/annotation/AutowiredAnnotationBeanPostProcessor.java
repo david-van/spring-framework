@@ -152,7 +152,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 
 	/**
-	 * 自动注入类型包括 autowired 以及 value 以及java 定义的inject注解 如resource
+	 * 自动注入类型包括 autowired 以及 value 以及java 定义的inject注解 如@Inject
 	 * Create a new {@code AutowiredAnnotationBeanPostProcessor} for Spring's
 	 * standard {@link Autowired @Autowired} and {@link Value @Value} annotations.
 	 * <p>Also supports JSR-330's {@link javax.inject.Inject @Inject} annotation,
@@ -163,6 +163,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 		this.autowiredAnnotationTypes.add(Autowired.class);
 		this.autowiredAnnotationTypes.add(Value.class);
 		try {
+			//看是否有引入这个jar包
 			this.autowiredAnnotationTypes.add((Class<? extends Annotation>)
 					ClassUtils.forName("javax.inject.Inject", AutowiredAnnotationBeanPostProcessor.class.getClassLoader()));
 			logger.trace("JSR-330 'javax.inject.Inject' annotation found and supported for autowiring");

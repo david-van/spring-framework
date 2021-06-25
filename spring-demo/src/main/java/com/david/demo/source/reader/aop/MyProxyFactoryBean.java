@@ -3,6 +3,7 @@ package com.david.demo.source.reader.aop;
 import org.springframework.aop.MethodBeforeAdvice;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,7 @@ import java.lang.reflect.Method;
 @Component
 public class MyProxyFactoryBean implements MethodBeforeAdvice {
 	@Autowired
+	@Qualifier("HelloDemo")
 	private HelloDemoI helloDemoI;
 	@Override
 	public void before(Method method, Object[] args, Object target) throws Throwable {
