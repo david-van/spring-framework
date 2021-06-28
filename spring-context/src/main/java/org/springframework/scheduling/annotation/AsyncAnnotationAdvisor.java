@@ -38,6 +38,8 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.function.SingletonSupplier;
 
 /**
+ * 通过{@link Async}注解异步方法执行的Advisor
+ * 用于组合切面和切点
  * Advisor that activates asynchronous method execution through the {@link Async}
  * annotation. This annotation can be used at the method and type level in
  * implementation classes as well as in service interfaces.
@@ -96,6 +98,7 @@ public class AsyncAnnotationAdvisor extends AbstractPointcutAdvisor implements B
 			@Nullable Supplier<Executor> executor, @Nullable Supplier<AsyncUncaughtExceptionHandler> exceptionHandler) {
 
 		Set<Class<? extends Annotation>> asyncAnnotationTypes = new LinkedHashSet<>(2);
+		//此处添加存在Async注解的类（该类中方法上或者类上存在）
 		asyncAnnotationTypes.add(Async.class);
 		try {
 			asyncAnnotationTypes.add((Class<? extends Annotation>)
@@ -104,7 +107,9 @@ public class AsyncAnnotationAdvisor extends AbstractPointcutAdvisor implements B
 		catch (ClassNotFoundException ex) {
 			// If EJB 3.1 API not present, simply ignore.
 		}
+		//配置切面，切点
 		this.advice = buildAdvice(executor, exceptionHandler);
+		//默认支持两个注解Async 和 javax.ejb.Asynchronous
 		this.pointcut = buildPointcut(asyncAnnotationTypes);
 	}
 
@@ -122,6 +127,7 @@ public class AsyncAnnotationAdvisor extends AbstractPointcutAdvisor implements B
 		Assert.notNull(asyncAnnotationType, "'asyncAnnotationType' must not be null");
 		Set<Class<? extends Annotation>> asyncAnnotationTypes = new HashSet<>();
 		asyncAnnotationTypes.add(asyncAnnotationType);
+		//如果指定了自己的异步注解，这个时候的切点就需要重建，这个时候原来的两个异步注解会配替代
 		this.pointcut = buildPointcut(asyncAnnotationTypes);
 	}
 
@@ -163,6 +169,9 @@ public class AsyncAnnotationAdvisor extends AbstractPointcutAdvisor implements B
 	protected Pointcut buildPointcut(Set<Class<? extends Annotation>> asyncAnnotationTypes) {
 		ComposablePointcut result = null;
 		for (Class<? extends Annotation> asyncAnnotationType : asyncAnnotationTypes) {
+			// 这里为何new出来两个AnnotationMatchingPointcut
+			// 第一个：类匹配（只需要类上面有这个注解，所有的方法都匹配）this.methodMatcher = MethodMatcher.TRUE;
+			// 第二个：方法匹配。所有的类都可议。但是只有方法上有这个注解才会匹配上
 			Pointcut cpc = new AnnotationMatchingPointcut(asyncAnnotationType, true);
 			Pointcut mpc = new AnnotationMatchingPointcut(null, asyncAnnotationType, true);
 			if (result == null) {
@@ -171,6 +180,7 @@ public class AsyncAnnotationAdvisor extends AbstractPointcutAdvisor implements B
 			else {
 				result.union(cpc);
 			}
+			//类上的并上方法上的，也就是加一块
 			result = result.union(mpc);
 		}
 		return (result != null ? result : Pointcut.TRUE);

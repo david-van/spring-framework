@@ -32,6 +32,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.function.SingletonSupplier;
 
 /**
+ * bean 的后置处理器，用于处理Async注解的相关bean。该类通过ProxyAsyncConfiguration#asyncAdvisor方法
+ * 将自身作为一个bean后置处理器放到ioc中，起到主要作用的是抽象的父类，该类主要是配置Executor和异常处理器
  * Bean post-processor that automatically applies asynchronous invocation
  * behavior to any bean that carries the {@link Async} annotation at class or
  * method-level by adding a corresponding {@link AsyncAnnotationAdvisor} to the
@@ -147,6 +149,7 @@ public class AsyncAnnotationBeanPostProcessor extends AbstractBeanFactoryAwareAd
 		super.setBeanFactory(beanFactory);
 
 		AsyncAnnotationAdvisor advisor = new AsyncAnnotationAdvisor(this.executor, this.exceptionHandler);
+		//当在@EnableAsync中设置了自定义的异步注解的时候，根据自定义，原来的Async被替代了
 		if (this.asyncAnnotationType != null) {
 			advisor.setAsyncAnnotationType(this.asyncAnnotationType);
 		}

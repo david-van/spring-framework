@@ -25,6 +25,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.lang.Nullable;
 
 /**
+ * 该类是实现aop功能的基本抽象类，根据子类的实现，完成了异步、事务
  * Base class for {@link BeanPostProcessor} implementations that apply a
  * Spring AOP {@link Advisor} to specific beans.
  *
@@ -61,6 +62,7 @@ public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSu
 		return bean;
 	}
 
+	//aop 功能在完成初始化之后执行，AbstractAutowireCapableBeanFactory#initializeBean
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) {
 		if (this.advisor == null || bean instanceof AopInfrastructureBean) {
@@ -68,6 +70,7 @@ public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSu
 			return bean;
 		}
 
+		//该bean是个
 		if (bean instanceof Advised) {
 			Advised advised = (Advised) bean;
 			if (!advised.isFrozen() && isEligible(AopUtils.getTargetClass(bean))) {
@@ -81,14 +84,18 @@ public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSu
 				return bean;
 			}
 		}
-
+		//该bean是一个合格的bean，也就是该bean符合被代理的情况，
 		if (isEligible(bean, beanName)) {
+			//根据bean的配置创建一个代理工厂，也就是将当前bean设置为被代理对象
 			ProxyFactory proxyFactory = prepareProxyFactory(bean, beanName);
 			if (!proxyFactory.isProxyTargetClass()) {
+				//获取代理对象的实现接口
 				evaluateProxyInterfaces(bean.getClass(), proxyFactory);
 			}
 			proxyFactory.addAdvisor(this.advisor);
+			// 留给子类，可以对proxyFactory进行自定义
 			customizeProxyFactory(proxyFactory);
+			//此处完成了代理对象的创建
 			return proxyFactory.getProxy(getProxyClassLoader());
 		}
 

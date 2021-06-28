@@ -11,7 +11,15 @@ import org.springframework.stereotype.Component;
 public class HelloDemoIAsyncImpl implements HelloDemo {
 	@Async
 	@Override
-	public void getInfo() {
-		System.out.println("当前线程：" + Thread.currentThread().getName());
+	public String getInfo() {
+		System.out.println("getInfo  当前线程：" + Thread.currentThread().getName());
+		return "getInfo";
+	}
+
+	@MyAsync
+	@Override
+	public String getMyInfo() {
+		System.out.println("getMyInfo  当前线程：" + Thread.currentThread().getName());
+		return "getMyInfo";
 	}
 }

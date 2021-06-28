@@ -602,7 +602,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		//初始化bean实例。
 		Object exposedObject = bean;
 		try {
-			//完成了bean实例的创建和属性注入
+			//完成了bean实例的属性注入以及autowired方法的执行等
 			populateBean(beanName, mbd, instanceWrapper);
 			//执行一些初始化的方法，也就是一些
 			exposedObject = initializeBean(beanName, exposedObject, mbd);

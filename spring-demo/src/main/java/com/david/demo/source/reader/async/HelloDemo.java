@@ -5,5 +5,7 @@ package com.david.demo.source.reader.async;
  * @date 2021/6/24 16:43
  */
 public interface HelloDemo {
-	void getInfo();
+	String getInfo();
+
+	String getMyInfo();
 }

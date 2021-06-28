@@ -51,6 +51,7 @@ public class ProxyAsyncConfiguration extends AbstractAsyncConfiguration {
 		//spring 自身的异步注解bean后置处理器，然后根据对应的配置@EnableAsync进行对应的配置
 		AsyncAnnotationBeanPostProcessor bpp = new AsyncAnnotationBeanPostProcessor();
 		bpp.configure(this.executor, this.exceptionHandler);
+		//此处判断是否设置了自定义的异步注解，如果添加了，那么这个时候使用自定义（自己的）的注解
 		Class<? extends Annotation> customAsyncAnnotation = this.enableAsync.getClass("annotation");
 		if (customAsyncAnnotation != AnnotationUtils.getDefaultValue(EnableAsync.class, "annotation")) {
 			bpp.setAsyncAnnotationType(customAsyncAnnotation);

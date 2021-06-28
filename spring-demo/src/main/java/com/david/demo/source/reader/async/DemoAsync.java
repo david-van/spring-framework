@@ -1,8 +1,11 @@
 package com.david.demo.source.reader.async;
 
 
+import com.david.demo.source.reader.importSelector.MyService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
+import org.springframework.scheduling.annotation.AsyncConfigurationSelector;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 
@@ -12,9 +15,10 @@ import org.springframework.stereotype.Component;
  */
 @Component()
 @ComponentScan()
-@EnableAsync
+@EnableAsync(/*annotation = MyAsync.class*/)
+@Import(MyService.class)
 public class DemoAsync {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext();
 		ac.register(DemoAsync.class);
 
@@ -24,7 +28,15 @@ public class DemoAsync {
 		HelloDemo helloDemoIAsync = (HelloDemo) ac.getBean("HelloDemoIAsyncImpl");
 		System.out.println("helloDemoIAsync.getClass() = " + helloDemoIAsync.getClass());
 		System.out.println("helloDemoIAsync = " + helloDemoIAsync);
-		helloDemoIAsync.getInfo();
+		String myInfo = helloDemoIAsync.getMyInfo();
+		String info = helloDemoIAsync.getInfo();
+		Thread.sleep(1000L);
+		System.out.println("info = " + info);
+		System.out.println("myInfo = " + myInfo);
+
+
+//		AsyncConfigurationSelector bean = ac.getBean(AsyncConfigurationSelector.class);
+//		System.out.println("bean = " + bean);
 	}
 
 
