@@ -29,6 +29,7 @@ import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 /**
+ * 启用Spring的计划任务执行能力，和开启异步任务类似
  * Enables Spring's scheduled task execution capability, similar to
  * functionality found in Spring's {@code <task:*>} XML namespace. To be used
  * on @{@link Configuration} classes as follows:

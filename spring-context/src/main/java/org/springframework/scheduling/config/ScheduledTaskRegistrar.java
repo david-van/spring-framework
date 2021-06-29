@@ -38,6 +38,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 /**
+ * 任务调度注册器，向任务调度器中注册任务，
  * Helper bean for registering tasks with a {@link TaskScheduler}, typically using cron
  * expressions.
  *
@@ -68,19 +69,21 @@ public class ScheduledTaskRegistrar implements ScheduledTaskHolder, Initializing
 	 */
 	public static final String CRON_DISABLED = "-";
 
-
+	//任务调度器
 	@Nullable
 	private TaskScheduler taskScheduler;
 
+	//调度执行器
 	@Nullable
 	private ScheduledExecutorService localExecutor;
 
+	//任务触发器
 	@Nullable
 	private List<TriggerTask> triggerTasks;
-
+	//cron表达式
 	@Nullable
 	private List<CronTask> cronTasks;
-
+	//用于处理fixedDelay，也是任务的一种
 	@Nullable
 	private List<IntervalTask> fixedRateTasks;
 
@@ -356,6 +359,11 @@ public class ScheduledTaskRegistrar implements ScheduledTaskHolder, Initializing
 	@SuppressWarnings("deprecation")
 	protected void scheduleTasks() {
 		if (this.taskScheduler == null) {
+			//默认是初始化了一个单线程的执行器，所以，所有的任务都是单线程串行
+			//所以，我们可以创建任务调度的bean注入到ioc中，这个时候this.taskScheduler!=null。也就不会使用默认的单线程执行器
+			//另外就是可以在容器中获取ScheduledAnnotationBeanPostProcessor中的registrar，调用set方法设置
+			//还有就是实现接口，SchedulingConfigurer，重写方法
+			//具体可以参见ScheduledAnnotationBeanPostProcessor#finishRegistration
 			this.localExecutor = Executors.newSingleThreadScheduledExecutor();
 			this.taskScheduler = new ConcurrentTaskScheduler(this.localExecutor);
 		}
@@ -413,6 +421,7 @@ public class ScheduledTaskRegistrar implements ScheduledTaskHolder, Initializing
 	}
 
 	/**
+	 * 调度指定的cron任务。也就是将cron任务包装成一个具有调度能力的任务
 	 * Schedule the specified cron task, either right away if possible
 	 * or on initialization of the scheduler.
 	 * @return a handle to the scheduled task, allowing to cancel it

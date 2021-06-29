@@ -77,6 +77,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.util.StringValueResolver;
 
 /**
+ * bean的后置处理器，该处理器能够注册标有Scheduled注解的方法，方法由TaskScheduler来执行
+ *
  * Bean post-processor that registers methods annotated with @{@link Scheduled}
  * to be invoked by a {@link org.springframework.scheduling.TaskScheduler} according
  * to the "fixedRate", "fixedDelay", or "cron" expression provided via the annotation.
@@ -144,6 +146,7 @@ public class ScheduledAnnotationBeanPostProcessor
 	 * Create a default {@code ScheduledAnnotationBeanPostProcessor}.
 	 */
 	public ScheduledAnnotationBeanPostProcessor() {
+		//生产一个定时任务注册器的对象
 		this.registrar = new ScheduledTaskRegistrar();
 	}
 
@@ -219,6 +222,7 @@ public class ScheduledAnnotationBeanPostProcessor
 		this.nonAnnotatedClasses.clear();
 
 		if (this.applicationContext == null) {
+			//没有运行在容器中，这里调用方法完成任务调度的注册，后续容器的onApplicationEvent方法和此方法的目的一致，不管是否在容器中
 			// Not running in an ApplicationContext -> register tasks early...
 			finishRegistration();
 		}
@@ -226,6 +230,8 @@ public class ScheduledAnnotationBeanPostProcessor
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
+		// 这个动作务必要做：因为Spring可能有多个容器，所以可能会发出多个ContextRefreshedEvent 事件
+		// 显然我们只处理自己容器发出来得事件，别的容器发出来我不管
 		if (event.getApplicationContext() == this.applicationContext) {
 			// Running in an ApplicationContext -> register tasks this late...
 			// giving other ContextRefreshedEvent listeners a chance to perform
@@ -240,6 +246,8 @@ public class ScheduledAnnotationBeanPostProcessor
 		}
 
 		if (this.beanFactory instanceof ListableBeanFactory) {
+			//根据这里，我们可以实现自己的SchedulingConfigurer来实现自定义
+			//通过重写方法taskRegistrar ，taskRegistrar来添加自己的逻辑
 			Map<String, SchedulingConfigurer> beans =
 					((ListableBeanFactory) this.beanFactory).getBeansOfType(SchedulingConfigurer.class);
 			List<SchedulingConfigurer> configurers = new ArrayList<>(beans.values());
@@ -252,6 +260,7 @@ public class ScheduledAnnotationBeanPostProcessor
 		if (this.registrar.hasTasks() && this.registrar.getScheduler() == null) {
 			Assert.state(this.beanFactory != null, "BeanFactory must be set to find scheduler by type");
 			try {
+				//类似@Async的处理，都是找指定接口的实现类，找不到就找默认的来托底，找到多的就用默认的名字来找，
 				// Search for TaskScheduler bean...
 				this.registrar.setTaskScheduler(resolveSchedulerBean(this.beanFactory, TaskScheduler.class, false));
 			}
@@ -310,14 +319,16 @@ public class ScheduledAnnotationBeanPostProcessor
 				}
 			}
 		}
-
+		//注册器开始执行注册的任务，这个时候最早也是所有的bean完成了初始化
 		this.registrar.afterPropertiesSet();
 	}
 
 	private <T> T resolveSchedulerBean(BeanFactory beanFactory, Class<T> schedulerType, boolean byName) {
+		//是否按照名字来找，
 		if (byName) {
 			T scheduler = beanFactory.getBean(DEFAULT_TASK_SCHEDULER_BEAN_NAME, schedulerType);
 			if (this.beanName != null && this.beanFactory instanceof ConfigurableBeanFactory) {
+				//按照名字找到了，将
 				((ConfigurableBeanFactory) this.beanFactory).registerDependentBean(
 						DEFAULT_TASK_SCHEDULER_BEAN_NAME, this.beanName);
 			}
@@ -354,10 +365,13 @@ public class ScheduledAnnotationBeanPostProcessor
 		}
 
 		Class<?> targetClass = AopProxyUtils.ultimateTargetClass(bean);
+		//nonAnnotatedClasses 可以理解为没有调度注解的类
 		if (!this.nonAnnotatedClasses.contains(targetClass) &&
 				AnnotationUtils.isCandidateClass(targetClass, Arrays.asList(Scheduled.class, Schedules.class))) {
+			//获取类上存在Scheduled 和Schedules 注解的方法，
 			Map<Method, Set<Scheduled>> annotatedMethods = MethodIntrospector.selectMethods(targetClass,
 					(MethodIntrospector.MetadataLookup<Set<Scheduled>>) method -> {
+				//Merged表示标注在父类、或者接口处也是ok的
 						Set<Scheduled> scheduledMethods = AnnotatedElementUtils.getMergedRepeatableAnnotations(
 								method, Scheduled.class, Schedules.class);
 						return (!scheduledMethods.isEmpty() ? scheduledMethods : null);
@@ -382,6 +396,7 @@ public class ScheduledAnnotationBeanPostProcessor
 	}
 
 	/**
+	 * 处理标有@Scheduled注解的方法
 	 * Process the given {@code @Scheduled} method declaration on the given bean.
 	 * @param scheduled the @Scheduled annotation
 	 * @param method the method that the annotation has been declared on
@@ -390,11 +405,13 @@ public class ScheduledAnnotationBeanPostProcessor
 	 */
 	protected void processScheduled(Scheduled scheduled, Method method, Object bean) {
 		try {
+			//创建异步任务
 			Runnable runnable = createRunnable(bean, method);
+			//标注调度器是否已经执行
 			boolean processedSchedule = false;
 			String errorMessage =
 					"Exactly one of the 'cron', 'fixedDelay(String)', or 'fixedRate(String)' attributes is required";
-
+			//调度任务集合
 			Set<ScheduledTask> tasks = new LinkedHashSet<>(4);
 
 			// Determine initial delay
@@ -522,6 +539,7 @@ public class ScheduledAnnotationBeanPostProcessor
 	 * @see ScheduledMethodRunnable#ScheduledMethodRunnable(Object, Method)
 	 */
 	protected Runnable createRunnable(Object target, Method method) {
+		//这里面加了判断，所以定时任务的方法不允许有形参
 		Assert.isTrue(method.getParameterCount() == 0, "Only no-arg methods may be annotated with @Scheduled");
 		Method invocableMethod = AopUtils.selectInvocableMethod(method, target.getClass());
 		return new ScheduledMethodRunnable(target, invocableMethod);

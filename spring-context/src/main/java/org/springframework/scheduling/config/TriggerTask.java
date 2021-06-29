@@ -20,6 +20,7 @@ import org.springframework.scheduling.Trigger;
 import org.springframework.util.Assert;
 
 /**
+ * 根据给定的触发器来包装的任务，本质是一个任务
  * {@link Task} implementation defining a {@code Runnable} to be executed
  * according to a given {@link Trigger}.
  *

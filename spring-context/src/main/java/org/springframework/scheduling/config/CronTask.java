@@ -19,6 +19,7 @@ package org.springframework.scheduling.config;
 import org.springframework.scheduling.support.CronTrigger;
 
 /**
+ * 相对于触发器任务多了一个cron表达式，用来处理cron表达式的任务
  * {@link TriggerTask} implementation defining a {@code Runnable} to be executed according
  * to a {@linkplain org.springframework.scheduling.support.CronSequenceGenerator standard
  * cron expression}.

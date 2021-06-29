@@ -21,6 +21,7 @@ import java.util.Date;
 import org.springframework.lang.Nullable;
 
 /**
+ * 触发器的通用接口，
  * Common interface for trigger objects that determine the next execution time
  * of a task that they get associated with.
  *

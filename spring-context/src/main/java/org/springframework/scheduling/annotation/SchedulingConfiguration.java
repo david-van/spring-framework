@@ -39,9 +39,11 @@ import org.springframework.scheduling.config.TaskManagementConfigUtils;
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 public class SchedulingConfiguration {
 
+
 	@Bean(name = TaskManagementConfigUtils.SCHEDULED_ANNOTATION_PROCESSOR_BEAN_NAME)
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public ScheduledAnnotationBeanPostProcessor scheduledAnnotationProcessor() {
+		//任务注解的bean后置处理器作为bean，放到ioc容器中交给spring管理
 		return new ScheduledAnnotationBeanPostProcessor();
 	}
 

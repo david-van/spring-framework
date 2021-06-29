@@ -44,6 +44,7 @@ import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureTask;
 
 /**
+ * 任务调度器的实现类，包装jdk的ScheduledThreadPoolExecutor。大多数场景下都使用它来进行任务调度
  * Implementation of Spring's {@link TaskScheduler} interface, wrapping
  * a native {@link java.util.concurrent.ScheduledThreadPoolExecutor}.
  *

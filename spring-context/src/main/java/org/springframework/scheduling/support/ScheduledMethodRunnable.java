@@ -23,6 +23,7 @@ import java.lang.reflect.UndeclaredThrowableException;
 import org.springframework.util.ReflectionUtils;
 
 /**
+ * 对runnable的简单实现，包装了目标对象和方法，重写run方法时候，用反射调用
  * Variant of {@link MethodInvokingRunnable} meant to be used for processing
  * of no-arg scheduled methods. Propagates user exceptions to the caller,
  * assuming that an error strategy for Runnables is in place.

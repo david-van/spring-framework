@@ -153,6 +153,8 @@ public abstract class AnnotationUtils {
 	}
 
 	/**
+	 * 确定给定的类是否是携带指定注释的候选类
+	 * 根据代码理解，该类不是一个注解类，直接返回true，否则返回false
 	 * Determine whether the given class is a candidate for carrying the specified annotation
 	 * (at type, method or field level).
 	 * @param clazz the class to introspect
@@ -164,6 +166,7 @@ public abstract class AnnotationUtils {
 	 * @see #isCandidateClass(Class, Class)
 	 */
 	public static boolean isCandidateClass(Class<?> clazz, String annotationName) {
+		//注释名开头是java. 开始
 		if (annotationName.startsWith("java.")) {
 			return true;
 		}

@@ -903,7 +903,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			}
 		}
 
-		//bean的生命周期回调方法，在bean初始化完成之后
+		//bean的生命周期回调方法，在bean初始化完成之后   注意是所有的bean完成了初始化
 		//也就是实现SmartInitializingSingleton接口
 		// Trigger post-initialization callback for all applicable beans...
 		for (String beanName : beanNames) {

@@ -265,6 +265,7 @@ public class CronSequenceGenerator {
 	// Parsing logic invoked by the constructor
 
 	/**
+	 * cron表达式解析
 	 * Parse the given pattern expression.
 	 */
 	private void parse(String expression) throws IllegalArgumentException {

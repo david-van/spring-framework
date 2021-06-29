@@ -101,6 +101,8 @@ public @interface Scheduled {
 	String zone() default "";
 
 	/**
+	 * 在上次调用结束和下一次调用开始之间以毫秒为单位的固定时间段内执行
+	 * 和fixedRate的不同在于，改处的时间间隔多了方法执行的耗时
 	 * Execute the annotated method with a fixed period in milliseconds between the
 	 * end of the last invocation and the start of the next.
 	 * @return the delay in milliseconds
@@ -117,6 +119,7 @@ public @interface Scheduled {
 	String fixedDelayString() default "";
 
 	/**
+	 * 以毫秒为单位的固定周期执行
 	 * Execute the annotated method with a fixed period in milliseconds between
 	 * invocations.
 	 * @return the period in milliseconds
@@ -124,6 +127,7 @@ public @interface Scheduled {
 	long fixedRate() default -1;
 
 	/**
+	 * 同理，比fixedRate多了一个时间解析方式
 	 * Execute the annotated method with a fixed period in milliseconds between
 	 * invocations.
 	 * @return the period in milliseconds as a String value, e.g. a placeholder
@@ -133,6 +137,7 @@ public @interface Scheduled {
 	String fixedRateString() default "";
 
 	/**
+	 * 在第一次执行 {@link fixedRate} 或 {@link fixedDelay} 任务之前延迟的毫秒数
 	 * Number of milliseconds to delay before the first execution of a
 	 * {@link #fixedRate} or {@link #fixedDelay} task.
 	 * @return the initial delay in milliseconds
@@ -141,6 +146,8 @@ public @interface Scheduled {
 	long initialDelay() default -1;
 
 	/**
+	 * 在第一次执行 {@link fixedRate} 或 {@link fixedDelay} 任务之前延迟的毫秒数
+	 * 和initialDelay的区别是，这里的时间更加自由，可以用毫秒的字符串值也可以用java.time.Duration#parse获取的毫秒值
 	 * Number of milliseconds to delay before the first execution of a
 	 * {@link #fixedRate} or {@link #fixedDelay} task.
 	 * @return the initial delay in milliseconds as a String value, e.g. a placeholder
