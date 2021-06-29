@@ -45,6 +45,12 @@ import org.springframework.util.concurrent.ListenableFutureTask;
 
 /**
  * 任务调度器的实现类，包装jdk的ScheduledThreadPoolExecutor。大多数场景下都使用它来进行任务调度
+ * 又因为该类主要是ScheduledThreadPoolExecutor的包装。通过类的声明可以得知，
+ * public class ScheduledThreadPoolExecutor extends ThreadPoolExecutor  implements ScheduledExecutorService
+ * ScheduledThreadPoolExecutor 是 ThreadPoolExecutor的子类，也就是比线程池多了一个调度的功能
+ * 同理可以得知：ThreadPoolTaskScheduler 相对于 ThreadPoolTaskExecutor 多了一个任务调度的功能
+ *ThreadPoolTaskExecutor可以理解为ThreadPoolExecutor的一个javabean风格的包装
+ * 基本上两者差了一个任务调度的能力
  * Implementation of Spring's {@link TaskScheduler} interface, wrapping
  * a native {@link java.util.concurrent.ScheduledThreadPoolExecutor}.
  *
