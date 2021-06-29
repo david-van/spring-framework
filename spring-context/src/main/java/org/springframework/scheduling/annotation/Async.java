@@ -56,6 +56,7 @@ import java.lang.annotation.Target;
 public @interface Async {
 
 	/**
+	 * 可以用来指定执行器，也就是用那个线程池的执行器
 	 * A qualifier value for the specified asynchronous operation(s).
 	 * <p>May be used to determine the target executor to be used when executing
 	 * the asynchronous operation(s), matching the qualifier value (or the bean

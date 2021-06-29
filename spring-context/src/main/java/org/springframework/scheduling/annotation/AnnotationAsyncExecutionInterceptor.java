@@ -65,6 +65,7 @@ public class AnnotationAsyncExecutionInterceptor extends AsyncExecutionIntercept
 
 
 	/**
+	 * 获取注解Async的限定值，也就是该注解指定的value值，value值用于指定执行器
 	 * Return the qualifier or bean name of the executor to be used when executing the
 	 * given method, specified via {@link Async#value} at the method or declaring
 	 * class level. If {@code @Async} is specified at both the method and class level, the

@@ -155,20 +155,24 @@ public abstract class AsyncExecutionAspectSupport implements BeanFactoryAware {
 
 
 	/**
+	 * 确定在执行给定方法时要使用的特定执行程序，是用指定的还是默认的
 	 * Determine the specific executor to use when executing the given method.
 	 * Should preferably return an {@link AsyncListenableTaskExecutor} implementation.
 	 * @return the executor to use (or {@code null}, but just if no default executor is available)
 	 */
 	@Nullable
 	protected AsyncTaskExecutor determineAsyncExecutor(Method method) {
+		//先判断这个方法是否已经存在了对应的执行器，如果有的化，直接拿出来用即可。类似于一个map的缓存
 		AsyncTaskExecutor executor = this.executors.get(method);
 		if (executor == null) {
 			Executor targetExecutor;
+			//获取执行器的限定值，也就是@Async注解的value值，子类AnnotationAsyncExecutionInterceptor的实现
 			String qualifier = getExecutorQualifier(method);
 			if (StringUtils.hasLength(qualifier)) {
 				targetExecutor = findQualifiedExecutor(this.beanFactory, qualifier);
 			}
 			else {
+				//取默认的 见方法configure 中的() -> getDefaultExecutor(this.beanFactory) lambda实现
 				targetExecutor = this.defaultExecutor.get();
 			}
 			if (targetExecutor == null) {
@@ -227,6 +231,7 @@ public abstract class AsyncExecutionAspectSupport implements BeanFactoryAware {
 	protected Executor getDefaultExecutor(@Nullable BeanFactory beanFactory) {
 		if (beanFactory != null) {
 			try {
+				//如果容器内存在唯一的TaskExecutor（子类），就直接返回了
 				// Search for TaskExecutor bean... not plain Executor since that would
 				// match with ScheduledExecutorService as well, which is unusable for
 				// our purposes here. TaskExecutor is more clearly designed for it.
@@ -235,9 +240,12 @@ public abstract class AsyncExecutionAspectSupport implements BeanFactoryAware {
 			catch (NoUniqueBeanDefinitionException ex) {
 				logger.debug("Could not find unique TaskExecutor bean", ex);
 				try {
+					// 这是出现了多个TaskExecutor类型的话，那就按照名字去拿  `taskExecutor`且是Executor类型
+					//TaskExecutor 是Executor的 子接口
 					return beanFactory.getBean(DEFAULT_TASK_EXECUTOR_BEAN_NAME, Executor.class);
 				}
 				catch (NoSuchBeanDefinitionException ex2) {
+					// 没有找到名字为taskExecutor的执行器，这里仅仅是打印出异常信息，然后后续是使用默认的执行器
 					if (logger.isInfoEnabled()) {
 						logger.info("More than one TaskExecutor bean found within the context, and none is named " +
 								"'taskExecutor'. Mark one of them as primary or name it 'taskExecutor' (possibly " +
@@ -270,6 +278,7 @@ public abstract class AsyncExecutionAspectSupport implements BeanFactoryAware {
 	 */
 	@Nullable
 	protected Object doSubmit(Callable<Object> task, AsyncTaskExecutor executor, Class<?> returnType) {
+		// 根据不同的返回值类型，来采用不同的方案去异步执行，但是执行器都是executor
 		if (CompletableFuture.class.isAssignableFrom(returnType)) {
 			return CompletableFuture.supplyAsync(() -> {
 				try {
@@ -287,6 +296,7 @@ public abstract class AsyncExecutionAspectSupport implements BeanFactoryAware {
 			return executor.submit(task);
 		}
 		else {
+			// 没有返回值的情况下  也用sumitt提交，按时返回null，这里的
 			executor.submit(task);
 			return null;
 		}

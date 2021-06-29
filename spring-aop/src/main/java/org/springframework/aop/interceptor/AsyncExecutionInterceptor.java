@@ -35,6 +35,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 
 /**
+ * 异步方法拦截器，属于方法拦截器的一种
  * AOP Alliance {@code MethodInterceptor} that processes method invocations
  * asynchronously, using a given {@link org.springframework.core.task.AsyncTaskExecutor}.
  * Typically used with the {@link org.springframework.scheduling.annotation.Async} annotation.
@@ -104,6 +105,7 @@ public class AsyncExecutionInterceptor extends AsyncExecutionAspectSupport imple
 		Method specificMethod = ClassUtils.getMostSpecificMethod(invocation.getMethod(), targetClass);
 		final Method userDeclaredMethod = BridgeMethodResolver.findBridgedMethod(specificMethod);
 
+		//这里推断出执行器来
 		AsyncTaskExecutor executor = determineAsyncExecutor(userDeclaredMethod);
 		if (executor == null) {
 			throw new IllegalStateException(
@@ -144,6 +146,7 @@ public class AsyncExecutionInterceptor extends AsyncExecutionAspectSupport imple
 	}
 
 	/**
+	 * 获取默认的执行器，如果没有则通过实现SimpleAsyncTaskExecutor来给一个默认的执行器
 	 * This implementation searches for a unique {@link org.springframework.core.task.TaskExecutor}
 	 * bean in the context, or for an {@link Executor} bean named "taskExecutor" otherwise.
 	 * If neither of the two is resolvable (e.g. if no {@code BeanFactory} was configured at all),

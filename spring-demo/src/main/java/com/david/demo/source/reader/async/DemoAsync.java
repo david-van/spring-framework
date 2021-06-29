@@ -9,6 +9,9 @@ import org.springframework.scheduling.annotation.AsyncConfigurationSelector;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
 /**
  * @author fanzunying
  * @date 2021/6/21 16:46
@@ -18,7 +21,7 @@ import org.springframework.stereotype.Component;
 @EnableAsync(/*annotation = MyAsync.class*/)
 @Import(MyService.class)
 public class DemoAsync {
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws InterruptedException, ExecutionException {
 		AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext();
 		ac.register(DemoAsync.class);
 
@@ -30,6 +33,8 @@ public class DemoAsync {
 		System.out.println("helloDemoIAsync = " + helloDemoIAsync);
 		String myInfo = helloDemoIAsync.getMyInfo();
 		String info = helloDemoIAsync.getInfo();
+//		Future<String> future = helloDemoIAsync.getInfoAsync();
+//		System.out.println("future.get() = " + future.get());
 		Thread.sleep(1000L);
 		System.out.println("info = " + info);
 		System.out.println("myInfo = " + myInfo);

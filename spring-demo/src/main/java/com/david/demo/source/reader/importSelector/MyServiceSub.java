@@ -8,9 +8,9 @@ import org.springframework.context.annotation.Bean;
  */
 public class MyServiceSub extends MyService {
 
-	@Bean
-	public MyServiceDemo getDemoSub() {
-		System.out.println("子类的bean");
-		return new MyServiceDemo();
-	}
+//	@Bean
+//	public MyServiceDemo getDemoSub() {
+//		System.out.println("子类的bean");
+//		return new MyServiceDemo();
+//	}
 }

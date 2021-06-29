@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Primary;
  */
 @Primary()
 @ComponentScan()
-@Import(MyService.class)
+@Import(MyServiceSub.class)
 public class TestDemo {
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext();

@@ -70,6 +70,7 @@ public abstract class AbstractAsyncConfiguration implements ImportAware {
 	 */
 	@Autowired(required = false)
 	void setConfigurers(Collection<AsyncConfigurer> configurers) {
+		//注意，如果没有AsyncConfigurer的bean，那么这个时候方法将不会执行，具体参考@Autowired
 		if (CollectionUtils.isEmpty(configurers)) {
 			return;
 		}

@@ -30,7 +30,9 @@ import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureTask;
 
 /**
- * {@link TaskExecutor} implementation that fires up a new Thread for each task,
+ * 默认的执行器，属于托底性质的这样一个。该执行器为每个任务启动一个新线程，异步执行它。
+ * 所以不是真的线程池，这个类不重用线程
+ * {@link TaskExecutor} implementation that fires up a new thread for each task,
  * executing it asynchronously.
  *
  * <p>Supports limiting concurrent threads through the "concurrencyLimit"
