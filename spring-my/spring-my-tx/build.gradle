@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+}
+
+group 'org.springframework'
+version '5.2.13.BUILD-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // https://mvnrepository.com/artifact/mysql/mysql-connector-java
+    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.25'
+    compile(project(":spring-jdbc"))
+    compile(project(":spring-context"))
+//    compile(project(":spring-test"))
+//    // https://mvnrepository.com/artifact/junit/junit
+//    implementation group: 'junit', name: 'junit', version: '4.13.2'
+//    implementation group: 'lombok', name: 'org.projectlombok', version: '1.18.16'
+    // https://mvnrepository.com/artifact/org.projectlombok/lombok
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
+//    org.projectlombok:lombok:1.18.16
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.13.3'
+//     https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.13.3'
+}

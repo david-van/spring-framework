@@ -41,4 +41,6 @@ include 'spring-demo'
 include 'spring-my'
 include 'spring-my:spring-my-web1'
 findProject(':spring-my:spring-my-web1')?.name = 'spring-my-web1'
+include 'spring-my:spring-my-tx'
+findProject(':spring-my:spring-my-tx')?.name = 'spring-my-tx'
 
