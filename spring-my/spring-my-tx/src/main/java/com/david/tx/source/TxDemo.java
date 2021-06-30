@@ -26,8 +26,12 @@ public class TxDemo {
 //			connection.close();
 //		}
 
+		System.out.println("===========-----------start--------==================");
+
 		TxService txService = context.getBean(TxService.class);
 //		txService.testDemo();
-		txService.insert();
+//		txService.insert();
+//		txService.insertTwo();
+		txService.insertThree();
 	}
 }
