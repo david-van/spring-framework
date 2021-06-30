@@ -21,8 +21,8 @@ public class ScheduleDemo {
 		ac.refresh();
 		ac.start();
 
-		ThreadPoolTaskExecutor bean = ac.getBean(ThreadPoolTaskExecutor.class);
-		System.out.println("bean = " + bean);
+//		ThreadPoolTaskExecutor bean = ac.getBean(ThreadPoolTaskExecutor.class);
+//		System.out.println("bean = " + bean);
 		Thread.sleep(5000L);
 		System.out.println("main方法结束");
 	}

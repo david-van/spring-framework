@@ -4,6 +4,7 @@ package com.david.demo.source.reader.async;
 import com.david.demo.source.reader.importSelector.MyService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.AsyncConfigurationSelector;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -20,6 +21,7 @@ import java.util.concurrent.Future;
 @ComponentScan()
 @EnableAsync(/*annotation = MyAsync.class*/)
 @Import(MyService.class)
+@EnableAspectJAutoProxy
 public class DemoAsync {
 	public static void main(String[] args) throws InterruptedException, ExecutionException {
 		AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext();
@@ -32,11 +34,14 @@ public class DemoAsync {
 		System.out.println("helloDemoIAsync.getClass() = " + helloDemoIAsync.getClass());
 		System.out.println("helloDemoIAsync = " + helloDemoIAsync);
 		String myInfo = helloDemoIAsync.getMyInfo();
-		String info = helloDemoIAsync.getInfo();
+//		for (int i = 0; i < 100; i++) {
+//			String info = helloDemoIAsync.getInfo();
+//			System.out.println(i + "  info = " + info);
+//
+//		}
 //		Future<String> future = helloDemoIAsync.getInfoAsync();
 //		System.out.println("future.get() = " + future.get());
-		Thread.sleep(1000L);
-		System.out.println("info = " + info);
+//		Thread.sleep(1000L);
 		System.out.println("myInfo = " + myInfo);
 
 

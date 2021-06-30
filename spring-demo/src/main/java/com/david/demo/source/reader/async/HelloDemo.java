@@ -9,7 +9,8 @@ import java.util.concurrent.Future;
 public interface HelloDemo {
 	String getInfo();
 
-	Future<String> getInfoAsync()  ;
+	Future<String> getInfoAsync();
 
+	@MyAsync
 	String getMyInfo();
 }

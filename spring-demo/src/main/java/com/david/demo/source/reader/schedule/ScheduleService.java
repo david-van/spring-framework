@@ -7,4 +7,5 @@ package com.david.demo.source.reader.schedule;
 public interface ScheduleService {
 
 	void jobOne();
+	void jobTwo();
 }

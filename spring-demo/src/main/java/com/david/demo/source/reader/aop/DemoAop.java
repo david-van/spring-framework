@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  */
 @Component()
 @ComponentScan(basePackages = "com.david.demo.source.reader.aop")
-//@EnableAspectJAutoProxy
+@EnableAspectJAutoProxy
 //@EnableAsync
 public class DemoAop {
 	public static void main(String[] args) {

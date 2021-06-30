@@ -27,4 +27,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 		System.out.println("jobOne  当前线程：" + Thread.currentThread().getName());
 		System.out.println("我执行了---" + LocalTime.now());
 	}
+
+	@Override
+	@Scheduled(cron = "0/1 * * * * ?")
+	public void jobTwo() {
+		System.out.println("jobTwo  当前线程：" + Thread.currentThread().getName());
+		System.out.println("jobTwo  我执行了---" + LocalTime.now());
+	}
 }

@@ -27,7 +27,7 @@ public class HelloDemoIAsyncImpl implements HelloDemo {
 		return new FutureTask<String>((Callable) () -> "getInfoAsync");
 	}
 
-	@MyAsync
+
 	@Override
 	public String getMyInfo() {
 		System.out.println("getMyInfo  当前线程：" + Thread.currentThread().getName());

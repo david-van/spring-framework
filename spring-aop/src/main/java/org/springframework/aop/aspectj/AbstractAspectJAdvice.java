@@ -550,6 +550,7 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 	}
 
 	/**
+	 * 方法的形参绑定，也就是切点方法上面的方法
 	 * Take the arguments at the method execution join point and output a set of arguments
 	 * to the advice method.
 	 * @param jp the current JoinPoint
