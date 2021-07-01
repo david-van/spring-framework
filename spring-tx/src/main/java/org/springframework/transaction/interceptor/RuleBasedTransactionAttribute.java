@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.lang.Nullable;
 
 /**
+ * 主要是扩展了碰到异常是否进行回滚
  * TransactionAttribute implementation that works out whether a given exception
  * should cause transaction rollback by applying a number of rollback rules,
  * both positive and negative. If no custom rollback rules apply, this attribute

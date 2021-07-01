@@ -946,10 +946,15 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 
 		BeanDefinition existingDefinition = this.beanDefinitionMap.get(beanName);
+		//已经存在了bd，也就是有了两个同样名字的bean，看spring的处理
 		if (existingDefinition != null) {
+			//1、首先判断是否允许bd的重写，默认为true
 			if (!isAllowBeanDefinitionOverriding()) {
+				//当自己不想要beanName出现重复的时候，通过配置文件或者实现接口ApplicationContextInitializer
+				//并将其注册到上下文中，实现自定义的配置
 				throw new BeanDefinitionOverrideException(beanName, beanDefinition, existingDefinition);
 			}
+			//根据角色判断，当优先级高的覆盖优先级低的（数字越小，优先级越高）的时候，打印日志进行警告
 			else if (existingDefinition.getRole() < beanDefinition.getRole()) {
 				// e.g. was ROLE_APPLICATION, now overriding with ROLE_SUPPORT or ROLE_INFRASTRUCTURE
 				if (logger.isInfoEnabled()) {
@@ -958,6 +963,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 							existingDefinition + "] with [" + beanDefinition + "]");
 				}
 			}
+			//判断两者是否相等
 			else if (!beanDefinition.equals(existingDefinition)) {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Overriding bean definition for bean '" + beanName +
@@ -972,6 +978,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 							"] with [" + beanDefinition + "]");
 				}
 			}
+			//这里执行覆盖
 			this.beanDefinitionMap.put(beanName, beanDefinition);
 		}
 		else {

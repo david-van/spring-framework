@@ -21,6 +21,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.util.StringUtils;
 
 /**
+ * spring 通用的事务属性的实现，在默认情况下只回滚运行时异常
  * Spring's common transaction attribute implementation.
  * Rolls back on runtime, but not checked, exceptions by default.
  *
@@ -48,6 +49,7 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition im
 	 * @see #setName
 	 */
 	public DefaultTransactionAttribute() {
+		//使用了父类的默认事务属性
 		super();
 	}
 
@@ -117,6 +119,7 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition im
 	}
 
 	/**
+	 * 默认的异常回滚，在子类中可以进行配置
 	 * The default behavior is as with EJB: rollback on unchecked exception
 	 * ({@link RuntimeException}), assuming an unexpected outcome outside of any
 	 * business rules. Additionally, we also attempt to rollback on {@link Error} which

@@ -20,4 +20,6 @@ public interface TxService {
 	void insertSix();
 	void insertSeven();
 	void insertEight();
+
+	void addNine();
 }

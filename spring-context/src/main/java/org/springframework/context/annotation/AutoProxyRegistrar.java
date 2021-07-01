@@ -41,6 +41,7 @@ public class AutoProxyRegistrar implements ImportBeanDefinitionRegistrar {
 	private final Log logger = LogFactory.getLog(getClass());
 
 	/**
+	 * 针对给定的注册表注册、升级和配置 标准自动代理创建者 (APC)。
 	 * Register, escalate, and configure the standard auto proxy creator (APC) against the
 	 * given registry. Works by finding the nearest annotation declared on the importing
 	 * {@code @Configuration} class that has both {@code mode} and {@code proxyTargetClass}
@@ -58,18 +59,27 @@ public class AutoProxyRegistrar implements ImportBeanDefinitionRegistrar {
 	@Override
 	public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
 		boolean candidateFound = false;
+		// 这里面需要特别注意的是：这里是拿到所有的注解类型 而不是只拿@EnableAspectJAutoProxy这个类型的
+		// 原因：因为mode、proxyTargetClass等属性会直接影响到代理得方式，而拥有这些属性的注解至少有：
+		// @EnableTransactionManagement、@EnableAsync、@EnableCaching等
+		// 甚至还有启用AOP的注解：@EnableAspectJAutoProxy它也能设置`proxyTargetClass`这个属性的值，因此也会产生关联影响~
 		Set<String> annTypes = importingClassMetadata.getAnnotationTypes();
 		for (String annType : annTypes) {
 			AnnotationAttributes candidate = AnnotationConfigUtils.attributesFor(importingClassMetadata, annType);
 			if (candidate == null) {
 				continue;
 			}
+			// 拿到注解里的这两个属性
+			// 说明：如果你是比如@Configuration或者别的注解的话  他们就是null了
 			Object mode = candidate.get("mode");
 			Object proxyTargetClass = candidate.get("proxyTargetClass");
 			if (mode != null && proxyTargetClass != null && AdviceMode.class == mode.getClass() &&
 					Boolean.class == proxyTargetClass.getClass()) {
 				candidateFound = true;
 				if (mode == AdviceMode.PROXY) {
+					// 这一部是非常重要的 又到了我们熟悉的AopConfigUtils工具类，且是熟悉的registerAutoProxyCreatorIfNecessary方法
+					// 它主要是注册了一个`internalAutoProxyCreator`，但是若出现多次的话，这里不是覆盖的形式，而是以第一次的为主
+					// 当然它内部有做等级的提升之类的，这个之前也有分析过
 					AopConfigUtils.registerAutoProxyCreatorIfNecessary(registry);
 					if ((Boolean) proxyTargetClass) {
 						AopConfigUtils.forceAutoProxyCreatorToUseClassProxying(registry);

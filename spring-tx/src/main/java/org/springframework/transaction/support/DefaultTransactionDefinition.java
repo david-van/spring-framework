@@ -23,6 +23,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.transaction.TransactionDefinition;
 
 /**
+ * 事务定义接口的默认简单实现，该类提供了默认的事务属性
  * Default implementation of the {@link TransactionDefinition} interface,
  * offering bean-style configuration and sensible default values
  * (PROPAGATION_REQUIRED, ISOLATION_DEFAULT, TIMEOUT_DEFAULT, readOnly=false).
@@ -65,6 +66,11 @@ public class DefaultTransactionDefinition implements TransactionDefinition, Seri
 
 
 	/**
+	 * 创建一个默认的事务定义，可以用set方法重新设置
+	 * 传播行为为：PROPAGATION_REQUIRED，
+	 * 隔离级别为：数据库默认的隔离级别
+	 * 超时时间为：如果数据库存在默认值，使用默认值，否则为-1
+	 * 是否只读：默认为非只读
 	 * Create a new DefaultTransactionDefinition, with default settings.
 	 * Can be modified through bean property setters.
 	 * @see #setPropagationBehavior

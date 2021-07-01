@@ -52,6 +52,12 @@ import org.springframework.util.ClassUtils;
 public abstract class AbstractFallbackTransactionAttributeSource implements TransactionAttributeSource {
 
 	/**
+	 * 	// 针对没有事务注解属性的方法进行事务注解属性缓存时使用的特殊值，用于标记该方法没有事务注解属性
+	 * 	// 从而不用在首次缓存在信息后，不用再次重复执行真正的分析  来提高查找的效率
+	 * 	// 标注了@Transaction注解的表示有事务属性的，才会最终加入事务。
+	 * 	但是，但是此处需要注意的是，只要被事务的Advisor切中的，都会缓存起来  为了防止过度的查找 因此才有这个常量的出现
+	 * 其实就是用了父类的空参构造方法来表示一个常量，
+	 * 可以见方法getTransactionAttribute查看详细使用
 	 * Canonical value held in cache to indicate no transaction attribute was
 	 * found for this method, and we don't need to look again.
 	 */
@@ -72,6 +78,7 @@ public abstract class AbstractFallbackTransactionAttributeSource implements Tran
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	/**
+	 * 事务属性的缓存，key为目标类的方法
 	 * Cache of TransactionAttributes, keyed by method on a specific target class.
 	 * <p>As this base class is not marked Serializable, the cache will be recreated
 	 * after serialization - provided that the concrete subclass is Serializable.
@@ -93,6 +100,10 @@ public abstract class AbstractFallbackTransactionAttributeSource implements Tran
 		if (method.getDeclaringClass() == Object.class) {
 			return null;
 		}
+		//1、查看缓存，如果存在key，判断value是否是空的事务属性，如果是的，表示这个目标类的方法上没有事务，直接返回null
+		//2、存在key，value不为NULL_TRANSACTION_ATTRIBUTE，表示存在事务，返回解析后的事务属性对象
+		//3、不存在key，解析获取事务属性，如果不为null，那么缓存起来，返回。
+		//4、解析获取事务属性后，如果为null，同样缓存起来，key为类名加方法名，value为NULL_TRANSACTION_ATTRIBUTE
 
 		// First, see if we have a cached value.
 		Object cacheKey = getCacheKey(method, targetClass);
@@ -111,6 +122,7 @@ public abstract class AbstractFallbackTransactionAttributeSource implements Tran
 			// We need to work it out.
 			TransactionAttribute txAttr = computeTransactionAttribute(method, targetClass);
 			// Put it in the cache.
+			//该目标方法没有事务，也缓存起来，
 			if (txAttr == null) {
 				this.attributeCache.put(cacheKey, NULL_TRANSACTION_ATTRIBUTE);
 			}
@@ -141,6 +153,7 @@ public abstract class AbstractFallbackTransactionAttributeSource implements Tran
 	}
 
 	/**
+	 * 该方法不存在结果，每次调用就需要每次解析，所以相对而言不如getTransactionAttribute高效
 	 * Same signature as {@link #getTransactionAttribute}, but doesn't cache the result.
 	 * {@link #getTransactionAttribute} is effectively a caching decorator for this method.
 	 * <p>As of 4.1.8, this method can be overridden.
@@ -149,21 +162,26 @@ public abstract class AbstractFallbackTransactionAttributeSource implements Tran
 	 */
 	@Nullable
 	protected TransactionAttribute computeTransactionAttribute(Method method, @Nullable Class<?> targetClass) {
+		//事务是否是public方法，默认情况下是只允许为public方法，因为jdk动态代理。如果设置为cglib代理，那么可以通过设置代理非public方法进行事务管理
 		// Don't allow no-public methods as required.
 		if (allowPublicMethodsOnly() && !Modifier.isPublic(method.getModifiers())) {
 			return null;
 		}
 
+		//因为Method并不一样属于目标类。所以这个方法就是获取targetClass上的那个和method对应的方法  也就是最终要执行的方法
 		// The method may be on an interface, but we need attributes from the target class.
 		// If the target class is null, the method will be unchanged.
 		Method specificMethod = AopUtils.getMostSpecificMethod(method, targetClass);
 
+		// 第一步：去找直接标记在方法上的事务属性 如果方法上有就直接返回（不用再看类上的了）
+		// findTransactionAttribute这个方法其实就是子类去实现的，也就是AnnotationTransactionAttributeSource进行解析的
 		// First try is the method in the target class.
 		TransactionAttribute txAttr = findTransactionAttribute(specificMethod);
 		if (txAttr != null) {
 			return txAttr;
 		}
 
+		//如果方法上面没有，那么看这个目标类上面是否有，同样也是由子类来实现的
 		// Second try is the transaction attribute on the target class.
 		txAttr = findTransactionAttribute(specificMethod.getDeclaringClass());
 		if (txAttr != null && ClassUtils.isUserLevelMethod(method)) {
@@ -171,11 +189,14 @@ public abstract class AbstractFallbackTransactionAttributeSource implements Tran
 		}
 
 		if (specificMethod != method) {
+			//这里就是在目标类和目标方法上面都没有找到，那么如果这个时候在目标类的实现接口的方法上面添加了注解，
+			// 或者在实现的接口的接口上面添加了注解，那么这个时候，事务仍旧生效
 			// Fallback is to look at the original method.
 			txAttr = findTransactionAttribute(method);
 			if (txAttr != null) {
 				return txAttr;
 			}
+			//最后找接口上面的
 			// Last fallback is the class of the original method.
 			txAttr = findTransactionAttribute(method.getDeclaringClass());
 			if (txAttr != null && ClassUtils.isUserLevelMethod(method)) {

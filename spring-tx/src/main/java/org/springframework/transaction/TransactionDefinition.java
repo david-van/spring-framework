@@ -308,6 +308,7 @@ public interface TransactionDefinition {
 	}
 
 	/**
+	 * 返回事务的name，默认情况下事务的名称是  类的全限命名+“.”+方法名
 	 * Return the name of this transaction. Can be {@code null}.
 	 * <p>This will be used as the transaction name to be shown in a
 	 * transaction monitor, if applicable (for example, WebLogic's).

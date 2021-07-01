@@ -18,6 +18,7 @@ import java.util.List;
  * @date 2021/6/30 17:41
  */
 @Service
+//@Transactional()
 public class TxServiceImpl implements TxService {
 
 	@Autowired
@@ -145,6 +146,18 @@ public class TxServiceImpl implements TxService {
 		System.out.println("update = " + update);
 		throw new RuntimeException("出现了异常");
 	}
+
+	@Override
+	public void addNine() {
+		//使用名称匹配来进行事务拦截，见txConfig#transactionInterceptor
+		String sql = "INSERT INTO test_demo.t_user (  name, age, rest_day,   deleted)\n" +
+				"VALUES ( 'zhang22', 12, '3',   0);";
+
+		int update = jdbcTemplate.update(sql);
+		System.out.println("update = " + update);
+		throw new RuntimeException("出现了异常");
+	}
+
 
 
 }

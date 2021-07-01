@@ -604,7 +604,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		try {
 			//完成了bean实例的属性注入以及autowired方法的执行等
 			populateBean(beanName, mbd, instanceWrapper);
-			//执行一些初始化的方法，也就是一些
+			//执行一些初始化的方法，也就是一些执行一些回调方法，
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {

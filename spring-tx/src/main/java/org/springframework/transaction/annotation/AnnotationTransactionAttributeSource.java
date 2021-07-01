@@ -61,17 +61,26 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 	private static final boolean ejb3Present;
 
 	static {
+		//当加载对应的两个jar包的时候，那么这两个注解也支持，和默认的注解@Transaction起到一样的作用
 		ClassLoader classLoader = AnnotationTransactionAttributeSource.class.getClassLoader();
 		jta12Present = ClassUtils.isPresent("javax.transaction.Transactional", classLoader);
 		ejb3Present = ClassUtils.isPresent("javax.ejb.TransactionAttribute", classLoader);
 	}
 
+	/**
+	 * true：只处理public方法（基于JDK的代理  显然就只会处理这种方法）
+	 * false：private/protected等方法都会处理。   基于AspectJ代理得方式可议设置为false
+	 * 默认情况下：会被赋值为true，表示只处理public的方法：见默认构造函数
+	 *
+	 */
 	private final boolean publicMethodsOnly;
 
+	//支持的事务注解解析
 	private final Set<TransactionAnnotationParser> annotationParsers;
 
 
 	/**
+
 	 * Create a default AnnotationTransactionAttributeSource, supporting
 	 * public methods that carry the {@code Transactional} annotation
 	 * or the EJB3 {@link javax.ejb.TransactionAttribute} annotation.
@@ -102,11 +111,14 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 			}
 		}
 		else {
+			// 默认情况下，只添加Spring自己的注解解析器（绝大部分情况都实这里）
 			this.annotationParsers = Collections.singleton(new SpringTransactionAnnotationParser());
 		}
 	}
 
 	/**
+	 *  自己也可以指定一个TransactionAnnotationParser   或者多个也成
+	 *  这样就可以通过自己实现一个TransactionAnnotationParser，然后加一个注解完成自定义的事务实现
 	 * Create a custom AnnotationTransactionAttributeSource.
 	 * @param annotationParser the TransactionAnnotationParser to use
 	 */
@@ -156,6 +168,7 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 	@Override
 	@Nullable
 	protected TransactionAttribute findTransactionAttribute(Method method) {
+		//推断方法
 		return determineTransactionAttribute(method);
 	}
 
@@ -173,6 +186,7 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 	protected TransactionAttribute determineTransactionAttribute(AnnotatedElement element) {
 		for (TransactionAnnotationParser parser : this.annotationParsers) {
 			TransactionAttribute attr = parser.parseTransactionAnnotation(element);
+			//根据解析结果，如果不存在，attr为null
 			if (attr != null) {
 				return attr;
 			}

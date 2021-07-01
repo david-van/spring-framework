@@ -31,6 +31,7 @@ import org.springframework.transaction.interceptor.RuleBasedTransactionAttribute
 import org.springframework.transaction.interceptor.TransactionAttribute;
 
 /**
+ * 解析事务注解的一个策略，用于解析spring自身的注解
  * Strategy implementation for parsing Spring's {@link Transactional} annotation.
  *
  * @author Juergen Hoeller
@@ -41,6 +42,7 @@ public class SpringTransactionAnnotationParser implements TransactionAnnotationP
 
 	@Override
 	public boolean isCandidateClass(Class<?> targetClass) {
+		//判断是否是候选，也就是类上面是否有Transactional注解
 		return AnnotationUtils.isCandidateClass(targetClass, Transactional.class);
 	}
 
@@ -50,9 +52,11 @@ public class SpringTransactionAnnotationParser implements TransactionAnnotationP
 		AnnotationAttributes attributes = AnnotatedElementUtils.findMergedAnnotationAttributes(
 				element, Transactional.class, false, false);
 		if (attributes != null) {
+			//解析注解的几个字段，然后用RuleBasedTransactionAttribute来包装
 			return parseTransactionAnnotation(attributes);
 		}
 		else {
+			//不存在直接返回null，
 			return null;
 		}
 	}

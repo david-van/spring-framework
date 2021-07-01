@@ -56,9 +56,13 @@ public class ProxyTransactionManagementConfiguration extends AbstractTransaction
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public TransactionAttributeSource transactionAttributeSource() {
+		//这里赋予了事务代理的注解能力
 		return new AnnotationTransactionAttributeSource();
 	}
 
+	// 事务拦截器，它是个`MethodInterceptor`的一个实现，它也是Spring处理事务最为核心的部分
+	// 请注意：你可以自己定义一个TransactionInterceptor（同名的），来覆盖此Bean（注意是覆盖）
+	// 另外请注意：你自定义的BeanName必须同名，也就是必须名为：transactionInterceptor  否则两个都会注册进容器里面去
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public TransactionInterceptor transactionInterceptor(TransactionAttributeSource transactionAttributeSource) {

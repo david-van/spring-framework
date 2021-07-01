@@ -21,6 +21,10 @@ import java.lang.reflect.Method;
 import org.springframework.lang.Nullable;
 
 /**
+ * 在事务拦截器中使用的策略接口
+ * TransactionAttributeSource一般都是作为TransactionInterceptor的一个属性被set进去，
+ * 然后看看这个事务属性可以作用在不同的方法上面，实现不同方法的个性化定制
+ * （实际真正处理它的是父类TransactionAspectSupport，它会做匹配）
  * Strategy interface used by {@link TransactionInterceptor} for metadata retrieval.
  *
  * <p>Implementations know how to source transaction attributes, whether from configuration,
@@ -54,6 +58,7 @@ public interface TransactionAttributeSource {
 	}
 
 	/**
+	 * 根据方法返回事务属性。如果该方法属于非事务，直接返回null
 	 * Return the transaction attribute for the given method,
 	 * or {@code null} if the method is non-transactional.
 	 * @param method the method to introspect

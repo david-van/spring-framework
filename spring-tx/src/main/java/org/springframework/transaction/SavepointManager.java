@@ -17,6 +17,9 @@
 package org.springframework.transaction;
 
 /**
+ * JDBC定义了SavePoint接口，提供在一个更细粒度的事务控制机制。
+ * 当设置了一个保存点后，可以rollback到该保存点处的状态，而不是rollback整个事务。
+ * Connection接口的setSavepoint和releaseSavepoint方法可以设置和释放保存点。
  * Interface that specifies an API to programmatically manage transaction
  * savepoints in a generic fashion. Extended by TransactionStatus to
  * expose savepoint management functionality for a specific transaction.

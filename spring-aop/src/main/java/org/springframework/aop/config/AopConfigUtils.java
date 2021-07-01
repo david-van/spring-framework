@@ -59,8 +59,13 @@ public abstract class AopConfigUtils {
 
 	static {
 		// Set up the escalation list...
+		//设置代理生成器的集合，通过判断该类在list的位置，比较优先级
+		//由此可以得知，AnnotationAwareAspectJAutoProxyCreator的优先级是最高的
+
+		//这个是事务用的
 		APC_PRIORITY_LIST.add(InfrastructureAdvisorAutoProxyCreator.class);
 		APC_PRIORITY_LIST.add(AspectJAwareAdvisorAutoProxyCreator.class);
+		//在添加了注解EnableAspectJAutoProxy的时候，使用这个
 		APC_PRIORITY_LIST.add(AnnotationAwareAspectJAutoProxyCreator.class);
 	}
 
@@ -74,6 +79,7 @@ public abstract class AopConfigUtils {
 	public static BeanDefinition registerAutoProxyCreatorIfNecessary(
 			BeanDefinitionRegistry registry, @Nullable Object source) {
 
+		//事务这块向容器注入的是一个InfrastructureAdvisorAutoProxyCreator，它主要是读取Advisor类，并对符合的bean进行二次代理
 		return registerOrEscalateApcAsRequired(InfrastructureAdvisorAutoProxyCreator.class, registry, source);
 	}
 
@@ -98,6 +104,7 @@ public abstract class AopConfigUtils {
 	public static BeanDefinition registerAspectJAnnotationAutoProxyCreatorIfNecessary(
 			BeanDefinitionRegistry registry, @Nullable Object source) {
 
+		//注册AnnotationAwareAspectJAutoProxyCreator 见名之意：该类为注解的自动代理生成器
 		return registerOrEscalateApcAsRequired(AnnotationAwareAspectJAutoProxyCreator.class, registry, source);
 	}
 
@@ -122,7 +129,9 @@ public abstract class AopConfigUtils {
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 
 		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
-			//将系统的代理创建器生成bd
+			//当存在的时候，这个时候已经设置了一个代理生成器，第一次的时候
+			//当第二个过来的时候，通过判断这两个class不是同一个，那么通过比较这两个类的优先级
+			//优先级高的替换掉优先级低的
 			BeanDefinition apcDefinition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);
 			if (!cls.getName().equals(apcDefinition.getBeanClassName())) {
 				int currentPriority = findPriorityForClass(apcDefinition.getBeanClassName());
@@ -134,6 +143,7 @@ public abstract class AopConfigUtils {
 			return null;
 		}
 
+		//用设置的创建一个bd并注册，注意这里的bd名字为AUTO_PROXY_CREATOR_BEAN_NAME
 		RootBeanDefinition beanDefinition = new RootBeanDefinition(cls);
 		beanDefinition.setSource(source);
 		beanDefinition.getPropertyValues().add("order", Ordered.HIGHEST_PRECEDENCE);

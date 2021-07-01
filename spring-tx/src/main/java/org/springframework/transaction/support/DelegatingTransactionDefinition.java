@@ -23,6 +23,7 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.util.Assert;
 
 /**
+ * 事务定义接口的委派类，内部持有接口的引用，和静态代理模式类似
  * {@link TransactionDefinition} implementation that delegates all calls to a given target
  * {@link TransactionDefinition} instance. Abstract because it is meant to be subclassed,
  * with subclasses overriding specific methods that are not supposed to simply delegate
