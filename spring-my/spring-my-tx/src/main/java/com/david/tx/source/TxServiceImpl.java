@@ -78,17 +78,18 @@ public class TxServiceImpl implements TxService {
 		//测试新建事务
 //		txService.insertFour();
 		//测试新建事务
-//		txService.insertSix();
-//		txService.insertFive();
+		txService.insertSix();
+		txService.insertFive();
 		//测试不支持事务
 //		txService.insertSeven();
 		//测试嵌套事务
-		try {
-			txService.insertEight();
-		} catch (Exception e) {
-			System.out.println("出现了异常，捕获了异常");
-		}
-		txService.insertSix();
+//		try {
+//			txService.insertEight();
+//		} catch (Exception e) {
+//			System.out.println("出现了异常，捕获了异常");
+//		}
+//		txService.insertFive();
+//		txService.insertSix();
 
 	}
 

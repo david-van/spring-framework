@@ -21,7 +21,7 @@ import org.springframework.lang.Nullable;
 /**
  * 定义符合 Spring 的事务属性的接口
  * 事务的属性包括几个方面：
- * 1、事务的传播行为
+ * 1、事务的传播行为  定义了7个，
  * 2、事务的隔离规则
  * 3、事务的回滚规则
  * 4、事务的超时
@@ -95,7 +95,7 @@ public interface TransactionDefinition {
 	/**
 	 * 创建一个新的事务，如果当前事务存在，那么则将当前事务挂起，也就是我这个是独立的事务，不受其他事务的约束
 	 * 其他方法的异常不影响我自身事务的提交。
-	 * 但是我自身出现的异常会印象其他的事务，影响的结果根据其他的事务的传播行为
+	 * 但是我自身出现的异常会影响其他的事务，影响的结果根据其他的事务的传播行为来定
 	 * Create a new transaction, suspending the current transaction if one exists.
 	 * Analogous to the EJB transaction attribute of the same name.
 	 * <p><b>NOTE:</b> Actual transaction suspension will not work out-of-the-box
@@ -142,6 +142,11 @@ public interface TransactionDefinition {
 	/**
 	 * 如果当前存在事务，则在嵌套事务(它是一个子事务，但他仍还是外部事务的一部分，外部事务提交了它才提交。。。注意和REQUIRES_NEW的区别~~~)内执行。
 	 * 如果当前没有事务，则执行与PROPAGATION_REQUIRED类似的操作
+	 * 简单理解就是，这个事务是外部事务的子事务，如果子事务没有异常，成功失败依据外部的事务来定
+	 * 子事务发生了异常，外部事务没有捕获，则一块回滚
+	 * 子事务发生了异常，外部事务catch住，那么如果外部事务没有异常，则外部事物进行commit，子事务回滚。这一点需要注意，
+	 * 因为在默认情况下，外部事务catch住的时候，会发生Transaction rolled back because it has been marked as rollback-only
+	 *
 	 * Execute within a nested transaction if a current transaction exists,
 	 * behave like {@link #PROPAGATION_REQUIRED} otherwise. There is no
 	 * analogous feature in EJB.
@@ -157,6 +162,7 @@ public interface TransactionDefinition {
 
 
 	/**
+	 * 使用底层数据存储的默认隔离级别。所有其他级别对应于 JDBC 隔离级别。
 	 * Use the default isolation level of the underlying datastore.
 	 * All other levels correspond to the JDBC isolation levels.
 	 *
@@ -165,6 +171,7 @@ public interface TransactionDefinition {
 	int ISOLATION_DEFAULT = -1;
 
 	/**
+	 * 表示：标准sql定义的读未提交
 	 * Indicates that dirty reads, non-repeatable reads and phantom reads
 	 * can occur.
 	 * <p>This level allows a row changed by one transaction to be read by another
@@ -177,6 +184,7 @@ public interface TransactionDefinition {
 	int ISOLATION_READ_UNCOMMITTED = 1;  // same as java.sql.Connection.TRANSACTION_READ_UNCOMMITTED;
 
 	/**
+	 * 读已提交
 	 * Indicates that dirty reads are prevented; non-repeatable reads and
 	 * phantom reads can occur.
 	 * <p>This level only prohibits a transaction from reading a row
@@ -187,6 +195,7 @@ public interface TransactionDefinition {
 	int ISOLATION_READ_COMMITTED = 2;  // same as java.sql.Connection.TRANSACTION_READ_COMMITTED;
 
 	/**
+	 * 可重复读
 	 * Indicates that dirty reads and non-repeatable reads are prevented;
 	 * phantom reads can occur.
 	 * <p>This level prohibits a transaction from reading a row with uncommitted changes
@@ -199,6 +208,7 @@ public interface TransactionDefinition {
 	int ISOLATION_REPEATABLE_READ = 4;  // same as java.sql.Connection.TRANSACTION_REPEATABLE_READ;
 
 	/**
+	 * 串行化读
 	 * Indicates that dirty reads, non-repeatable reads and phantom reads
 	 * are prevented.
 	 * <p>This level includes the prohibitions in {@link #ISOLATION_REPEATABLE_READ}
@@ -214,6 +224,8 @@ public interface TransactionDefinition {
 
 
 	/**
+	 * 使用底层事务系统的默认超时，如果不支持超时，则不使用。
+	 * 根据使用的不同数据库可以指定超时时间 如mysql中可以设置sql的默认执行时间：max_execution_time
 	 * Use the default timeout of the underlying transaction system,
 	 * or none if timeouts are not supported.
 	 */
