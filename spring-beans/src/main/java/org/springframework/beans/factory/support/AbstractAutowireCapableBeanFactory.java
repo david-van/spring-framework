@@ -1847,7 +1847,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					beanName, "Invocation of init method failed", ex);
 		}
 		if (mbd == null || !mbd.isSynthetic()) {
-			//bean 的初始化后的回调
+			//bean 的初始化后的回调，这里对bean进行一些后置处理，当存在aop的时候，会将bean进行包装，返回代理类
 			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
 		}
 

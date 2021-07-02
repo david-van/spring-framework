@@ -38,7 +38,7 @@ public class TxDemo {
 //		txService.testDemo();
 //		txService.insert();
 //		txService.insertTwo();
-//		txService.insertThree();
-		txService.addNine();
+		txService.insertSix();
+//		txService.addNine();
 	}
 }

@@ -1,9 +1,11 @@
 package com.david.tx.source;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Role;
 import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -11,6 +13,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.annotation.AnnotationTransactionAttributeSource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.interceptor.*;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -26,7 +29,7 @@ import java.util.Properties;
  * @date 2021/6/30 17:07
  */
 @Configuration
-@Order(0)
+//@Order(0)
 //@Component
 public class TxConfig {
 	// 此处只是为了演示 所以不用连接池了===========生产环境禁止这么使用==========
@@ -69,9 +72,22 @@ public class TxConfig {
 	// 自定义配置一个事务拦截器（@Transaction注解也会使用此拦截器进行拦截）
 	//这里配置的bean不会被加载到拦截器中，因为同名覆盖的问题，
 	@Bean
-	@Order(value = 0)
-	@Primary
-	public TransactionInterceptor transactionInterceptor(PlatformTransactionManager transactionManager) {
+//	@Order(value = 0)
+//	@Primary
+	public TransactionInterceptor transactionInterceptor(PlatformTransactionManager transactionManager,
+														 TransactionAttributeSource source) {
+
+
+		TransactionInterceptor interceptor = new TransactionInterceptor();
+		interceptor.setTransactionManager(transactionManager);
+		interceptor.setTransactionAttributeSource(source);
+		return interceptor;
+	}
+
+	@Bean
+	public TransactionAttributeSource transactionAttributeSource() {
+
+		NameMatchTransactionAttributeSource source = new NameMatchTransactionAttributeSource();
 		Map<String, TransactionAttribute> txMap = new HashMap<>();
 		// required事务  适用于觉得部分场景~
 		RuleBasedTransactionAttribute requiredTx = new RuleBasedTransactionAttribute();
@@ -91,15 +107,9 @@ public class TxConfig {
 		txMap.put("query*", readOnlyTx);
 
 		// 定义事务属性的source~~~ 此处使用它  也就是根据方法名进行匹配的~~~
-		NameMatchTransactionAttributeSource source = new NameMatchTransactionAttributeSource();
 		source.setNameMap(txMap);
-
-		TransactionInterceptor interceptor = new TransactionInterceptor();
-		interceptor.setTransactionManager(transactionManager);
-		interceptor.setTransactionAttributeSource(source);
-		return interceptor;
+		return source;
 	}
-
 
 	//	@Bean
 	public TransactionProxyFactoryBean transactionProxyFactoryBean(PlatformTransactionManager transactionManager) {

@@ -2,6 +2,7 @@ package com.david.demo.source.reader.aop;
 
 import org.aspectj.lang.annotation.*;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
  */
 @Aspect
 @Component
+@Order(11)
 public class HelloAspect1 {
 
 	// 拦截aop目录下所有类的所有方法

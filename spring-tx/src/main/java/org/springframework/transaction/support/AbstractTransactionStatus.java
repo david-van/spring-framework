@@ -76,6 +76,7 @@ public abstract class AbstractTransactionStatus implements TransactionStatus {
 	}
 
 	/**
+	 * 通过检查此 TransactionStatus 确定仅回滚标志
 	 * Determine the rollback-only flag via checking this TransactionStatus.
 	 * <p>Will only return "true" if the application called {@code setRollbackOnly}
 	 * on this TransactionStatus object.
@@ -85,6 +86,7 @@ public abstract class AbstractTransactionStatus implements TransactionStatus {
 	}
 
 	/**
+	 * 判断全局事务是否可读，用于多个事务的加入、嵌套中，
 	 * Template method for determining the global rollback-only flag of the
 	 * underlying transaction, if any.
 	 * <p>This implementation always returns {@code false}.

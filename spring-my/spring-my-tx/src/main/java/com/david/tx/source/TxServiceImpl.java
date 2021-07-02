@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -22,6 +23,7 @@ import java.util.List;
 public class TxServiceImpl implements TxService {
 
 	@Autowired
+//	@Resource
 	private JdbcTemplate jdbcTemplate;
 	@Autowired
 	private TransactionTemplate transactionTemplate;

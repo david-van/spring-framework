@@ -22,6 +22,7 @@ import org.springframework.transaction.SavepointManager;
 import org.springframework.util.Assert;
 
 /**
+ * 事务状态点的默认实现
  * Default implementation of the {@link org.springframework.transaction.TransactionStatus}
  * interface, used by {@link AbstractPlatformTransactionManager}. Based on the concept
  * of an underlying "transaction object".

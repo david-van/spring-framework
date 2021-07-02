@@ -178,6 +178,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 	}
 
 	/**
+	 * 获取实际使用的DataSource。
 	 * Obtain the DataSource for actual use.
 	 * @return the DataSource (never {@code null})
 	 * @throws IllegalStateException in case of no DataSource set
@@ -236,6 +237,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 
 	@Override
 	protected Object doGetTransaction() {
+		//创建一个数据源事务对象，而后从数据源中获取一个连接，将其放到连接持有者里面，返回事务对象
 		DataSourceTransactionObject txObject = new DataSourceTransactionObject();
 		txObject.setSavepointAllowed(isNestedTransactionAllowed());
 		ConnectionHolder conHolder =
@@ -247,6 +249,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 	@Override
 	protected boolean isExistingTransaction(Object transaction) {
 		DataSourceTransactionObject txObject = (DataSourceTransactionObject) transaction;
+		//通过判断数据源事务对象存在连接持有对象并且事务为active
 		return (txObject.hasConnectionHolder() && txObject.getConnectionHolder().isTransactionActive());
 	}
 

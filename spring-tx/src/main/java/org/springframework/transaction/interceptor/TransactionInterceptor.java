@@ -32,6 +32,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionManager;
 
 /**
+ * 事务拦截器，是方法拦截器的一个实现，
  * AOP Alliance MethodInterceptor for declarative transaction
  * management using the common Spring transaction infrastructure
  * ({@link org.springframework.transaction.PlatformTransactionManager}/
@@ -113,6 +114,9 @@ public class TransactionInterceptor extends TransactionAspectSupport implements 
 		// The TransactionAttributeSource should be passed the target class
 		// as well as the method, which may be from an interface.
 		Class<?> targetClass = (invocation.getThis() != null ? AopUtils.getTargetClass(invocation.getThis()) : null);
+
+		// invokeWithinTransaction：调用父类TransactionAspectSupport的方法
+		// invocation::proceed本处执行完成  执行目标方法（当然可能还有其余增强器）
 
 		// Adapt to TransactionAspectSupport's invokeWithinTransaction...
 		return invokeWithinTransaction(invocation.getMethod(), targetClass, invocation::proceed);

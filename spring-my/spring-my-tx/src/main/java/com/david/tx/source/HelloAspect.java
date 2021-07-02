@@ -3,13 +3,15 @@ package com.david.tx.source;
 
 import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * @author fanzunying
  * @date 2021/6/21 16:46
  */
 @Aspect
-@Component
+//@Component
+//@EnableTransactionManagement(proxyTargetClass = true)
 public class HelloAspect {
 
 	// 拦截source目录下所有类的所有方法

@@ -64,6 +64,7 @@ public abstract class AbstractTransactionManagementConfiguration implements Impo
 		}
 	}
 
+	//和async相类似，可以通过配置文件来自定义，但是同样只允许一个
 	@Autowired(required = false)
 	void setConfigurers(Collection<TransactionManagementConfigurer> configurers) {
 		if (CollectionUtils.isEmpty(configurers)) {
@@ -76,7 +77,8 @@ public abstract class AbstractTransactionManagementConfiguration implements Impo
 		this.txManager = configurer.annotationDrivenTransactionManager();
 	}
 
-
+	// 注册一个监听器工厂，用以支持@TransactionalEventListener注解标注的方法，来监听事务相关的事件
+	//通过事件监听模式来实现事务的监控
 	@Bean(name = TransactionManagementConfigUtils.TRANSACTIONAL_EVENT_LISTENER_FACTORY_BEAN_NAME)
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public static TransactionalEventListenerFactory transactionalEventListenerFactory() {

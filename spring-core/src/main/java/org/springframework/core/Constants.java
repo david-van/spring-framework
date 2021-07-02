@@ -28,6 +28,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
 /**
+ * 此类用于解析public static final 成员
  * This class can be used to parse other classes containing constant definitions
  * in public static final members. The {@code asXXXX} methods of this class
  * allow these constant values to be accessed via their string names.
