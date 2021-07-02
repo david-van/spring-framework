@@ -3,6 +3,7 @@ package com.david.tx.source;
 
 import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * @author fanzunying
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
  */
 @Aspect
 @Component
+@EnableTransactionManagement
 public class HelloAspect {
 
 	// 拦截source目录下所有类的所有方法
