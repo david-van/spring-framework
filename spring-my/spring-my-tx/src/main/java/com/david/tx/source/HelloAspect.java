@@ -3,7 +3,6 @@ package com.david.tx.source;
 
 import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * @author fanzunying
